@@ -20,5 +20,14 @@ namespace backend
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             return new OkObjectResult("Welcome to Azure Functions!");
         }
+
+        [Function("Function2")]
+        public async Task<IActionResult> AddUser([HttpTrigger(AuthorizationLevel.Function, "get",Route ="inventory/supplier")] HttpRequest req)
+        {
+           await Task.Delay(1000);
+            _logger.LogInformation("function 2 triggered!.");
+            return new OkObjectResult("Welcome to Azure Functions!");
+
+        }
     }
 }

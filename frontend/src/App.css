@@ -1,0 +1,31 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hoverable-row:hover td {
+  background-color: #f1f1f1; /* Light gray background on hover */
+  cursor: pointer; /* Pointer cursor to indicate interactivity */
+  transition: background-color 0.3s ease; /* Smooth transition */
+  text-decoration: underline;
+  color: #0d6efd !important;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center; /* This ensures icons and text are vertically centered */
+  color: #555;
+}
+
+/* Make the text color of the active nav-link white */
+.nav-link.active {
+  background-color: #e7f3ff; /* Very light blue background */
+  color: #007bff !important; /* White text for active nav-link */
+}
+
+/* Optional: Add hover effect for better UI */
+.nav-item:hover {
+  background-color: #e7f3ff; /* Very light blue background */
+  color: #007bff !important;
+  border-radius: 5px;
+}
