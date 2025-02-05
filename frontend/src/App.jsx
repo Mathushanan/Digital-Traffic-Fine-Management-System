@@ -14,6 +14,8 @@ import LogoHeader from "./components/common/LogoHeader";
 import ImageSlider from "./components/common/ImageSlider";
 import HomePage from "./components/common/HomePage";
 import AboutPage from "./components/common/AboutPage";
+import FaqPage from "./components/common/FaqPage";
+import LegalPage from "./components/common/LegalPage";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/faq" element={<FaqPage />} />
+                <Route path="/legal" element={<LegalPage />} />
               </Routes>
             </div>
           </div>

@@ -151,7 +151,7 @@ const SideBar = () => {
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"
                 }
-                to="/about"
+                to="/aboutjj"
               >
                 <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS
               </NavLink>
@@ -162,7 +162,7 @@ const SideBar = () => {
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"
                 }
-                to="/storekeeper-dashboard/stock-summary"
+                to="/faq"
               >
                 <FaQuestionCircle className="me-2" /> FAQ
               </NavLink>
@@ -173,7 +173,7 @@ const SideBar = () => {
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"
                 }
-                to="/storekeeper-dashboard/daily-summary"
+                to="/legal"
               >
                 <FaGavel className="me-2" /> LEGAL & TERMS
               </NavLink>
