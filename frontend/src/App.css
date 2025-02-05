@@ -66,3 +66,9 @@
 .icon-container {
   color: #555;
 }
+
+.about-page section h2,
+p,
+.card-icon {
+  color: #555 !important;
+}

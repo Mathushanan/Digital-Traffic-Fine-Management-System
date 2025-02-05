@@ -140,7 +140,7 @@ const SideBar = () => {
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"
                 }
-                to="/admin-dashboard/audit-dashboard"
+                to="/about"
               >
                 <FaInfoCircle className="me-2" /> ABOUT
               </NavLink>
@@ -151,7 +151,7 @@ const SideBar = () => {
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"
                 }
-                to="/storekeeper-dashboard/add-stock-items"
+                to="/about"
               >
                 <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS
               </NavLink>

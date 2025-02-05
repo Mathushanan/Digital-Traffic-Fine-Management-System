@@ -13,6 +13,7 @@ import SideBar from "./components/common/SideBar";
 import LogoHeader from "./components/common/LogoHeader";
 import ImageSlider from "./components/common/ImageSlider";
 import HomePage from "./components/common/HomePage";
+import AboutPage from "./components/common/AboutPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <div className="border me-3">
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
               </Routes>
             </div>
           </div>
