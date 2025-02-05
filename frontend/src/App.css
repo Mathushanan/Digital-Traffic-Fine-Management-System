@@ -15,12 +15,19 @@
   display: flex;
   align-items: center; /* This ensures icons and text are vertically centered */
   color: #555;
+  padding: 10px 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
 }
 
 /* Make the text color of the active nav-link white */
 .nav-link.active {
   background-color: #e7f3ff; /* Very light blue background */
   color: #007bff !important; /* White text for active nav-link */
+  border: 2px solid white;
+  border-radius: 5px;
 }
 
 /* Optional: Add hover effect for better UI */
@@ -28,4 +35,34 @@
   background-color: #e7f3ff; /* Very light blue background */
   color: #007bff !important;
   border-radius: 5px;
+}
+
+/* Login Button */
+.login-btn {
+  background-color: #d4f8d4; /* Green for Login */
+  color: #226622 !important;
+  border-radius: 5px;
+}
+
+.login-btn:hover {
+  background-color: #d4f8d4;
+  color: #226622 !important;
+}
+
+/* Logout Button */
+.logout-btn {
+  background-color: #fad4d4; /* Red for Logout */
+  color: #882222 !important;
+  border-radius: 5px;
+}
+
+.logout-btn:hover {
+  background-color: #fad4d4;
+  color: #882222 !important;
+}
+
+.home-cards .card-title,
+.card-text,
+.icon-container {
+  color: #555;
 }

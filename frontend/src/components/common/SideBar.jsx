@@ -11,16 +11,11 @@ import { FaUsersCog } from "react-icons/fa";
 import { RiMoneyEuroCircleFill } from "react-icons/ri";
 import { MdVerifiedUser } from "react-icons/md";
 import { GiMoneyStack } from "react-icons/gi";
-import {
-  FaUsers,
-  FaFileAlt,
-  FaBox,
-  FaWarehouse,
-  FaCalendarDay,
-  FaCreditCard,
-  FaTruck,
-  FaSignOutAlt,
-} from "react-icons/fa";
+import { AiFillHome } from "react-icons/ai";
+import { FaInfoCircle } from "react-icons/fa";
+import { FaQuestionCircle } from "react-icons/fa";
+import { FaGavel } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import logo from "../../assets/logo-gov-lk.png";
 
 const SideBar = () => {
@@ -28,7 +23,7 @@ const SideBar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [message, setMessage] = useState("");
   const [role, setRole] = useState("public-user");
-  const [user, setUser] = useState(1);
+  const [user, setUser] = useState(false);
 
   /*useEffect(() => {
     // Get JWT from local storage
@@ -126,8 +121,68 @@ const SideBar = () => {
 
       {/* nav items */}
       <div>
+        {/* common for all users */}
+        {!user && (
+          <>
+            <div className="nav-item mb-2">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/"
+              >
+                <AiFillHome className="me-2" /> HOME
+              </NavLink>
+            </div>
+
+            <div className="nav-item mb-2">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/admin-dashboard/audit-dashboard"
+              >
+                <FaInfoCircle className="me-2" /> ABOUT
+              </NavLink>
+            </div>
+
+            <div className="nav-item mb-2">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/storekeeper-dashboard/add-stock-items"
+              >
+                <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS
+              </NavLink>
+            </div>
+
+            <div className="nav-item mb-2">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/storekeeper-dashboard/stock-summary"
+              >
+                <FaQuestionCircle className="me-2" /> FAQ
+              </NavLink>
+            </div>
+
+            <div className="nav-item mb-2">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                to="/storekeeper-dashboard/daily-summary"
+              >
+                <FaGavel className="me-2" /> LEGAL & TERMS
+              </NavLink>
+            </div>
+          </>
+        )}
+
         {/* system admin */}
-        {role == "system-admin" && (
+        {user && role == "system-admin" && (
           <>
             <div className="nav-item mb-2">
               <NavLink
@@ -197,7 +252,7 @@ const SideBar = () => {
           </>
         )}
         {/* station admin */}
-        {role == "station-admin" && (
+        {user && role == "station-admin" && (
           <>
             <div className="nav-item mb-2">
               <NavLink
@@ -267,7 +322,7 @@ const SideBar = () => {
           </>
         )}
         {/* traffic police */}
-        {role == "traffic-police" && (
+        {user && role == "traffic-police" && (
           <>
             <div className="nav-item mb-2">
               <NavLink
@@ -315,7 +370,7 @@ const SideBar = () => {
           </>
         )}
         {/* public user */}
-        {role == "public-user" && (
+        {user && role == "public-user" && (
           <>
             <div className="nav-item mb-2">
               <NavLink
@@ -366,10 +421,10 @@ const SideBar = () => {
 
       {/* logout */}
       {user ? (
-        <div className="nav-item mb-2">
+        <div className="nav-item mb-2 ">
           <NavLink
             className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
+              isActive ? "nav-link active logout-btn" : "nav-link logout-btn "
             }
             to="/logout"
           >
@@ -380,11 +435,11 @@ const SideBar = () => {
         <div className="nav-item mb-2">
           <NavLink
             className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
+              isActive ? "nav-link active login-btn" : "nav-link login-btn"
             }
             to="/login"
           >
-            <FaSignOutAlt className="me-2" /> LOGIN
+            <FaSignInAlt className="me-2" /> LOGIN
           </NavLink>
         </div>
       )}

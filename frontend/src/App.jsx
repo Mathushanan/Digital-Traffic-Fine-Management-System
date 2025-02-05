@@ -11,6 +11,8 @@ import Pagination from "./components/common/Pagination";
 import { useState } from "react";
 import SideBar from "./components/common/SideBar";
 import LogoHeader from "./components/common/LogoHeader";
+import ImageSlider from "./components/common/ImageSlider";
+import HomePage from "./components/common/HomePage";
 
 function App() {
   return (
@@ -20,10 +22,9 @@ function App() {
           <SideBar />
           <div className="flex-grow-1 border">
             <LogoHeader />
-            <div className="border">
-              hello
+            <div className="border me-3">
               <Routes>
-                <Route path="/" element={""} />
+                <Route path="/" element={<HomePage />} />
               </Routes>
             </div>
           </div>
