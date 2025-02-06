@@ -6,7 +6,7 @@ const AboutPage = () => {
     <div className="container my-5 about-page">
       {/* Vision */}
       <section className="text-center mb-4">
-        <h2 className="text-primary fs-5">Our Vision</h2>
+        <h2 className="text-primary fs-5">Vision</h2>
         <p>
           "A responsive organization aspiring towards excellence through modern
           technology in motor traffic regulation!"
@@ -15,7 +15,7 @@ const AboutPage = () => {
 
       {/* Mission */}
       <section className="text-center mb-5">
-        <h2 className="text-primary fs-5">Our Mission</h2>
+        <h2 className="text-primary fs-5">Mision</h2>
         <p>
           "Efficiently executing rules and regulations through teamwork and
           technology to create a responsive government organization!"
@@ -24,7 +24,7 @@ const AboutPage = () => {
 
       {/* Values */}
       <section className="text-center mb-4">
-        <h2 className="text-primary fs-5">Our Values</h2>
+        <h2 className="text-primary fs-5">Values</h2>
         <div className="row">
           <div className="col-6 col-md-3 mb-4">
             <div className="card p-3">

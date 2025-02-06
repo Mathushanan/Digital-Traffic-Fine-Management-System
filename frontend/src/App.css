@@ -1,19 +1,13 @@
+/*main style */
 #root {
   margin: 0 auto;
   text-align: center;
 }
 
-.hoverable-row:hover td {
-  background-color: #f1f1f1; /* Light gray background on hover */
-  cursor: pointer; /* Pointer cursor to indicate interactivity */
-  transition: background-color 0.3s ease; /* Smooth transition */
-  text-decoration: underline;
-  color: #0d6efd !important;
-}
-
+/*side bar */
 .nav-link {
   display: flex;
-  align-items: center; /* This ensures icons and text are vertically centered */
+  align-items: center;
   color: #555;
   padding: 10px 20px;
   font-weight: 600;
@@ -22,24 +16,21 @@
   text-decoration: none;
 }
 
-/* Make the text color of the active nav-link white */
 .nav-link.active {
-  background-color: #e7f3ff; /* Very light blue background */
-  color: #007bff !important; /* White text for active nav-link */
+  background-color: #e7f3ff;
+  color: #007bff !important;
   border: 2px solid white;
   border-radius: 5px;
 }
 
-/* Optional: Add hover effect for better UI */
 .nav-item:hover {
-  background-color: #e7f3ff; /* Very light blue background */
+  background-color: #e7f3ff;
   color: #007bff !important;
   border-radius: 5px;
 }
 
-/* Login Button */
 .login-btn {
-  background-color: #d4f8d4; /* Green for Login */
+  background-color: #d4f8d4;
   color: #226622 !important;
   border-radius: 5px;
 }
@@ -49,9 +40,8 @@
   color: #226622 !important;
 }
 
-/* Logout Button */
 .logout-btn {
-  background-color: #fad4d4; /* Red for Logout */
+  background-color: #fad4d4;
   color: #882222 !important;
   border-radius: 5px;
 }
@@ -61,14 +51,108 @@
   color: #882222 !important;
 }
 
+.sidebar {
+  min-height: 100vh;
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: width 0.3s ease-in-out;
+  height: 100vh;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 30px !important;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  display: none;
+  color: #555 !important;
+}
+
+.menu-button {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 50px;
+    left: 20px;
+    z-index: 50;
+    background-color: white;
+    color: #555;
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    border: 1px solid #555;
+    cursor: pointer;
+    font-size: 30px;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+  }
+  .menu-button:hover {
+    transform: scale(1.1);
+  }
+  .routes-div {
+    margin: 0 !important;
+  }
+  .sidebar {
+    display: block;
+  }
+  .close-btn {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100% !important;
+    height: 100dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    background: #f8f9fa;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  .lion-logo {
+    width: 40% !important;
+  }
+}
+
+/*home page */
 .home-cards .card-title,
 .card-text,
 .icon-container {
   color: #555;
 }
 
+/*about page */
 .about-page section h2,
 p,
 .card-icon {
   color: #555 !important;
+}
+
+/*logo header*/
+@media (max-width: 768px) {
+  .logo-header {
+    margin-bottom: 4rem !important;
+  }
 }

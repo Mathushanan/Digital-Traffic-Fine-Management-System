@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import logo1 from "../../assets/05.jpg"; // Ensure this is the correct path
-import logo2 from "../../assets/06.jpg";
-import logo3 from "../../assets/new-04.jpg";
-import logo4 from "../../assets/14.jpg";
+import logo1 from "../../assets/image-slider-01.jpg"; // Ensure this is the correct path
+import logo2 from "../../assets/image-slider-02.jpg";
+import logo3 from "../../assets/image-slider-03.jpg";
+import logo4 from "../../assets/image-slider-04.jpg";
 
 const ImageSlider = () => {
   const [index, setIndex] = useState(0);

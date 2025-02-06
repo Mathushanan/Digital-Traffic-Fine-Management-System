@@ -7,11 +7,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Pagination from "./components/common/Pagination";
-import { useState } from "react";
 import SideBar from "./components/common/SideBar";
 import LogoHeader from "./components/common/LogoHeader";
-import ImageSlider from "./components/common/ImageSlider";
 import HomePage from "./components/common/HomePage";
 import AboutPage from "./components/common/AboutPage";
 import FaqPage from "./components/common/FaqPage";
@@ -20,12 +17,12 @@ import LegalPage from "./components/common/LegalPage";
 function App() {
   return (
     <>
-      <div className="d-flex border">
+      <div className="d-flex">
         <Router>
           <SideBar />
-          <div className="flex-grow-1 border">
+          <div className="flex-grow-1">
             <LogoHeader />
-            <div className="border me-3">
+            <div className="me-3 routes-div">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutPage />} />
