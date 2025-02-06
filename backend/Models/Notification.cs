@@ -10,9 +10,7 @@ namespace backend.Models
     public class Notification
     {
         public int NotificationId { get; set; }
-        
-        public string? NotifierId { get; set; }
-        public virtual User? Notifier { get; set; }
+        public string? NotifiedBy { get; set; }
 
         public int ReceiverId { get; set; }
         public virtual User? Receiver { get; set; }

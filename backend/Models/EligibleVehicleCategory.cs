@@ -7,13 +7,13 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace backend.Models
 {
-    public class VehicleCategory
+    public class EligibleVehicleCategory
     {
         public int CategoryId { get; set; }
         public string? CategoryName { get; set; }
         public string? Description { get; set; }
 
-        public ICollection<User_VehicleCategory>? User_VehicleCategories { get; set; }
+        public ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
 
     }
 }

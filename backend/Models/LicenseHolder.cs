@@ -12,9 +12,9 @@ namespace backend.Models
         public int	HolderId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? Gender { get; set; }
         public string? LicenseNumber { get; set; }
         public string? NicNumber { get; set; }
+        public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? Address { get; set; }
         public string? ContactNumber { get; set; }

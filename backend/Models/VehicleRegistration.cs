@@ -7,9 +7,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace backend.Models
 {
-    public class Vehicle
+    public class VehicleRegistration
     {
         public int VehicleId { get; set; }
+        public string? VehicleNumber { get; set; }
         public string? NicNumber { get; set; }
         public string? Make { get; set; }
         public string? Model { get; set; }

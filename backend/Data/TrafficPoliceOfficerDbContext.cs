@@ -4,10 +4,81 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using backend.Models;
 
 namespace backend.Data
 {
     public class TrafficPoliceOfficerDbContext : DbContext
     {
-    }
+        public TrafficPoliceOfficerDbContext(DbContextOptions<TrafficPoliceOfficerDbContext> options):base(options)
+        {
+
+        }
+        public DbSet<TrafficPoliceOfficer> TrafficPoliceOfficers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TrafficPoliceOfficer>(entity =>
+            {
+                // Primary Key mapping
+                entity.HasKey(e => e.OfficerId);
+
+                // Property mappings (EF will use the property names as column names by default)
+                entity.Property(e => e.OfficerId)
+                    .IsRequired();
+
+                entity.Property(e => e.BadgeNumber)
+                    .HasMaxLength(50)
+                    .IsRequired(false);
+
+                entity.Property(e => e.NicNumber)
+                    .HasMaxLength(50)
+                    .IsRequired(false);
+
+                entity.Property(e => e.LicenseNumber)
+                    .HasMaxLength(50)
+                    .IsRequired(false);
+
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(100)
+                    .IsRequired(false);
+
+                entity.Property(e => e.LastName)
+                    .HasMaxLength(100)
+                    .IsRequired(false);
+
+                entity.Property(e => e.DateOfBirth)
+                    .IsRequired();
+
+                entity.Property(e => e.Gender)
+                    .HasMaxLength(10)
+                    .IsRequired(false);
+
+                entity.Property(e => e.ContactNumber)
+                    .HasMaxLength(20)
+                    .IsRequired(false);
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(150)
+                    .IsRequired(false);
+
+                entity.Property(e => e.Address)
+                    .HasMaxLength(255)
+                    .IsRequired(false);
+
+                entity.Property(e => e.HiredDate)
+                    .IsRequired();
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired();
+
+                entity.Property(e => e.StationCode)
+                    .HasMaxLength(50)
+                    .IsRequired(false);
+
+            });
+            }
+
+
+        }
 }
