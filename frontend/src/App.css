@@ -60,6 +60,7 @@
   justify-content: space-between;
   transition: width 0.3s ease-in-out;
   height: 100vh;
+  position: fixed; /* Keeps it fixed to the left side */
 }
 
 .sidebar.open {
@@ -154,5 +155,30 @@ p,
 @media (max-width: 768px) {
   .logo-header {
     margin-bottom: 4rem !important;
+    z-index: 1000 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    position: relative !important;
   }
+  .routes-div {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+.logo-header {
+  margin-left: 300px;
+  width: calc(100% - 300px);
+  position: fixed;
+  z-index: 1050;
+}
+
+/*routes div*/
+.routes-div {
+  margin-left: 300px;
+  margin-top: 100px;
+  width: calc(100% - 300px);
+  height: calc(100% - 100px);
+  overflow-y: auto;
 }

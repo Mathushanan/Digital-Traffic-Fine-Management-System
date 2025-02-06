@@ -113,7 +113,7 @@ const SideBar = () => {
             : "nav flex-column bg-light p-3 shadow-sm border me-4 sidebar"
         }`}
       >
-        {/* Close Button (Mobile Only) */}
+        {/* close button*/}
         <button className="close-btn" onClick={() => setIsOpen(false)}>
           <FaTimes />
         </button>
@@ -442,6 +442,7 @@ const SideBar = () => {
                 isActive ? "nav-link active logout-btn" : "nav-link logout-btn "
               }
               to="/logout"
+              onClick={() => setIsOpen(false)}
             >
               <FaSignOutAlt className="me-2" /> LOGOUT
             </NavLink>
@@ -453,6 +454,7 @@ const SideBar = () => {
                 isActive ? "nav-link active login-btn" : "nav-link login-btn"
               }
               to="/login"
+              onClick={() => setIsOpen(false)}
             >
               <FaSignInAlt className="me-2" /> LOGIN
             </NavLink>

@@ -13,6 +13,7 @@ import HomePage from "./components/common/HomePage";
 import AboutPage from "./components/common/AboutPage";
 import FaqPage from "./components/common/FaqPage";
 import LegalPage from "./components/common/LegalPage";
+import LoginPage from "./components/common/LoginPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/faq" element={<FaqPage />} />
                 <Route path="/legal" element={<LegalPage />} />
+                <Route path="/login" element={<LoginPage />} />
               </Routes>
             </div>
           </div>
