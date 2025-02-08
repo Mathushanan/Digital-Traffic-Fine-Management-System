@@ -10,7 +10,7 @@ namespace backend.Data
 {
     public class TrafficPoliceOfficerDbContext : DbContext
     {
-        public TrafficPoliceOfficerDbContext(DbContextOptions<TrafficPoliceOfficerDbContext> options):base(options)
+        public TrafficPoliceOfficerDbContext(DbContextOptions<TrafficPoliceOfficerDbContext> options) : base(options)
         {
 
         }
@@ -20,65 +20,60 @@ namespace backend.Data
         {
             modelBuilder.Entity<TrafficPoliceOfficer>(entity =>
             {
-                // Primary Key mapping
                 entity.HasKey(e => e.OfficerId);
-
-                // Property mappings (EF will use the property names as column names by default)
-                entity.Property(e => e.OfficerId)
-                    .IsRequired();
 
                 entity.Property(e => e.BadgeNumber)
                     .HasMaxLength(50)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.NicNumber)
                     .HasMaxLength(50)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.LicenseNumber)
                     .HasMaxLength(50)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.DateOfBirth)
-                    .IsRequired();
+                    .IsRequired(true);
 
                 entity.Property(e => e.Gender)
                     .HasMaxLength(10)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.ContactNumber)
                     .HasMaxLength(20)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(150)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.Address)
                     .HasMaxLength(255)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
                 entity.Property(e => e.HiredDate)
-                    .IsRequired();
+                    .IsRequired(true);
 
                 entity.Property(e => e.IsActive)
-                    .IsRequired();
+                    .IsRequired(true);
 
                 entity.Property(e => e.StationCode)
                     .HasMaxLength(50)
-                    .IsRequired(false);
+                    .IsRequired(true);
 
             });
-            }
-
-
         }
+
+
+    }
 }

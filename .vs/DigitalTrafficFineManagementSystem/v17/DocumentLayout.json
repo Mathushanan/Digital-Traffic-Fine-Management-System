@@ -3,68 +3,60 @@
   "WorkspaceRootPath": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\systemdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\systemdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\licenseholderdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\licenseholderdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\trafficpoliceofficerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\trafficpoliceofficerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\trafficpoliceofficer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\trafficpoliceofficer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\licenseholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\licenseholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\vehicleregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\vehicleregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\user_eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\user_eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\fine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\fine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\station.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\station.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\realtimetracking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\realtimetracking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\fine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\fine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\licenseholderdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\licenseholderdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\systemdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\systemdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\trafficpoliceofficerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\trafficpoliceofficerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\vehicleregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\vehicleregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\user_eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\user_eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\trafficviolation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\trafficviolation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\realtimetracking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\realtimetracking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\court.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\court.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\eligiblevehiclecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\dispute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -73,6 +65,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\audit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\audit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\trafficpoliceofficer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\trafficpoliceofficer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\licenseholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\licenseholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -122,238 +122,238 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 14,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "SystemDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\SystemDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\SystemDbContext.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\SystemDbContext.cs",
               "RelativeToolTip": "backend\\Data\\SystemDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAA4BAAAAAAAAAAAuwBIBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:51:51.994Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "LicenseHolderDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\LicenseHolderDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\LicenseHolderDbContext.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\LicenseHolderDbContext.cs",
               "RelativeToolTip": "backend\\Data\\LicenseHolderDbContext.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABUAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:51:16.162Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "TrafficPoliceOfficerDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\TrafficPoliceOfficerDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\TrafficPoliceOfficerDbContext.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\TrafficPoliceOfficerDbContext.cs",
               "RelativeToolTip": "backend\\Data\\TrafficPoliceOfficerDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAACYAAAAAAAAAAAAgwDUAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:50:56.081Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 16,
               "Title": "TrafficPoliceOfficer.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\TrafficPoliceOfficer.cs",
               "RelativeDocumentMoniker": "backend\\Models\\TrafficPoliceOfficer.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\TrafficPoliceOfficer.cs",
               "RelativeToolTip": "backend\\Models\\TrafficPoliceOfficer.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAADwvxwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAwwBwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:44:12.612Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 17,
               "Title": "LicenseHolder.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\LicenseHolder.cs",
               "RelativeDocumentMoniker": "backend\\Models\\LicenseHolder.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\LicenseHolder.cs",
               "RelativeToolTip": "backend\\Models\\LicenseHolder.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAIwBsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAA0wBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:39:26.394Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 15,
               "Title": "Audit.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Audit.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Audit.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Audit.cs",
               "RelativeToolTip": "backend\\Models\\Audit.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAcwAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:34:15.256Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 2,
               "Title": "Payment.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Payment.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Payment.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Payment.cs",
               "RelativeToolTip": "backend\\Models\\Payment.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:25:32.89Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 14,
               "Title": "Dispute.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Dispute.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Dispute.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Dispute.cs",
               "RelativeToolTip": "backend\\Models\\Dispute.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:17:06.334Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "Notification.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Notification.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Notification.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Notification.cs",
               "RelativeToolTip": "backend\\Models\\Notification.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:09:17.444Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 11,
               "Title": "RealTimeTracking.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\RealTimeTracking.cs",
               "RelativeDocumentMoniker": "backend\\Models\\RealTimeTracking.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\RealTimeTracking.cs",
               "RelativeToolTip": "backend\\Models\\RealTimeTracking.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T16:05:41.503Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 3,
               "Title": "Fine.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Fine.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Fine.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Fine.cs",
               "RelativeToolTip": "backend\\Models\\Fine.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAUwBsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAA7wBYAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T15:33:49.763Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 10,
               "Title": "TrafficViolation.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\TrafficViolation.cs",
               "RelativeDocumentMoniker": "backend\\Models\\TrafficViolation.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\TrafficViolation.cs",
               "RelativeToolTip": "backend\\Models\\TrafficViolation.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T15:20:49.452Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "User_EligibleVehicleCategory.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User_EligibleVehicleCategory.cs",
               "RelativeDocumentMoniker": "backend\\Models\\User_EligibleVehicleCategory.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User_EligibleVehicleCategory.cs",
               "RelativeToolTip": "backend\\Models\\User_EligibleVehicleCategory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T15:12:11.762Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 13,
               "Title": "EligibleVehicleCategory.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\EligibleVehicleCategory.cs",
               "RelativeDocumentMoniker": "backend\\Models\\EligibleVehicleCategory.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\EligibleVehicleCategory.cs",
               "RelativeToolTip": "backend\\Models\\EligibleVehicleCategory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T15:09:54.545Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 0,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User.cs",
               "RelativeDocumentMoniker": "backend\\Models\\User.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User.cs",
               "RelativeToolTip": "backend\\Models\\User.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAIwBoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABoAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T14:49:58.389Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 1,
               "Title": "Station.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Station.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Station.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Station.cs",
               "RelativeToolTip": "backend\\Models\\Station.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAUwBcAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAcwBQAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T14:47:47.001Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "VehicleRegistration.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\VehicleRegistration.cs",
               "RelativeDocumentMoniker": "backend\\Models\\VehicleRegistration.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\VehicleRegistration.cs",
               "RelativeToolTip": "backend\\Models\\VehicleRegistration.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAUwBcAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T13:15:19.864Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 12,
               "Title": "Court.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Court.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Court.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Court.cs",
               "RelativeToolTip": "backend\\Models\\Court.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T13:14:59.905Z",
               "EditorCaption": ""

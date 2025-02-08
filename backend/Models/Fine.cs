@@ -37,9 +37,8 @@ namespace backend.Models
         public string? Status { get; set; }
 
 
-
-        public virtual ICollection<Dispute>? Disputes { get; set; }
-        public virtual ICollection<Payment>? Payments { get; set; }
+        public virtual Dispute? Dispute { get; set; }
+        public virtual Payment? Payment { get; set; }
 
 
 

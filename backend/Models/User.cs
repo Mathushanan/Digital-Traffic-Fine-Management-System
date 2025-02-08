@@ -24,12 +24,14 @@ namespace backend.Models
         public DateTime? LicenseIssueDate { get; set; }
         public DateTime? LicenseExpiryDate { get; set; }
         public int AvailablePoints { get; set; }
+        public int BadgeNumber { get; set; }
 
         public int RegisteredStationId { get; set; }
         public Station? RegisteredStation { get; set; }
 
         public virtual ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
-        public virtual ICollection<Fine>? Fines { get; set; }
+        public virtual ICollection<Fine>? OffenderFines { get; set; }
+        public virtual ICollection<Fine>? IssuerFines { get; set; }
         public virtual ICollection<RealTimeTracking>? RealTimeTrackings { get; set; }
         public virtual ICollection<Notification>? Notifications { get; set; }
         public virtual ICollection<Audit>? Audits { get; set; }

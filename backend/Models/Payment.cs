@@ -14,6 +14,7 @@ namespace backend.Models
         public int FineId { get; set; }
         public virtual Fine? Fine { get; set; }
 
+        public decimal Amount { get; set; }
         public DateTime? PaymentDate { get; set; }
         public string? PaymentMethod { get; set; }
         public string? TransactionId { get; set; }

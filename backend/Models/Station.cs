@@ -16,9 +16,7 @@ namespace backend.Models
         public string? District { get; set; }
         public string? ContactNumber { get; set; }
         public string? Email { get; set; }
-
         public int StationAdminId { get; set; }
-        public virtual User? StationAdmin { get; set; }
 
         public virtual ICollection<User>? Users { get; set; }
         public virtual ICollection<Fine>? Fines { get; set; }
