@@ -23,7 +23,7 @@ namespace backend.Models
         public string? LicenseNumber { get; set; }
         public DateTime? LicenseIssueDate { get; set; }
         public DateTime? LicenseExpiryDate { get; set; }
-        public int AvailablePoints { get; set; }
+        public int? AvailablePoints { get; set; }
         public int BadgeNumber { get; set; }
 
         public int RegisteredStationId { get; set; }
