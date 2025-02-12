@@ -317,12 +317,8 @@ namespace backend.Data
                     .HasMaxLength(100)
                     .IsRequired(true);
 
-                entity.Property(s => s.Longitude)
-                    .HasMaxLength(50)
-                    .IsRequired(true);
-
-                entity.Property(s => s.Latitude)
-                    .HasMaxLength(50)
+                entity.Property(s => s.Address)
+                    .HasMaxLength(100)
                     .IsRequired(true);
 
                 entity.Property(s => s.District)
@@ -526,7 +522,7 @@ namespace backend.Data
                     .IsRequired(true);
 
                 entity.Property(v => v.Year)
-                    .HasMaxLength(4)
+                    .HasColumnType("datetime")
                     .IsRequired(true);
 
                 entity.Property(v => v.Color)

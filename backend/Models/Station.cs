@@ -11,8 +11,7 @@ namespace backend.Models
         public int StationId { get; set; }
         public string? StationCode { get; set; }
         public string? StationName { get; set; }
-        public string? Longitude { get; set; }
-        public string? Latitude { get; set; }
+        public string? Address { get; set; }
         public string? District { get; set; }
         public string? ContactNumber { get; set; }
         public string? Email { get; set; }

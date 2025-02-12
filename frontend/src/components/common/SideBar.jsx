@@ -24,8 +24,8 @@ import logo from "../../assets/logo-gov-lk.png";
 const SideBar = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [role, setRole] = useState("system-admin");
-  const [user, setUser] = useState(false);
+  const [role, setRole] = useState("public-user");
+  const [user, setUser] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -204,7 +204,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/manage-users"
+                  to="/system-admin/dashboard"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaTachometerAlt className="me-2" /> DASHBOARD
                 </NavLink>
@@ -215,7 +216,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/audit-dashboard"
+                  to="/system-admin/manage-stations"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaBuildingColumns className="me-2" /> MANAGE STATIONS
                 </NavLink>
@@ -226,7 +228,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/add-stock-items"
+                  to="/system-admin/manage-users"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaUserCog className="me-2" /> MANAGE USERS
                 </NavLink>
@@ -237,7 +240,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/stock-summary"
+                  to="/system-admin/traffic-violations"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS
                 </NavLink>
@@ -248,7 +252,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/daily-summary"
+                  to="/system-admin/notifications"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaBell className="me-2" /> NOTIFICATIONS
                 </NavLink>
@@ -259,7 +264,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/grn"
+                  to="/system-admin/audits"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaClipboardCheck className="me-2" /> AUDITS
                 </NavLink>
@@ -274,7 +280,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/manage-users"
+                  to="/station-admin/dashboard"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaTachometerAlt className="me-2" /> DASHBOARD
                 </NavLink>
@@ -285,7 +292,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/audit-dashboard"
+                  to="/station-admin/payments"
+                  onClick={() => setIsOpen(false)}
                 >
                   <RiMoneyEuroCircleFill className="me-2" /> PAYMENTS
                 </NavLink>
@@ -296,7 +304,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/add-stock-items"
+                  to="/station-admin/manage-officers"
+                  onClick={() => setIsOpen(false)}
                 >
                   <GiPoliceOfficerHead className="me-2" /> MANAGE OFFICERS
                 </NavLink>
@@ -307,7 +316,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/stock-summary"
+                  to="/station-admin/manage-public"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaUsersCog className="me-2" /> MANAGE PUBLIC
                 </NavLink>
@@ -318,7 +328,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/daily-summary"
+                  to="/station-admin/traffic-violations"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS
                 </NavLink>
@@ -329,7 +340,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/grn"
+                  to="/station-admin/notifications"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaBell className="me-2" /> NOTIFICATIONS
                 </NavLink>
@@ -344,7 +356,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/manage-users"
+                  to="/traffic-police/dashboard"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaTachometerAlt className="me-2" /> DASHBOARD
                 </NavLink>
@@ -355,9 +368,10 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/audit-dashboard"
+                  to="/traffic-police/verification"
+                  onClick={() => setIsOpen(false)}
                 >
-                  <MdVerifiedUser className="me-2" /> VERIFY
+                  <MdVerifiedUser className="me-2" /> VERIFICATION
                 </NavLink>
               </div>
 
@@ -366,7 +380,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/add-stock-items"
+                  to="/traffic-police/issue-fine"
+                  onClick={() => setIsOpen(false)}
                 >
                   <GiMoneyStack className="me-2" /> ISSUE FINE
                 </NavLink>
@@ -377,7 +392,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/daily-summary"
+                  to="/traffic-police/notifications"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaBell className="me-2" /> NOTIFICATIONS
                 </NavLink>
@@ -392,7 +408,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/manage-users"
+                  to="/public-user/dashboard"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaTachometerAlt className="me-2" /> DASHBOARD
                 </NavLink>
@@ -403,7 +420,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/admin-dashboard/audit-dashboard"
+                  to="/public-user/manage-fines"
+                  onClick={() => setIsOpen(false)}
                 >
                   <GiMoneyStack className="me-2" /> MANAGE FINES
                 </NavLink>
@@ -414,7 +432,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/add-stock-items"
+                  to="/public-user/manage-account"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaUserCog className="me-2" /> MANAGE ACCOUNT
                 </NavLink>
@@ -425,7 +444,8 @@ const SideBar = () => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/storekeeper-dashboard/daily-summary"
+                  to="/public-user/notifications"
+                  onClick={() => setIsOpen(false)}
                 >
                   <FaBell className="me-2" /> NOTIFICATIONS
                 </NavLink>
