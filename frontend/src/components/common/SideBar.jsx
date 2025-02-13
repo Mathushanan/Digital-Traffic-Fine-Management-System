@@ -25,7 +25,7 @@ const SideBar = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [role, setRole] = useState("public-user");
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
 

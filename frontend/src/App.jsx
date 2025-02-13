@@ -23,7 +23,7 @@ import PublicUserRoutes from "./components/public user/PublicUserRoutes";
 
 function App() {
   const [role, setRole] = useState("public-user");
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState(false);
 
   return (
     <>

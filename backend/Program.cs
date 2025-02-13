@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
+using backend.Interfaces;
+using backend.Services;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
@@ -31,8 +33,9 @@ builder.Services.AddDbContext<TrafficPoliceOfficerDbContext>(options =>
 builder.Services.AddDbContext<SystemDbContext>(options =>
     options.UseSqlServer(systemDbConnection));
 
-// Register MyService
-//builder.Services.AddSingleton<IMyService, MyService>();
+// Register Services
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.ConfigureFunctionsWebApplication();
 
