@@ -1,15 +1,42 @@
 import React, { useState } from "react";
 import { FaSignInAlt } from "react-icons/fa";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import verifyJwtToken from "../../utils/verifyJwtToken";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here (e.g., send data to API)
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    try {
+      const loginUrl = `${import.meta.env.VITE_API_BASE_URL}/login`;
+
+      const response = await axios.post(loginUrl, {
+        email: email,
+        password: password,
+      });
+      console.log(response.data);
+      if (response.status == 200 && response.data?.token) {
+        localStorage.setItem("authToken", response.data.token);
+        const decodedToken = jwtDecode(response.data.token);
+        console.log(decodedToken);
+        const userType = decodedToken.UserType;
+        console.log(userType);
+        if (userType == "SystemAdmin") {
+          navigate("/system-admin/dashboard");
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Login failed:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   return (
@@ -31,7 +58,7 @@ const LoginPage = () => {
           <div className="form-group mb-3 text-start">
             <input
               type="password"
-              className="form-control fs-6 h100z"
+              className="form-control fs-6 h-80"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

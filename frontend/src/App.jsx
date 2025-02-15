@@ -20,10 +20,22 @@ import StationAdminRoutes from "./components/station admin/StationAdminRoutes";
 import { useState } from "react";
 import TrafficPoliceRoutes from "./components/traffic police/TrafficPoliceRoutes";
 import PublicUserRoutes from "./components/public user/PublicUserRoutes";
+import { useEffect } from "react";
+import verifyJwtToken from "./utils/verifyJwtToken";
 
 function App() {
-  const [role, setRole] = useState("public-user");
+  const [role, setRole] = useState("");
   const [user, setUser] = useState(false);
+
+  useEffect(() => {
+    const checkUserValidity = async () => {
+      const isValidUser = await verifyJwtToken();
+      setRole(isValidUser);
+      setUser(isValidUser ? true : false);
+    };
+
+    checkUserValidity();
+  }, []);
 
   return (
     <>
@@ -43,7 +55,7 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                   </>
                 )}
-                {user && role == "system-admin" && (
+                {user && role == "SystemAdmin" && (
                   <>
                     <Route
                       path="/"

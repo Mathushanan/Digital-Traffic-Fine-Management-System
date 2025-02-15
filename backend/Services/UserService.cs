@@ -26,13 +26,20 @@ namespace backend.Services
             await _systemDbContext.SaveChangesAsync();
         }
 
-        public async Task<User?> GetUserByParameters(string email, string nicNumber, string licenseNumber, string badgeNumber)
+        public async Task<User?> GetUserByParameters(string email, string nicNumber, string licenseNumber, int badgeNumber)
         {
             return await _systemDbContext.Users
                 .Where(user => user.Email == email ||
                                user.NicNumber == nicNumber ||
                                user.LicenseNumber == licenseNumber ||
-                               user.BadgeNumber.ToString() == badgeNumber)
+                               user.BadgeNumber == badgeNumber)
+                .FirstOrDefaultAsync();
+
+        }
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.Email == email)
                 .FirstOrDefaultAsync();
 
         }

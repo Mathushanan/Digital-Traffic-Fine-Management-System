@@ -1,10 +1,14 @@
-using Azure.Core;
+﻿using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using backend.Models;
 using backend.Interfaces;
+using Newtonsoft.Json;
+using backend.Dtos;
+using backend.Services;
+using Newtonsoft.Json.Linq;
 
 namespace backend
 {
@@ -13,12 +17,14 @@ namespace backend
         private readonly ILogger<Functions> _logger;
         private readonly IPasswordService _passwordService;
         private readonly IUserService _userService;
+        private readonly IJwtService _jwtService;
 
-        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService)
+        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService)
         {
             _logger = logger;
             this._passwordService = passwordService;
             this._userService = userService;
+            this._jwtService = jwtService;
         }
 
         [Function("RegisterSystemAdmin")]
@@ -28,52 +34,71 @@ namespace backend
 
             try
             {
-                string? userType = req.Query["userType"];
-                string? firstName = req.Query["firstName"];
-                string? lastName = req.Query["lastName"];
-                string? gender = req.Query["gender"];
-                DateTime? dateOfBirth = DateTime.TryParse(req.Query["dateOfBirth"], out DateTime tempDateOfBirth) ? tempDateOfBirth : null;
-                string? address = req.Query["address"];
-                string? email = req.Query["email"];
-                string? contactNumber = req.Query["contactNumber"];
-                string? password = req.Query["password"];
-                string? nicNumber = req.Query["nicNumber"];
-                string? licenseNumber = req.Query["licenseNumber"];
-                DateTime? licenseIssueDate = DateTime.TryParse(req.Query["licenseIssueDate"], out DateTime tempLicenseIssueDate) ? tempLicenseIssueDate : null;
-                DateTime? licenseExpiryDate = DateTime.TryParse(req.Query["licenseExpiryDate"], out DateTime tempLicenseExpiryDate) ? tempLicenseExpiryDate : null;
-                int badgeNumber = int.TryParse(req.Query["badgeNumber"], out int tempBadgeNumber) ? tempBadgeNumber : 0;
+                // Read and deserialize the JSON request body
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
 
-                var existingUser = await _userService.GetUserByParameters(email!, nicNumber!, licenseNumber!, badgeNumber.ToString());
-
-                if (existingUser != null)
+                if (data == null)
                 {
-                    return new ConflictObjectResult("System Admin already registered!");
+                    return new BadRequestObjectResult("Invalid JSON request body.");
+                }
+
+                //Accessing deserialized parameters
+                string? userType = data.UserType;
+                string? firstName = data.FirstName;
+                string? lastName = data.LastName;
+                string? gender = data.Gender;
+                DateTime? dateOfBirth = data.DateOfBirth;
+                string? address = data.Address;
+                string? email = data.Email;
+                string? contactNumber = data.ContactNumber;
+                string? password = data.Password;
+                string? nicNumber = data.NicNumber;
+                string? licenseNumber = data.LicenseNumber;
+                DateTime? licenseIssueDate = data.LicenseIssueDate;
+                DateTime? licenseExpiryDate = data.LicenseExpiryDate;
+                int? badgeNumber = data.BadgeNumber;
+                int registeredStationId = data.RegisteredStationId;
+
+                if (firstName == null || lastName == null || gender == null || dateOfBirth == null || address == null || contactNumber == null || password == null || licenseIssueDate == null || licenseExpiryDate == null || email == null || nicNumber == null || licenseNumber == null || badgeNumber == null || userType == null || userType != "SystemAdmin")
+                {
+                    return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing/User type is wrong!");
                 }
                 else
                 {
-                    var newUser = new User
-                    {
-                        UserType = userType,
-                        FirstName = firstName,
-                        LastName = lastName,
-                        Gender = gender,
-                        DateOfBirth = dateOfBirth,
-                        Address = address,
-                        Email = email,
-                        ContactNumber = contactNumber,
-                        NicNumber = nicNumber,
-                        LicenseNumber = licenseNumber,
-                        LicenseIssueDate = licenseIssueDate,
-                        LicenseExpiryDate = licenseExpiryDate,
-                        BadgeNumber = badgeNumber
-                    };
+                    var existingUser = await _userService.GetUserByParameters(email!, nicNumber!, licenseNumber!, badgeNumber ?? 0);
 
-                    newUser.PasswordHash = _passwordService.HashPassword(newUser, password!);
-                    await _userService.AddUserAsync(newUser);
-                    return new OkObjectResult("System Admin registered successfully!");
+                    if (existingUser != null)
+                    {
+                        return new ConflictObjectResult("System Admin already registered!");
+                    }
+                    else
+                    {
+                        var newUser = new User
+                        {
+                            UserType = userType,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Gender = gender,
+                            DateOfBirth = dateOfBirth,
+                            Address = address,
+                            Email = email,
+                            ContactNumber = contactNumber,
+                            NicNumber = nicNumber,
+                            LicenseNumber = licenseNumber,
+                            LicenseIssueDate = licenseIssueDate,
+                            LicenseExpiryDate = licenseExpiryDate,
+                            BadgeNumber = badgeNumber,
+                            RegisteredStationId = registeredStationId
+                        };
+
+                        newUser.PasswordHash = _passwordService.HashPassword(newUser, password!);
+                        await _userService.AddUserAsync(newUser);
+                        return new OkObjectResult("System Admin registered successfully!");
+
+                    }
 
                 }
-
             }
             catch (Exception ex)
             {
@@ -85,12 +110,83 @@ namespace backend
 
 
         }
-        [Function("Function2")]
-        public async Task<IActionResult> AddUser([HttpTrigger(AuthorizationLevel.Function, "get", Route = "inventory/supplier")] HttpRequest req)
+        [Function("Login")]
+        public async Task<IActionResult> Login([HttpTrigger(AuthorizationLevel.Function, "post", Route = "login")] HttpRequest req)
         {
-            await Task.Delay(1000);
-            _logger.LogInformation("function 2 triggered!.");
-            return new OkObjectResult("Welcome to Azure Functions!");
+            // Read and deserialize the JSON request body
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+
+            if (data == null)
+            {
+                return new BadRequestObjectResult("Invalid JSON request body!");
+            }
+
+            //Accessing deserialized parameters
+            string? email = data.Email;
+            string? password = data.Password;
+
+            var existingUser = await _userService.GetUserByEmail(email!);
+            if (existingUser == null)
+            {
+                return new NotFoundObjectResult("User not registered yet!");
+            }
+            else
+            {
+                if (_passwordService.VerifyPassword(existingUser, password!))
+                {
+                    var jwt = _jwtService.GenerateJwtToken(existingUser);
+                    return new OkObjectResult(new
+                    {
+                        Message = "Login successful!",
+                        Token = jwt
+                    });
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Invalid password!");
+                }
+            }
+            
+
+        }
+        [Function("ValidateJwtToken")]
+        public async Task<IActionResult> ValidateJwtToken([HttpTrigger(AuthorizationLevel.Function, "post", Route = "validate-jwt-token")] HttpRequest req)
+        {
+            // Read and deserialize the JSON request body
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+
+            if (data == null)
+            {
+                return new BadRequestObjectResult("Invalid JSON request body!");
+            }
+
+            if (!req.Headers.TryGetValue("Authorization", out var token))
+            {
+                return new BadRequestObjectResult("Token is invalid or expired!");
+            }
+            token = token.ToString().Replace("Bearer ", "");
+
+            var principal = _jwtService.ValidateJwtToken(token!);
+
+            if (principal != null)
+            {
+                Console.WriteLine("Token is valid.");
+                var claims = principal.Claims;
+                var userType = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+
+                return new OkObjectResult(new
+                {
+                    Message = "Token is valid!",
+                    UserType = userType
+                });
+            }
+            else
+            {
+                return new BadRequestObjectResult("Token is invalid or expired!");
+            }
+            
 
         }
     }

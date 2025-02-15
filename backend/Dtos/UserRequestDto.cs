@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace backend.Models
+namespace backend.Dtos
 {
-    public class User
+    public class UserRequestDto
     {
-        public int UserId { get; set; }
         public string? UserType { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -17,25 +15,14 @@ namespace backend.Models
         public DateTime? DateOfBirth { get; set; }
         public string? Address { get; set; }
         public string? Email { get; set; }
+        public string? Password { get; set; }
         public string? ContactNumber { get; set; }
-        public string? PasswordHash { get; set; }
         public string? NicNumber { get; set; }
         public string? LicenseNumber { get; set; }
         public DateTime? LicenseIssueDate { get; set; }
         public DateTime? LicenseExpiryDate { get; set; }
         public int? AvailablePoints { get; set; }
-        public int? BadgeNumber { get; set; }
-
+        public int BadgeNumber { get; set; }
         public int RegisteredStationId { get; set; }
-        public Station? RegisteredStation { get; set; }
-
-        public virtual ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
-        public virtual ICollection<Fine>? OffenderFines { get; set; }
-        public virtual ICollection<Fine>? IssuerFines { get; set; }
-        public virtual ICollection<RealTimeTracking>? RealTimeTrackings { get; set; }
-        public virtual ICollection<Notification>? Notifications { get; set; }
-        public virtual ICollection<Audit>? Audits { get; set; }
-        
-
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBuildingColumns, FaClipboardCheck } from "react-icons/fa6";
 import { GiPoliceOfficerHead, GiMoneyStack } from "react-icons/gi";
@@ -20,12 +20,23 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import logo from "../../assets/logo-gov-lk.png";
+import verifyJwtToken from "../../utils/verifyJwtToken";
 
 const SideBar = () => {
-  const navigate = useNavigate();
-  const [message, setMessage] = useState("");
-  const [role, setRole] = useState("public-user");
+  const [role, setRole] = useState(null);
   const [user, setUser] = useState(false);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUserValidity = async () => {
+      const isValidUser = await verifyJwtToken();
+      setRole(isValidUser);
+      setUser(isValidUser ? true : false);
+    };
+
+    checkUserValidity();
+  }, []);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -197,7 +208,7 @@ const SideBar = () => {
           )}
 
           {/* system admin */}
-          {user && role == "system-admin" && (
+          {user && role == "SystemAdmin" && (
             <>
               <div className="nav-item mb-2">
                 <NavLink
