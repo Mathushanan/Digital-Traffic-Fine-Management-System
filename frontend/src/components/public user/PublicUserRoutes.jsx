@@ -9,6 +9,7 @@ const PublicUserRoutes = () => {
   return (
     <div>
       <Routes>
+        <Route path="/" element={<Navigate to="dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-account" element={<ManageAccount />} />
         <Route path="/manage-fines" element={<ManageFines />} />

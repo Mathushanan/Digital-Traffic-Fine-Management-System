@@ -151,20 +151,13 @@ namespace backend
 
         }
         [Function("ValidateJwtToken")]
-        public async Task<IActionResult> ValidateJwtToken([HttpTrigger(AuthorizationLevel.Function, "post", Route = "validate-jwt-token")] HttpRequest req)
+        public Task<IActionResult> ValidateJwtToken([HttpTrigger(AuthorizationLevel.Function, "post", Route = "validate-jwt-token")] HttpRequest req)
         {
-            // Read and deserialize the JSON request body
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
-
-            if (data == null)
-            {
-                return new BadRequestObjectResult("Invalid JSON request body!");
-            }
+           
 
             if (!req.Headers.TryGetValue("Authorization", out var token))
             {
-                return new BadRequestObjectResult("Token is invalid or expired!");
+                return Task.FromResult<IActionResult>(new BadRequestObjectResult("Missing Authorization token!"));
             }
             token = token.ToString().Replace("Bearer ", "");
 
@@ -176,15 +169,15 @@ namespace backend
                 var claims = principal.Claims;
                 var userType = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
 
-                return new OkObjectResult(new
+                return Task.FromResult<IActionResult>(new OkObjectResult(new
                 {
                     Message = "Token is valid!",
                     UserType = userType
-                });
+                }));
             }
             else
             {
-                return new BadRequestObjectResult("Token is invalid or expired!");
+                return Task.FromResult<IActionResult>(new BadRequestObjectResult("Token is invalid or expired!"));
             }
             
 

@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import verifyJwtToken from "../../utils/verifyJwtToken";
 
-const LoginPage = () => {
+const LoginPage = ({ setUser, setRole }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,15 +20,20 @@ const LoginPage = () => {
         email: email,
         password: password,
       });
-      console.log(response.data);
+
       if (response.status == 200 && response.data?.token) {
         localStorage.setItem("authToken", response.data.token);
+
         const decodedToken = jwtDecode(response.data.token);
-        console.log(decodedToken);
+
         const userType = decodedToken.UserType;
-        console.log(userType);
+
+        // Set user and role in the parent component (App)
+        setUser(true);
+        setRole(userType);
+
         if (userType == "SystemAdmin") {
-          navigate("/system-admin/dashboard");
+          navigate("/system-admin");
         }
       }
     } catch (error) {

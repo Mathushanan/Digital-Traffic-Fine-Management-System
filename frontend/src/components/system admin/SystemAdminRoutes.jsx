@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../common/HomePage";
 import Audits from "./Audits";
 import Dashboard from "./Dashboard";
@@ -12,6 +12,7 @@ const SystemAdminRoutes = () => {
   return (
     <div>
       <Routes>
+        <Route path="/" element={<Navigate to="dashboard" />} />
         <Route path="/audits" element={<Audits />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-stations" element={<ManageStations />} />

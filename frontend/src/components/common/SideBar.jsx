@@ -22,94 +22,15 @@ import {
 import logo from "../../assets/logo-gov-lk.png";
 import verifyJwtToken from "../../utils/verifyJwtToken";
 
-const SideBar = () => {
-  const [role, setRole] = useState(null);
-  const [user, setUser] = useState(false);
-  const [message, setMessage] = useState("");
+const SideBar = ({ user, role }) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkUserValidity = async () => {
-      const isValidUser = await verifyJwtToken();
-      setRole(isValidUser);
-      setUser(isValidUser ? true : false);
-    };
+  const [message, setMessage] = useState("");
 
-    checkUserValidity();
-  }, []);
+  console.log(`${role} from sidebar.jsx`);
+  console.log(`${user} from sidebar.jsx`);
 
   const [isOpen, setIsOpen] = useState(false);
-
-  /*useEffect(() => {
-    // Get JWT from local storage
-    const jwt = localStorage.getItem("winLanka.Jwt");
-
-    if (jwt === null) {
-      navigate("login");
-    }
-
-    try {
-      // Decode JWT
-      const decodedJwt = jwt_decode(jwt);
-
-      // Extract scopes as string
-      const scopeString = decodedJwt.scope;
-
-      // Convert string to array
-      const scopes = scopeString.split(",").map((scope) => scope.trim());
-
-      // Extract active status
-      const isUserActive = decodedJwt.active;
-
-      // Get the current date & time
-      const currentTime = Math.floor(Date.now() / 1000);
-
-      // Map of roles
-      const rolesMap = {
-        1: "admin",
-        2: "storekeeper",
-        3: "storemanager",
-      };
-
-      // Check whether JWT is expired or not
-      if (decodedJwt.exp < currentTime) {
-        navigate("/login", {
-          state: { stateMessage: "Jwt expired!" },
-          replace: true,
-        });
-      }
-
-      // Check whether user is active
-      if (isUserActive === "False") {
-        navigate("/login", {
-          state: { stateMessage: "User isn't activated!" },
-          replace: true,
-        });
-      }
-
-      // Filter the valid roles using extracted JWT scopes
-      const validRoles = scopes
-        .filter((scope) => rolesMap[scope])
-        .map((scope) => rolesMap[scope]); // Map to role names
-
-      // Check if user has at least 1 role assigned
-      if (validRoles.length === 0) {
-        setMessage("User is not registered for roles!");
-        return;
-      }
-
-      // Check if the user is an admin
-      if (validRoles.includes("admin")) {
-        setIsAdmin(true);
-      }
-    } catch (error) {
-      console.error("Error decoding JWT:", error);
-      navigate("/login", {
-        state: { stateMessage: "Invalid JWT" },
-        replace: true,
-      });
-    }
-  }, [navigate]);*/
 
   return (
     <>
