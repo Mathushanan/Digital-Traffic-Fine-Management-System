@@ -43,5 +43,28 @@ namespace backend.Services
                 .FirstOrDefaultAsync();
 
         }
+        public async Task<User?> GetStationAdminByBadgeNumber(int badgeNumber)
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.BadgeNumber == badgeNumber)
+                .FirstOrDefaultAsync();
+
+        }
+        public async Task<User?> UpdateStationAdminRegisteredStaionId(int userId,int stationId)
+        {
+            // Find the user by userId
+            var user = await _systemDbContext.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return null;
+            }
+
+            // Update the StationId property
+            user.RegisteredStationId = stationId;
+            await _systemDbContext.SaveChangesAsync();
+
+            return user;
+
+        }
     }
 }

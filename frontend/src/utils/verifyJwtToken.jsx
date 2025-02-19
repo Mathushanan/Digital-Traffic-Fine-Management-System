@@ -11,7 +11,11 @@ const verifyJwtToken = (token) => {
       // Check for expiration
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp < currentTime) {
-        return { valid: false, userType: null, stateMessage: "JWT Expired!" };
+        return {
+          valid: false,
+          userType: null,
+          stateMessage: { type: "error", message: "JWT Expired!" },
+        };
       }
       const issuer = decodedToken.iss;
       const audience = decodedToken.aud;
@@ -23,13 +27,19 @@ const verifyJwtToken = (token) => {
         return {
           valid: false,
           userType: null,
-          stateMessage: "You are blocked for this site!",
+          stateMessage: {
+            type: "error",
+            message: "You are blocked for this site!",
+          },
         };
       } else {
         return {
           valid: true,
           userType: decodedToken.UserType,
-          stateMessage: "User successfully verified!",
+          stateMessage: {
+            type: "success",
+            message: "User successfully verified!",
+          },
         };
       }
     } catch (error) {
@@ -40,14 +50,14 @@ const verifyJwtToken = (token) => {
       return {
         valid: false,
         userType: null,
-        stateMessage: "Error validating token!",
+        stateMessage: { type: "error", message: "Error validating token!" },
       };
     }
   } else {
     return {
       valid: false,
       userType: null,
-      stateMessage: "Token not found!",
+      stateMessage: { type: "error", message: "Token not found!" },
     };
   }
 };

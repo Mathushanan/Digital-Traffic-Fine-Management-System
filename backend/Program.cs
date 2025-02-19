@@ -55,6 +55,7 @@ builder.Services.AddDbContext<SystemDbContext>(options =>
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IStationService, StationService>();
 
 builder.ConfigureFunctionsWebApplication();
 

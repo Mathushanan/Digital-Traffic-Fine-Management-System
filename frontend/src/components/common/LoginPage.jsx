@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import verifyJwtToken from "../../utils/verifyJwtToken";
 
-const LoginPage = ({ setUser, setRole }) => {
+const LoginPage = ({ setUser, setRole, setMessage, setMessageType }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,12 +31,18 @@ const LoginPage = ({ setUser, setRole }) => {
         // Set user and role in the parent component (App)
         setUser(true);
         setRole(userType);
+        setMessage("User successfully verified!");
+        setMessageType("success");
 
         if (userType == "SystemAdmin") {
           navigate("/system-admin");
         }
       }
     } catch (error) {
+      setMessage(
+        "Login failed: " + error.response ? error.response.data : error.message
+      );
+      setMessageType("error");
       console.error(
         "Login failed:",
         error.response ? error.response.data : error.message

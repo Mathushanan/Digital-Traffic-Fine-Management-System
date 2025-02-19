@@ -6,6 +6,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import SideBar from "./components/common/SideBar";
 import LogoHeader from "./components/common/LogoHeader";
@@ -23,12 +24,14 @@ import { useState, useEffect } from "react";
 import verifyJwtToken from "./utils/verifyJwtToken";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import PageNotFound from "./components/common/PageNotFound";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // Import React Icons
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   useEffect(() => {
     const newToken = localStorage.getItem("authToken");
@@ -36,13 +39,18 @@ function App() {
       const { valid, userType, stateMessage } = verifyJwtToken(newToken);
       setUser(valid);
       setRole(userType);
-      setMessage(stateMessage);
+      setMessage(stateMessage.message);
+      setMessageType(stateMessage.type);
     } else {
       setUser(null);
       setRole(null);
       setMessage(null);
+      setMessageType(null);
     }
   }, [token]);
+
+  const messageClass =
+    messageType === "error" ? "alert-danger" : "alert-success";
 
   return (
     <div className="d-flex">
@@ -50,7 +58,38 @@ function App() {
         <SideBar user={user} role={role} />
         <div className="flex-grow-1">
           <LogoHeader />
+
           <div className="me-3 routes-div">
+            {/* Message Display Section */}
+            {message && (
+              <div
+                className={`alert ${messageClass} alert-dismissible fade show start-50 translate-middle-x mt-4 w-50 shadow-lg rounded`}
+                role="alert"
+              >
+                {/* Optional Icon based on message type */}
+                <div className="d-flex align-items-center">
+                  {messageClass === "alert-success" && (
+                    <FaCheckCircle className="me-2" />
+                  )}
+                  {messageClass === "alert-danger" && (
+                    <FaTimesCircle className="me-2" />
+                  )}
+                  <span>{message}</span>
+                </div>
+
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                  onClick={() => {
+                    setMessage(null);
+                    setMessageType(null);
+                  }}
+                ></button>
+              </div>
+            )}
+
             <Routes>
               {!user ? (
                 <>
@@ -60,7 +99,14 @@ function App() {
                   <Route path="/legal" element={<LegalPage />} />
                   <Route
                     path="/login"
-                    element={<LoginPage setRole={setRole} setUser={setUser} />}
+                    element={
+                      <LoginPage
+                        setRole={setRole}
+                        setUser={setUser}
+                        setMessage={setMessage}
+                        setMessageType={setMessageType}
+                      />
+                    }
                   />
                   {/* Redirect to Login Page for other routes if no user */}
                   <Route path="*" element={<PageNotFound />} />
@@ -75,11 +121,11 @@ function App() {
                     element={
                       role === "SystemAdmin" ? (
                         <Navigate to="/system-admin" replace />
-                      ) : role === "station-admin" ? (
+                      ) : role === "StationAdmin" ? (
                         <Navigate to="/station-admin" replace />
-                      ) : role === "public-user" ? (
+                      ) : role === "PublicUser" ? (
                         <Navigate to="/public-user" replace />
-                      ) : role === "traffic-police" ? (
+                      ) : role === "TrafficPolice" ? (
                         <Navigate to="/traffic-police" replace />
                       ) : (
                         <HomePage />
@@ -96,19 +142,19 @@ function App() {
                       }
                     />
                   )}
-                  {role === "station-admin" && (
+                  {role === "StationAdmin" && (
                     <Route
                       path="/station-admin/*"
                       element={<StationAdminRoutes />}
                     />
                   )}
-                  {role === "public-user" && (
+                  {role === "PublicUser" && (
                     <Route
                       path="/public-user/*"
                       element={<PublicUserRoutes />}
                     />
                   )}
-                  {role === "traffic-police" && (
+                  {role === "TrafficPolice" && (
                     <Route
                       path="/traffic-police/*"
                       element={<TrafficPoliceRoutes />}

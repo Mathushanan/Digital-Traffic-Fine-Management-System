@@ -13,5 +13,7 @@ namespace backend.Interfaces
         Task AddUserAsync(User user);
         Task<User?> GetUserByParameters(string email, string nicNumber, string licenseNumber, int badgeNumber);
         Task<User?> GetUserByEmail(string email);
+        Task<User?> GetStationAdminByBadgeNumber(int badgeNumber);
+        Task<User?> UpdateStationAdminRegisteredStaionId(int userId, int stationId);
     }
 }

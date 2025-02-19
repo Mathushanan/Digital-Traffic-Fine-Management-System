@@ -26,7 +26,7 @@ namespace backend.Models
         public int? AvailablePoints { get; set; }
         public int? BadgeNumber { get; set; }
 
-        public int RegisteredStationId { get; set; }
+        public int? RegisteredStationId { get; set; }
         public Station? RegisteredStation { get; set; }
 
         public virtual ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }

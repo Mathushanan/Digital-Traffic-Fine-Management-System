@@ -3,11 +3,8 @@ import { Link } from "react-router-dom";
 
 const PageNotFound = () => {
   return (
-    <div
-      className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}
-    >
-      <div className="text-center">
+    <div className="container d-flex justify-content-center align-items-center mt-5">
+      <div className="p-4" style={{ maxWidth: "600px", width: "100%" }}>
         <h1 className="display-1 text-danger">404</h1>
         <h2 className="mb-3">Page Not Found</h2>
         <p className="lead">
