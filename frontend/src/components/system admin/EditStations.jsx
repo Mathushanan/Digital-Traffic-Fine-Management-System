@@ -1,110 +1,195 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-
-const stations = [
-  {
-    id: 1,
-    name: "Colombo Fort Police Station - 01",
-    city: "Colombo",
-    contact: "011-2433333",
-    email: "colombo_fort01@police.lk",
-    address: "No. 22, Chatham Street, Colombo 01, Sri Lanka",
-    adminName: "John Doe",
-    adminEmail: "john.doe@police.lk",
-    adminContact: "011-1234567",
-    badgeNumber: "12345",
-  },
-  {
-    id: 2,
-    name: "Kandy Police Station - 01",
-    city: "Kandy",
-    contact: "081-2222222",
-    email: "kandy01@police.lk",
-    address: "74, Peradeniya Road, Kandy, Sri Lanka",
-    adminName: "Jane Smith",
-    adminEmail: "jane.smith@police.lk",
-    adminContact: "081-7654321",
-    badgeNumber: "67890",
-  },
-  // Add other stations here...
-];
+import axios from "axios";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const EditStations = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [stations, setStations] = useState(null);
+  const [filteredStations, setFilteredStations] = useState([]);
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
+  const messageClass =
+    messageType === "error" ? "alert-danger" : "alert-success";
 
-  // Filter stations based on the search term
-  const filteredStations = stations.filter(
-    (station) =>
-      station.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      station.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const fetchStations = async () => {
+    try {
+      const fetchStationsUrl = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/get-all-stations`;
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.get(fetchStationsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const fetchedStations = response.data;
+        setStations(fetchedStations);
+        setFilteredStations(fetchedStations.$values); // Initialize filtered stations
+        setMessage("Stations fetched successfully!");
+        setMessageType("success");
+      } else {
+        setMessage("Failed to fetch stations");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to fetch stations: " +
+          (error.response ? error.response.data : error.message)
+      );
+      setMessageType("error");
+      console.error(
+        "Failed to fetch stations:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchStations();
+  }, []);
+
+  // Filter stations based on search term
+  useEffect(() => {
+    if (stations && searchTerm) {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+      const filtered = stations.$values.filter((station) =>
+        station.StationName.toLowerCase().includes(lowercasedSearchTerm)
+      );
+      setFilteredStations(filtered);
+    } else {
+      setFilteredStations(stations ? stations.$values : []);
+    }
+  }, [searchTerm, stations]);
 
   return (
-    <div className="container my-5">
-      {/* Search Bar */}
-      <div className="mb-4">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search Stations..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {stations.map((station) => (
-          <div className="col" key={station.id}>
-            <div className="card shadow-lg rounded-3 border-light">
-              <div className="card-body">
-                <h5 className="card-title text-center fs-6">{station.name}</h5>
-                <h6 className="card-subtitle mb-2 text-muted text-center">
-                  {station.city}
-                </h6>
-                <div className="text-start">
-                  <h7>Contact</h7>
-                  <p className="fs-6">
-                    {station.contact} |{" "}
-                    <span>
-                      <a href={`mailto:${station.email}`} className="">
-                        {station.email}
-                      </a>
-                    </span>
-                    <br />
-                    {station.address}
-                  </p>
-                </div>
+    <>
+      {/* Message Display Section */}
+      {message && (
+        <div
+          className={`alert ${messageClass} alert-dismissible fade show w-100 w-md-50 shadow-lg rounded start-50 translate-middle-x mt-4`}
+          role="alert"
+        >
+          <div className="d-flex align-items-center">
+            {messageClass === "alert-success" && (
+              <FaCheckCircle className="me-2" />
+            )}
+            {messageClass === "alert-danger" && (
+              <FaTimesCircle className="me-2" />
+            )}
+            <span>{message}</span>
+          </div>
 
-                {/* Admin Details */}
-                <div className="text-start">
-                  <h7>Admin</h7>
-                  <p className="fs-7">
-                    {station.adminName} (Badge no: {station.badgeNumber})
-                    <br />
-                    {station.adminContact} |{" "}
-                    <span>
-                      <a href={`mailto:${station.adminEmail}`} className="">
-                        {station.adminEmail}
-                      </a>
-                    </span>{" "}
-                    <br />
-                  </p>
-                </div>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+            onClick={() => {
+              setMessage(null);
+              setMessageType(null);
+            }}
+          ></button>
+        </div>
+      )}
 
-                {/* Button Section */}
-                <div className="d-flex">
-                  <button className="btn btn-warning btn-sm d-flex align-items-center justify-content-center w-50">
-                    <FaEdit className="me-2" /> Edit
-                  </button>
-                  <button className="btn btn-danger btn-sm d-flex align-items-center justify-content-center w-50 ms-2">
-                    <FaTrash className="me-2" /> Delete
-                  </button>
+      <div className="container my-5">
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search Stations..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          {filteredStations.length > 0 ? (
+            filteredStations.map((station) => (
+              <div className="col" key={station.StationId}>
+                <div className="card shadow-lg rounded-3 border-light p-2">
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-center w-100 mb-2">
+                      <h5 className="card-title fs-6 text-muted mb-0 me-2">
+                        {station.StationName}
+                      </h5>
+                      <p
+                        className="px-2 py-1 rounded mb-0 text-success"
+                        style={{
+                          fontSize: "12px",
+                          backgroundColor: "#d4f8d4",
+                        }}
+                      >
+                        {station.StationCode}
+                      </p>
+                    </div>
+
+                    <h6
+                      className="card-subtitle mb-3 text-muted text-start"
+                      style={{ color: "#555", fontSize: "12px" }}
+                    >
+                      {station.District}
+                    </h6>
+                    <div className="text-start">
+                      <h6>Contact</h6>
+                      <p className="fs-6">
+                        {station.ContactNumber} |{" "}
+                        <span>
+                          <a href={`mailto:${station.email}`} className="">
+                            {station.Email}
+                          </a>
+                        </span>
+                        <br />
+                        {station.Address}
+                      </p>
+                    </div>
+
+                    {/* Admin Details */}
+                    {station.Users.$values.length === 0 ? (
+                      <p>No users</p>
+                    ) : (
+                      station.Users.$values.map((user) => (
+                        <div className="text-start" key={user.BadgeNumber}>
+                          <h6>Admin</h6>
+                          <p className="fs-7">
+                            {user.FirstName} (Badge no: {user.BadgeNumber})
+                            <br />
+                            {user.ContactNumber} |{" "}
+                            <span>
+                              <a href={`mailto:${user.Email}`} className="">
+                                {user.Email}
+                              </a>
+                            </span>{" "}
+                            <br />
+                          </p>
+                        </div>
+                      ))
+                    )}
+
+                    {/* Button Section */}
+                    <div className="d-flex">
+                      <button className="btn btn-warning btn-sm d-flex align-items-center justify-content-center w-50">
+                        <FaEdit className="me-2" /> Edit
+                      </button>
+                      <button className="btn btn-danger btn-sm d-flex align-items-center justify-content-center w-50 ms-2">
+                        <FaTrash className="me-2" /> Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          ) : (
+            <p>No stations found</p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

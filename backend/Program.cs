@@ -41,15 +41,15 @@ var systemDbConnection = configuration.GetConnectionString("SYSTEM_DATABASE_CONN
 
 // Register LicenseDbContext
 builder.Services.AddDbContext<LicenseHolderDbContext>(options =>
-    options.UseSqlServer(licenseDbConnection));
+    options.UseSqlServer(licenseDbConnection).UseLazyLoadingProxies());
 
 // Register TrafficPoliceDbContext
 builder.Services.AddDbContext<TrafficPoliceOfficerDbContext>(options =>
-    options.UseSqlServer(trafficDbConnection));
+    options.UseSqlServer(trafficDbConnection).UseLazyLoadingProxies());
 
 // Register SystemDbContext
 builder.Services.AddDbContext<SystemDbContext>(options =>
-    options.UseSqlServer(systemDbConnection));
+    options.UseSqlServer(systemDbConnection).UseLazyLoadingProxies());
 
 // Register Services
 builder.Services.AddScoped<IPasswordService, PasswordService>();

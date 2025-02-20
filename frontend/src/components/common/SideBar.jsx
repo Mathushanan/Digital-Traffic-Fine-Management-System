@@ -27,9 +27,6 @@ const SideBar = ({ user, role }) => {
 
   const [message, setMessage] = useState("");
 
-  console.log(`${role} from sidebar.jsx`);
-  console.log(`${user} from sidebar.jsx`);
-
   const [isOpen, setIsOpen] = useState(false);
 
   return (

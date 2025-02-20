@@ -13,7 +13,7 @@ namespace backend.Models
         public string? CategoryName { get; set; }
         public string? Description { get; set; }
 
-        public ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
+        public virtual ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
 
     }
 }

@@ -39,5 +39,10 @@ namespace backend.Services
             await _systemDbContext.SaveChangesAsync();
             return station.StationId;
         }
+        public async Task<List<Station>> GetAllStationsAsync()
+        {
+
+            return await _systemDbContext.Stations.ToListAsync();
+        }
     }
 }

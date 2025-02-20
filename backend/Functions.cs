@@ -10,6 +10,7 @@ using backend.Dtos;
 using backend.Services;
 using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace backend
 {
@@ -254,5 +255,19 @@ namespace backend
             }
 
         }
-    }
+        [Function("GetAllStations")]
+        public async Task<IActionResult> GetAllStations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "get-all-stations")] HttpRequest req)
+        { 
+            var stations = await _stationService.GetAllStationsAsync();
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+                MaxDepth = 32
+            };
+
+            // Serialize the stations with the custom options
+            var jsonData = System.Text.Json.JsonSerializer.Serialize(stations, jsonOptions);
+            return new OkObjectResult(jsonData);
+        }
+        }
 }

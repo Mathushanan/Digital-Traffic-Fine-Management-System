@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -18,6 +19,8 @@ namespace backend.Models
         public string? Address { get; set; }
         public string? Email { get; set; }
         public string? ContactNumber { get; set; }
+
+        [JsonIgnore]
         public string? PasswordHash { get; set; }
         public string? NicNumber { get; set; }
         public string? LicenseNumber { get; set; }
@@ -27,7 +30,7 @@ namespace backend.Models
         public int? BadgeNumber { get; set; }
 
         public int? RegisteredStationId { get; set; }
-        public Station? RegisteredStation { get; set; }
+        public virtual Station? RegisteredStation { get; set; }
 
         public virtual ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
         public virtual ICollection<Fine>? OffenderFines { get; set; }
