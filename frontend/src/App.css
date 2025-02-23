@@ -183,3 +183,9 @@ p,
   height: calc(100% - 100px);
   overflow-y: auto;
 }
+
+@media (max-width: 768px) {
+  .modal-dialog {
+    max-width: 100% !important;
+  }
+}

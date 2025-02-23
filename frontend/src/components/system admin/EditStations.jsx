@@ -71,13 +71,57 @@ const EditStations = () => {
 
   const handleEditClick = (station) => {
     setCurrentStation(station); // Set current station details to be passed to the modal
+    console.log(station);
     setShowModal(true); // Show the modal
   };
 
   const handleSave = (updatedStation) => {
     // Logic to update station data, possibly making an API call to save the data
-    console.log("Updated Station:", updatedStation);
+    handleSubmit();
     setShowModal(false); // Close the modal after saving
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const registerStationUrl = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/update-station`;
+
+      // Get the token from localStorage (or wherever you store the JWT token)
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.post(
+        registerStationUrl,
+        {
+          stationCode: stationCode,
+          stationName: stationName,
+          address: address,
+          district: district,
+          contactNumber: contactNumber,
+          email: email,
+          stationAdminBadgeNumber: stationAdminBadgeNumber,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status == 200) {
+        setMessage(`${stationName} updated successfully!`);
+        setMessageType("success");
+      }
+    } catch (error) {
+      setMessage(`${error.response ? error.response.data : error.message}`);
+      setMessageType("error");
+      console.error(
+        "update failed:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   return (
