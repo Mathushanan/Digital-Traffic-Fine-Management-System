@@ -23,6 +23,8 @@ const verifyJwtToken = (token) => {
       if (
         issuer !== `${import.meta.env.VITE_JWT_ISSUER}` ||
         audience !== `${import.meta.env.VITE_JWT_AUDIENCE}`
+        /*issuer !== `${process.env.JWT_ISSUER}` ||
+        audience !== `${process.env.JWT_AUDIENCE}`*/
       ) {
         return {
           valid: false,

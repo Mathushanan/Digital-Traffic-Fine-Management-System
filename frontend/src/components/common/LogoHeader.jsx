@@ -4,7 +4,7 @@ import logoHeader from "../../assets/logo-header.png";
 const LogoHeader = () => {
   return (
     <div className="mb-3 logo-header">
-      <img src={logoHeader} alt="" />
+      <img src={logoHeader} alt="logoHeader" />
     </div>
   );
 };

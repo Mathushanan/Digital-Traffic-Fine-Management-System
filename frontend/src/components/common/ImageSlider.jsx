@@ -25,7 +25,7 @@ const ImageSlider = () => {
     },
     {
       src: logo4,
-      alt: "Third slide",
+      alt: "Forth slide",
       caption: "This is the third slide",
     },
   ];

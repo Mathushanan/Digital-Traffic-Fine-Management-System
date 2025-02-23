@@ -3,7 +3,6 @@ import { FaSignInAlt } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import verifyJwtToken from "../../utils/verifyJwtToken";
 
 const LoginPage = ({ setUser, setRole, setMessage, setMessageType }) => {
   const navigate = useNavigate();
@@ -14,6 +13,10 @@ const LoginPage = ({ setUser, setRole, setMessage, setMessageType }) => {
     e.preventDefault();
 
     try {
+      /*const loginUrl = process.env.VITE_API_BASE_URL
+        ? `${process.env.VITE_API_BASE_URL}/login`
+        : "http://localhost:7225/api/login"; // Default fallback*/
+
       const loginUrl = `${import.meta.env.VITE_API_BASE_URL}/login`;
 
       const response = await axios.post(loginUrl, {
@@ -43,10 +46,6 @@ const LoginPage = ({ setUser, setRole, setMessage, setMessageType }) => {
         "Login failed: " + error.response ? error.response.data : error.message
       );
       setMessageType("error");
-      console.error(
-        "Login failed:",
-        error.response ? error.response.data : error.message
-      );
     }
   };
 

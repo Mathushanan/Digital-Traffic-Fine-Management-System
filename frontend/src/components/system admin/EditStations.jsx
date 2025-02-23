@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import Modal from "./EditStationModal";
 
 const EditStations = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,6 +12,9 @@ const EditStations = () => {
   const [messageType, setMessageType] = useState(null);
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
+
+  const [showModal, setShowModal] = useState(false);
+  const [currentStation, setCurrentStation] = useState(null);
 
   const fetchStations = async () => {
     try {
@@ -64,6 +68,17 @@ const EditStations = () => {
       setFilteredStations(stations ? stations.$values : []);
     }
   }, [searchTerm, stations]);
+
+  const handleEditClick = (station) => {
+    setCurrentStation(station); // Set current station details to be passed to the modal
+    setShowModal(true); // Show the modal
+  };
+
+  const handleSave = (updatedStation) => {
+    // Logic to update station data, possibly making an API call to save the data
+    console.log("Updated Station:", updatedStation);
+    setShowModal(false); // Close the modal after saving
+  };
 
   return (
     <>
@@ -173,7 +188,10 @@ const EditStations = () => {
 
                     {/* Button Section */}
                     <div className="d-flex">
-                      <button className="btn btn-warning btn-sm d-flex align-items-center justify-content-center w-50">
+                      <button
+                        className="btn btn-warning btn-sm d-flex align-items-center justify-content-center w-50"
+                        onClick={() => handleEditClick(station)} // Open modal on click
+                      >
                         <FaEdit className="me-2" /> Edit
                       </button>
                       <button className="btn btn-danger btn-sm d-flex align-items-center justify-content-center w-50 ms-2">
@@ -189,6 +207,13 @@ const EditStations = () => {
           )}
         </div>
       </div>
+      {/* Modal for editing */}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        station={currentStation}
+        onSave={handleSave}
+      />
     </>
   );
 };

@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const ConfirmationMadal = ({ show, onConfirm, onClose, message }) => {
+const ConfirmationModal = ({ show, onConfirm, onClose, message }) => {
+  if (!show) return null;
   return (
     <div
       className={`modal fade ${show ? "show d-block" : ""}`}

@@ -3,7 +3,7 @@ import Dashboard from "./Dashboard";
 import ManageFines from "./ManageFines";
 import ManageAccount from "./ManageAccount";
 import Notifications from "./Notifications";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 const PublicUserRoutes = () => {
   return (

@@ -6,12 +6,13 @@ import AboutPage from "../../../components/common/AboutPage.jsx"; // Adjust the 
 describe("AboutPage Component", () => {
   test("renders Vision section", () => {
     render(<AboutPage />);
-    expect(screen.getByText(/Vision/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /A responsive organization aspiring towards excellence through modern technology in moto/i
-      )
-    ).toBeInTheDocument();
+    const visionHeading = screen.getByRole("heading", { name: /Vision/i });
+    expect(visionHeading).toBeInTheDocument();
+
+    const visionText = screen.getByText(
+      /A responsive organization aspiring towards excellence through modern technology in motor traffic regulation!/i
+    );
+    expect(visionText).toBeInTheDocument();
   });
 
   test("renders Mission section", () => {
