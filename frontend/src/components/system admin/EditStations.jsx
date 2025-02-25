@@ -3,6 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Modal from "./EditStationModal";
+import ConfirmationModal from "../common/ConfirmationModal";
 
 const EditStations = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,7 +14,8 @@ const EditStations = () => {
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
 
-  const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentStation, setCurrentStation] = useState(null);
 
   const fetchStations = async () => {
@@ -68,15 +70,60 @@ const EditStations = () => {
   }, [searchTerm, stations]);
 
   const handleEditClick = (station) => {
-    setCurrentStation(station); // Set current station details to be passed to the modal
+    setCurrentStation(station);
     console.log(station);
-    setShowModal(true); // Show the modal
+    setShowEditModal(true);
+  };
+
+  const handleDeleteClick = (station) => {
+    setCurrentStation(station);
+    console.log(station);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setShowDeleteModal(false);
+    handleDeleteStation(currentStation);
+  };
+
+  const handleDeleteStation = async (station) => {
+    try {
+      const deleteStationUrl = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/delete-station`;
+
+      // Get the token from localStorage
+      const token = localStorage.getItem("authToken");
+      const stationCodeToDelete = station.StationCode;
+      const response = await axios.delete(deleteStationUrl, {
+        data: { stationCode: stationCodeToDelete },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        fetchStations();
+        setMessage(`Station Deleted successfully!`);
+        setMessageType("success");
+      } else {
+        throw new Error("Failed to delete station");
+      }
+    } catch (error) {
+      setMessage(error.response ? error.response.data : error.message);
+      setMessageType("error");
+      console.error(
+        "Deletion failed:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   const handleSave = async (updatedStation) => {
     try {
       await handleUpdateStation(updatedStation);
-      setShowModal(false); // Close the modal after saving
+      setShowEditModal(false); // Close the modal after saving
     } catch (error) {
       console.error("Update failed:", error);
     }
@@ -229,11 +276,14 @@ const EditStations = () => {
                       <div className="d-flex">
                         <button
                           className="btn btn-warning btn-sm d-flex align-items-center justify-content-center w-50"
-                          onClick={() => handleEditClick(station)} // Open modal on click
+                          onClick={() => handleEditClick(station)}
                         >
                           <FaEdit className="me-2" /> Edit
                         </button>
-                        <button className="btn btn-danger btn-sm d-flex align-items-center justify-content-center w-50 ms-2">
+                        <button
+                          className="btn btn-danger btn-sm d-flex align-items-center justify-content-center w-50 ms-2"
+                          onClick={() => handleDeleteClick(station)}
+                        >
                           <FaTrash className="me-2" /> Delete
                         </button>
                       </div>
@@ -249,10 +299,17 @@ const EditStations = () => {
       </div>
       {/* Modal for editing */}
       <Modal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
         station={currentStation}
         onSave={handleSave}
+        aria-hidden={showEditModal ? "false" : "true"}
+      />
+      <ConfirmationModal
+        show={showDeleteModal}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setShowDeleteModal(false)}
+        message={"Are you sure, Do you want to delete this station?"}
       />
     </>
   );
