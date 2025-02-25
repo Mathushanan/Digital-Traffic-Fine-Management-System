@@ -39,8 +39,10 @@ function App() {
       const { valid, userType, stateMessage } = verifyJwtToken(newToken);
       setUser(valid);
       setRole(userType);
-      setMessage(stateMessage.message);
-      setMessageType(stateMessage.type);
+      if (stateMessage.type === "error") {
+        setMessage(stateMessage.message);
+        setMessageType(stateMessage.type);
+      }
     } else {
       setUser(null);
       setRole(null);

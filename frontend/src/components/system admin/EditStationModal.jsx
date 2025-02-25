@@ -49,8 +49,12 @@ const Modal = ({ show, onClose, station, onSave }) => {
       setContactNumber(station.ContactNumber);
       setEmail(station.Email);
       setStationCode(station.StationCode);
-      if (station.Users.$values.length > 0) {
-        setStationAdminBadgeNumber(station.Users.$values[0].BadgeNumber);
+      const adminUser = station.Users.$values.find(
+        (user) => user.UserId === station.StationAdminId
+      );
+
+      if (adminUser) {
+        setStationAdminBadgeNumber(adminUser.BadgeNumber);
       } else {
         setStationAdminBadgeNumber("");
       }
