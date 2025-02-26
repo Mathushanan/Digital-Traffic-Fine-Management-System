@@ -12,5 +12,8 @@ namespace backend.Interfaces
         Task<Station?> GetStationByParameters(string stationCode, string stationName, string contactNumber, string email,int userId);
         Task<int> AddStationAsync(Station station);
         Task<List<Station>> GetAllStationsAsync();
+        Task<Station?> GetStationByCode(string stationCode);
+        Task<bool> UpdateStationAsync(Station station);
+        Task<bool> DeleteStationAsync(Station station);
     }
 }

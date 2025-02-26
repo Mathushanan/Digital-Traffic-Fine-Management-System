@@ -45,7 +45,7 @@ namespace backend.Services
                 new Claim("LicenseExpiryDate", user.LicenseExpiryDate?.ToString("yyyy-MM-dd") ?? ""),
                 new Claim("AvailablePoints", user.AvailablePoints?.ToString() ?? ""),
                 new Claim("BadgeNumber", user.BadgeNumber.ToString()?? ""),
-                new Claim("RegisteredStationId", user.RegisteredStationId.ToString()) 
+                new Claim("RegisteredStationId", user.RegisteredStationId?.ToString()??"") 
             };
 
             // Create a new token

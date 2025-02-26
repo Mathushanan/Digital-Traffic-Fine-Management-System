@@ -44,5 +44,31 @@ namespace backend.Services
 
             return await _systemDbContext.Stations.ToListAsync();
         }
+        public async Task<Station?> GetStationByCode(string stationCode)
+        {
+            if (string.IsNullOrWhiteSpace(stationCode))
+            {
+                return null; // Return null if input is invalid
+            }
+            return await _systemDbContext.Stations
+                .Where(station => station.StationCode == stationCode.Trim())
+                .SingleOrDefaultAsync();
+        }
+        public async Task<bool> UpdateStationAsync(Station station)
+        {
+            _systemDbContext.Stations.Update(station);
+            return await _systemDbContext.SaveChangesAsync() > 0;
+        }
+        public async Task<bool> DeleteStationAsync(Station station)
+        {
+          
+            if (station == null)
+            {
+                return false; 
+            }
+            _systemDbContext.Stations.Remove(station);
+            return await _systemDbContext.SaveChangesAsync() > 0;
+        }
+
     }
 }
