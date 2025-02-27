@@ -48,7 +48,7 @@ namespace backend.Services
         {
             if (string.IsNullOrWhiteSpace(stationCode))
             {
-                return null; // Return null if input is invalid
+                return null; 
             }
             return await _systemDbContext.Stations
                 .Where(station => station.StationCode == stationCode.Trim())

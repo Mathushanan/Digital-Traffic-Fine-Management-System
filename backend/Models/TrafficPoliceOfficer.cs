@@ -10,7 +10,7 @@ namespace backend.Models
     public class TrafficPoliceOfficer
     {
         public int OfficerId { get; set; }
-        public string? BadgeNumber { get; set; }
+        public int BadgeNumber { get; set; }
         public string? NicNumber { get; set; }
         public string? LicenseNumber { get; set; }
         public string? FirstName { get; set; }

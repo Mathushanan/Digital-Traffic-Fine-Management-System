@@ -24,5 +24,7 @@ namespace backend.Dtos
         public int? AvailablePoints { get; set; }
         public int BadgeNumber { get; set; }
         public int RegisteredStationId { get; set; }
+        public DateTime? HiredDate { get; set; }
+        public string? StationCode { get; set; }
     }
 }

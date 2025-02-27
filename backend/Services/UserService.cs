@@ -50,7 +50,7 @@ namespace backend.Services
                 .FirstOrDefaultAsync();
 
         }
-        public async Task<User?> UpdateStationAdminRegisteredStaionId(int userId,int stationId)
+        public async Task<User?> UpdateStationAdminRegisteredStaionId(int userId, int stationId)
         {
             // Find the user by userId
             var user = await _systemDbContext.Users.FindAsync(userId);
@@ -69,6 +69,7 @@ namespace backend.Services
 
 
         }
+       
 
 
     }

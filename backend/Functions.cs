@@ -21,14 +21,18 @@ namespace backend
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
         private readonly IStationService _stationService;
+        private readonly ITrafficPoliceService _trafficPoliceService;
+        private readonly ILicenseHolderService _licenseHolderService;
 
-        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService)
+        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService)
         {
             _logger = logger;
             this._passwordService = passwordService;
             this._userService = userService;
             this._jwtService = jwtService;
             this._stationService = stationService;
+            this._trafficPoliceService = trafficPoliceService;
+            this._licenseHolderService = licenseHolderService;  
         }
 
         [Function("RegisterSystemAdmin")]
@@ -397,7 +401,16 @@ namespace backend
                             {
                                 return new BadRequestObjectResult("Station Admin not registered yet!");
                             }
-                            existingStation.StationAdminId = isValidStationAdmin.UserId;
+                            else
+                            {
+                                existingStation.StationAdminId = isValidStationAdmin.UserId;
+                                var isUpdated = await _userService.UpdateStationAdminRegisteredStaionId(isValidStationAdmin.UserId, existingStation.StationId);
+                                if(isUpdated == null)
+                                {
+                                    return new BadRequestObjectResult("Failed to update the station admin's registered station!");
+                                }
+                            }
+                            
                         }
 
                         // Update station details if provided
@@ -505,6 +518,195 @@ namespace backend
             }
 
         }
+        [Function("SearchStationAdmin")]
+        public async Task<IActionResult> SearchStationAdmin([HttpTrigger(AuthorizationLevel.Function, "post", Route = "search-station-admin")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+                        string nicNumber = data?.NicNumber!;
+                        int? badgeNumber = data?.BadgeNumber;
+
+                        if (string.IsNullOrWhiteSpace(nicNumber) || badgeNumber==null)
+                        {
+                            return new BadRequestObjectResult("Nic number & Badge number are required in the request body!");
+                        }
+
+                        var existingStationAdmin = await _trafficPoliceService.GetStationAdminByNicBadgeNumber(nicNumber,badgeNumber.Value);
+                        if (existingStationAdmin == null)
+                        {
+                            return new NotFoundObjectResult("Station Admin not found!");
+                        }
+                        else
+                        {
+                            return new OkObjectResult(existingStationAdmin);
+                        }  
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+        [Function("RegisterStationAdmin")]
+        public async Task<IActionResult> RegisterStationAdmin([HttpTrigger(AuthorizationLevel.Function, "post", Route = "register-station-admin")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        // Read and deserialize the JSON request body
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+
+                        if (data == null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body.");
+                        }
+
+                        //Accessing deserialized parameters
+                        string? firstName = data.FirstName;
+                        string? lastName = data.LastName;
+                        string? address = data.Address;
+                        string? email = data.Email;
+                        string? contactNumber = data.ContactNumber;
+                        string? gender = data.Gender;
+                        DateTime? dateOfBirth = data.DateOfBirth;
+                        
+
+                        string? stationCode = data.StationCode;
+
+                        string? password = data.Password;
+
+                        string? nicNumber = data.NicNumber;
+                        int? badgeNumber = data.BadgeNumber;
+
+
+
+
+                        string? licenseNumber = data.LicenseNumber;
+
+                        var licenseHolder=await _licenseHolderService.GetLicenseHolderByLicenseNumber(licenseNumber!);
+
+                        if (licenseHolder == null)
+                        {
+                            return new NotFoundObjectResult("Station admin details are not valid!");
+                        }
+                        DateTime? licenseIssueDate = licenseHolder.IssueDate;
+                        DateTime? licenseExpiryDate = licenseHolder.ExpiryDate;
+
+
+                        string? userType = "StationAdmin";
+
+
+                        if (firstName == null || lastName == null || gender == null || dateOfBirth == null || address == null || contactNumber == null || password == null || licenseIssueDate == null || licenseExpiryDate == null || email == null || nicNumber == null || licenseNumber == null || badgeNumber == null || userType == null || userType != "StationAdmin" )
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing/User type is wrong!");
+                        }
+                        else
+                        {
+                            var existingUser = await _userService.GetUserByParameters(email!, nicNumber!, licenseNumber!, badgeNumber ?? 0);
+
+                            if (existingUser != null)
+                            {
+                                return new ConflictObjectResult("Station Admin already registered with provided credentials!");
+                            }
+                            else
+                            {
+                                var newUser = new User
+                                {
+                                    UserType = userType,
+                                    FirstName = firstName,
+                                    LastName = lastName,
+                                    Gender = gender,
+                                    DateOfBirth = dateOfBirth,
+                                    Address = address,
+                                    Email = email,
+                                    ContactNumber = contactNumber,
+                                    NicNumber = nicNumber,
+                                    LicenseNumber = licenseNumber,
+                                    LicenseIssueDate = licenseIssueDate,
+                                    LicenseExpiryDate = licenseExpiryDate,
+                                    BadgeNumber = badgeNumber, 
+                                };
+
+                                newUser.PasswordHash = _passwordService.HashPassword(newUser, password!);
+                                await _userService.AddUserAsync(newUser);
+                                return new OkObjectResult("Station Admin registered successfully!");
+
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+
 
     }
 

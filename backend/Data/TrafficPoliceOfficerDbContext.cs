@@ -23,7 +23,6 @@ namespace backend.Data
                 entity.HasKey(e => e.OfficerId);
 
                 entity.Property(e => e.BadgeNumber)
-                    .HasMaxLength(50)
                     .IsRequired(true);
 
                 entity.Property(e => e.NicNumber)

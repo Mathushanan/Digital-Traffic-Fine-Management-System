@@ -15,5 +15,6 @@ namespace backend.Interfaces
         Task<User?> GetUserByEmail(string email);
         Task<User?> GetStationAdminByBadgeNumber(int badgeNumber);
         Task<User?> UpdateStationAdminRegisteredStaionId(int userId, int stationId);
+        
     }
 }
