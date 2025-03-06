@@ -9,11 +9,14 @@ namespace backend.Interfaces
 {
     public interface IStationService
     {
-        Task<Station?> GetStationByParameters(string stationCode, string stationName, string contactNumber, string email,int userId);
+        Task<Station?> GetStationByParametersAsync(string stationCode, string stationName, string contactNumber, string email,int userId);
         Task<int> AddStationAsync(Station station);
         Task<List<Station>> GetAllStationsAsync();
-        Task<Station?> GetStationByCode(string stationCode);
+        Task<Station?> GetStationByCodeAsync(string stationCode);
         Task<bool> UpdateStationAsync(Station station);
         Task<bool> DeleteStationAsync(Station station);
+
+        Task<Station?> GetStationByStationAdminIdAsync(int stationAdminId);
+        Task<Station?> UpdateStationAdminIdAsync(int stationId, int userId);
     }
 }

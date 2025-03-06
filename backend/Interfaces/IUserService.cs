@@ -10,11 +10,13 @@ namespace backend.Interfaces
 {
     public interface IUserService
     {
-        Task AddUserAsync(User user);
-        Task<User?> GetUserByParameters(string email, string nicNumber, string licenseNumber, int badgeNumber);
-        Task<User?> GetUserByEmail(string email);
-        Task<User?> GetStationAdminByBadgeNumber(int badgeNumber);
-        Task<User?> UpdateStationAdminRegisteredStaionId(int userId, int stationId);
-        
+        Task<int> AddUserAsync(User user);
+        Task<User?> GetUserByParametersAsync(string email, string nicNumber, string licenseNumber, int badgeNumber);
+        Task<User?> GetUserByEmailAsync(string email);
+        Task<User?> GetStationAdminByBadgeNumberAsync(int badgeNumber);
+        Task<User?> UpdateStationAdminRegisteredStaionIdAsync(int userId, int stationId);
+        Task<bool> DeleteUserByUserIdAsync(int userId);
+
+
     }
 }

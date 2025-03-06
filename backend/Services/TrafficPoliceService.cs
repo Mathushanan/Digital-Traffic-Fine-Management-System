@@ -20,7 +20,7 @@ namespace backend.Services
         {
             this._trafficPoliceOfficerDbContext = trafficPoliceOfficerDbContext; 
         }
-        public async Task<TrafficPoliceOfficer?> GetStationAdminByNicBadgeNumber(string nicNumber, int badgeNumber)
+        public async Task<TrafficPoliceOfficer?> GetTrafficPoliceByNicBadgeNumberAsync(string nicNumber, int badgeNumber)
         {
             return await _trafficPoliceOfficerDbContext.TrafficPoliceOfficers
                 .Where(trafficPoliceOfficer =>

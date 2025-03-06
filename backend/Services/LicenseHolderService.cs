@@ -19,7 +19,7 @@ namespace backend.Services
         {
             this._licenseHolderDbContext = licenseHolderDbContext;
         }
-        public async Task<LicenseHolder?> GetLicenseHolderByLicenseNumber(string licenseNumber)
+        public async Task<LicenseHolder?> GetLicenseHolderByLicenseNumberAsync(string licenseNumber)
         {
 
             return await _licenseHolderDbContext.LicenseHolders

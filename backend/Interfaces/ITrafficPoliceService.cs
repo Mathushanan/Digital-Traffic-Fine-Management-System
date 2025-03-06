@@ -9,6 +9,6 @@ namespace backend.Interfaces
 {
     public interface ITrafficPoliceService
     {
-        Task<TrafficPoliceOfficer?> GetStationAdminByNicBadgeNumber(string nicNumber, int badgeNumber);
+        Task<TrafficPoliceOfficer?> GetTrafficPoliceByNicBadgeNumberAsync(string nicNumber, int badgeNumber);
     }
 }

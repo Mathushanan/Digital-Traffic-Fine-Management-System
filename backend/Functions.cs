@@ -88,7 +88,7 @@ namespace backend
                         }
                         else
                         {
-                            var existingUser = await _userService.GetUserByParameters(email!, nicNumber!, licenseNumber!, badgeNumber ?? 0);
+                            var existingUser = await _userService.GetUserByParametersAsync(email!, nicNumber!, licenseNumber!, badgeNumber ?? 0);
 
                             if (existingUser != null)
                             {
@@ -159,7 +159,7 @@ namespace backend
             string? email = data.Email;
             string? password = data.Password;
 
-            var existingUser = await _userService.GetUserByEmail(email!);
+            var existingUser = await _userService.GetUserByEmailAsync(email!);
             if (existingUser == null)
             {
                 return new NotFoundObjectResult("User not registered yet!");
@@ -228,14 +228,14 @@ namespace backend
                         }
                         else
                         {
-                            var isValidStationAdmin = await _userService.GetStationAdminByBadgeNumber(stationAdminBadgeNumber.Value);
+                            var isValidStationAdmin = await _userService.GetStationAdminByBadgeNumberAsync(stationAdminBadgeNumber.Value);
                             if (isValidStationAdmin == null)
                             {
                                 return new BadRequestObjectResult("Station Admin not registered yet!");
                             }
                             else
                             {
-                                var existingStation = await _stationService.GetStationByParameters(stationCode!, stationName!, contactNumber!, email!, isValidStationAdmin.UserId);
+                                var existingStation = await _stationService.GetStationByParametersAsync(stationCode!, stationName!, contactNumber!, email!, isValidStationAdmin.UserId);
                                 if (existingStation != null)
                                 {
                                     return new ConflictObjectResult("Station already registered with provided parameters!");
@@ -254,7 +254,7 @@ namespace backend
                                         StationAdminId = isValidStationAdmin.UserId
                                     };
                                     int stationId = await _stationService.AddStationAsync(newStation);
-                                    var updatedUser = await _userService.UpdateStationAdminRegisteredStaionId(isValidStationAdmin.UserId, stationId);
+                                    var updatedUser = await _userService.UpdateStationAdminRegisteredStaionIdAsync(isValidStationAdmin.UserId, stationId);
                                     if (updatedUser == null)
                                     {
                                         return new BadRequestObjectResult("Failed to update the station admin's registered station!");
@@ -387,7 +387,7 @@ namespace backend
                         int? stationAdminBadgeNumber = data.StationAdminBadgeNumber;
 
                         // Check if the station exists
-                        var existingStation = await _stationService.GetStationByCode(stationCode);
+                        var existingStation = await _stationService.GetStationByCodeAsync(stationCode);
                         if (existingStation == null)
                         {
                             return new NotFoundObjectResult("Station not found!");
@@ -396,7 +396,7 @@ namespace backend
                         // If a new StationAdminBadgeNumber is provided, verify its validity
                         if (stationAdminBadgeNumber.HasValue)
                         {
-                            var isValidStationAdmin = await _userService.GetStationAdminByBadgeNumber(stationAdminBadgeNumber.Value);
+                            var isValidStationAdmin = await _userService.GetStationAdminByBadgeNumberAsync(stationAdminBadgeNumber.Value);
                             if (isValidStationAdmin == null)
                             {
                                 return new BadRequestObjectResult("Station Admin not registered yet!");
@@ -404,7 +404,7 @@ namespace backend
                             else
                             {
                                 existingStation.StationAdminId = isValidStationAdmin.UserId;
-                                var isUpdated = await _userService.UpdateStationAdminRegisteredStaionId(isValidStationAdmin.UserId, existingStation.StationId);
+                                var isUpdated = await _userService.UpdateStationAdminRegisteredStaionIdAsync(isValidStationAdmin.UserId, existingStation.StationId);
                                 if(isUpdated == null)
                                 {
                                     return new BadRequestObjectResult("Failed to update the station admin's registered station!");
@@ -481,7 +481,7 @@ namespace backend
                             return new BadRequestObjectResult("Station code is required in the request body!");
                         }
 
-                        var existingStation = await _stationService.GetStationByCode(stationCode);
+                        var existingStation = await _stationService.GetStationByCodeAsync(stationCode);
                         if (existingStation == null)
                         {
                             return new NotFoundObjectResult("Station not found!");
@@ -518,8 +518,8 @@ namespace backend
             }
 
         }
-        [Function("SearchStationAdmin")]
-        public async Task<IActionResult> SearchStationAdmin([HttpTrigger(AuthorizationLevel.Function, "post", Route = "search-station-admin")] HttpRequest req)
+        [Function("SearchTrafficPolice")]
+        public async Task<IActionResult> SearchTrafficPolice([HttpTrigger(AuthorizationLevel.Function, "post", Route = "search-traffic-police")] HttpRequest req)
         {
             try
             {
@@ -547,14 +547,14 @@ namespace backend
                             return new BadRequestObjectResult("Nic number & Badge number are required in the request body!");
                         }
 
-                        var existingStationAdmin = await _trafficPoliceService.GetStationAdminByNicBadgeNumber(nicNumber,badgeNumber.Value);
-                        if (existingStationAdmin == null)
+                        var existingTrafficPolice = await _trafficPoliceService.GetTrafficPoliceByNicBadgeNumberAsync(nicNumber,badgeNumber.Value);
+                        if (existingTrafficPolice == null)
                         {
-                            return new NotFoundObjectResult("Station Admin not found!");
+                            return new NotFoundObjectResult("Traffic Police not found!");
                         }
                         else
                         {
-                            return new OkObjectResult(existingStationAdmin);
+                            return new OkObjectResult(existingTrafficPolice);
                         }  
 
                     }
@@ -627,12 +627,14 @@ namespace backend
                         string? nicNumber = data.NicNumber;
                         int? badgeNumber = data.BadgeNumber;
 
+                     
+
 
 
 
                         string? licenseNumber = data.LicenseNumber;
 
-                        var licenseHolder=await _licenseHolderService.GetLicenseHolderByLicenseNumber(licenseNumber!);
+                        var licenseHolder=await _licenseHolderService.GetLicenseHolderByLicenseNumberAsync(licenseNumber!);
 
                         if (licenseHolder == null)
                         {
@@ -651,8 +653,13 @@ namespace backend
                         }
                         else
                         {
-                            var existingUser = await _userService.GetUserByParameters(email!, nicNumber!, licenseNumber!, badgeNumber ?? 0);
+                            var existingUser = await _userService.GetUserByParametersAsync(email!, nicNumber!, licenseNumber!, badgeNumber ?? 0);
+                            var newStation = await _stationService.GetStationByCodeAsync(stationCode!);
 
+                            if (newStation!.StationAdminId != null)
+                            {
+                                return new ConflictObjectResult("Station Admin already assigned for this station. Try after remove him/her!");
+                            }
                             if (existingUser != null)
                             {
                                 return new ConflictObjectResult("Station Admin already registered with provided credentials!");
@@ -674,11 +681,39 @@ namespace backend
                                     LicenseIssueDate = licenseIssueDate,
                                     LicenseExpiryDate = licenseExpiryDate,
                                     BadgeNumber = badgeNumber, 
+                                    
                                 };
 
                                 newUser.PasswordHash = _passwordService.HashPassword(newUser, password!);
-                                await _userService.AddUserAsync(newUser);
-                                return new OkObjectResult("Station Admin registered successfully!");
+                                var userId = await _userService.AddUserAsync(newUser);
+
+                                if (userId > 0)
+                                {
+                                    var stationWithRegisteredSationAdmin = await _stationService.GetStationByStationAdminIdAsync(userId);
+                                    if (stationWithRegisteredSationAdmin != null)
+                                    {
+                                        var isDeleted = await _userService.DeleteUserByUserIdAsync(userId);
+                                        return new ConflictObjectResult("User already registered as Station Admin with other station!");
+                                    }
+                                    else
+                                    {
+                                        var updatedStation = await _stationService.UpdateStationAdminIdAsync(newStation.StationId, userId);
+                                        var updatedUser = await _userService.UpdateStationAdminRegisteredStaionIdAsync(userId, newStation.StationId);
+                                        if (updatedStation == null || updatedUser == null)
+                                        {
+                                            return new BadRequestObjectResult("Failed to register the Station Admin!");
+                                        }
+                                        else
+                                        {
+                                            return new OkObjectResult("Station Admin registered successfully!");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    return new BadRequestObjectResult("Failed to register the Station Admin!");
+                                }
+
 
                             }
 

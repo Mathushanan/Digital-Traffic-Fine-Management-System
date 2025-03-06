@@ -9,6 +9,6 @@ namespace backend.Interfaces
 {
     public interface ILicenseHolderService
     {
-        Task<LicenseHolder?> GetLicenseHolderByLicenseNumber(string licenseNumber);
+        Task<LicenseHolder?> GetLicenseHolderByLicenseNumberAsync(string licenseNumber);
     }
 }

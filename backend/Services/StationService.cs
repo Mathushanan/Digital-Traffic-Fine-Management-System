@@ -21,7 +21,7 @@ namespace backend.Services
             this._systemDbContext = systemDbContext;
         }
 
-        public async Task<Station?> GetStationByParameters(string stationCode, string stationName, string contactNumber, string email,int userId)
+        public async Task<Station?> GetStationByParametersAsync(string stationCode, string stationName, string contactNumber, string email,int userId)
         {
             return await _systemDbContext.Stations
             .Where(station => station.StationCode == stationCode ||
@@ -44,7 +44,7 @@ namespace backend.Services
 
             return await _systemDbContext.Stations.ToListAsync();
         }
-        public async Task<Station?> GetStationByCode(string stationCode)
+        public async Task<Station?> GetStationByCodeAsync(string stationCode)
         {
             if (string.IsNullOrWhiteSpace(stationCode))
             {
@@ -69,6 +69,30 @@ namespace backend.Services
             _systemDbContext.Stations.Remove(station);
             return await _systemDbContext.SaveChangesAsync() > 0;
         }
+
+        public async Task<Station?> GetStationByStationAdminIdAsync(int stationAdminId)
+        {
+
+            return await _systemDbContext.Stations
+                .Where(station => station.StationAdminId == stationAdminId)
+                .SingleOrDefaultAsync();
+        }
+        public async Task<Station?> UpdateStationAdminIdAsync(int stationId, int userId)
+        {
+            // Find the user by userId
+            var station = await _systemDbContext.Stations.FindAsync(stationId);
+            if (station == null)
+            {
+                return null;
+            }
+
+            station.StationAdminId = userId;
+            await _systemDbContext.SaveChangesAsync();
+
+            return station;
+
+        }
+
 
     }
 }

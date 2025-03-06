@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { FaSignInAlt } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
@@ -28,6 +28,8 @@ const RegisterStationAdmin = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [stations, setStations] = useState([]);
+  const [newStationCode, setNewStationCode] = useState("");
 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
@@ -75,6 +77,39 @@ const RegisterStationAdmin = () => {
     return true;
   };
 
+  const handleFetchStations = async () => {
+    try {
+      const fetchStationsUrl = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/get-all-stations`;
+
+      // Get the token from localStorage (or wherever you store the JWT token)
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.get(fetchStationsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setStations(response.data);
+        console.log(response.data);
+      } else {
+        setMessage("Failed to fetch stations!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(`${error.response.data}`);
+      setMessageType("error");
+      console.error("Failed to fetch:", error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchStations();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -106,7 +141,7 @@ const RegisterStationAdmin = () => {
           hiredDate: hiredDate,
           gender: gender,
           password: confirmPassword,
-          stationCode: registeredStationCode,
+          stationCode: newStationCode,
         },
         {
           headers: {
@@ -135,7 +170,7 @@ const RegisterStationAdmin = () => {
     try {
       const searchStationAdminUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/search-station-admin`;
+      }/search-traffic-police`;
 
       // Get the token from localStorage (or wherever you store the JWT token)
       const token = localStorage.getItem("authToken");
@@ -380,19 +415,6 @@ const RegisterStationAdmin = () => {
                   <input
                     type="text"
                     className="form-control fs-6 h-80"
-                    id="registeredStationCode"
-                    value={registeredStationCode}
-                    onChange={(e) => setRegisteredStationCode(e.target.value)}
-                    required
-                    placeholder="Registered Station Code"
-                    readOnly
-                    disabled
-                  />
-                </div>
-                <div className="form-group mb-3 text-start">
-                  <input
-                    type="text"
-                    className="form-control fs-6 h-80"
                     id="licenseNumber"
                     value={licenseNumber}
                     onChange={(e) => setLicenseNumber(e.target.value)}
@@ -402,6 +424,39 @@ const RegisterStationAdmin = () => {
                     disabled
                   />
                 </div>
+                <div className="form-group mb-3 text-start position-relative">
+                  <select
+                    className="form-control fs-6 h-80"
+                    id="registeredStationCode"
+                    value={newStationCode}
+                    onChange={(e) => setNewStationCode(e.target.value)}
+                    required
+                    style={{ appearance: "none", color: "#555" }}
+                  >
+                    <option value="" disabled>
+                      Select a Station
+                    </option>
+                    {stations?.$values?.map((station) => (
+                      <option
+                        key={station.StationCode}
+                        value={station.StationCode}
+                      >
+                        {station.StationName}, {station.District}
+                      </option>
+                    ))}
+                  </select>
+                  <FaChevronDown
+                    className="position-absolute"
+                    style={{
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      pointerEvents: "none",
+                      color: "#555",
+                    }}
+                  />
+                </div>
+
                 <div className="form-group mb-3 text-start position-relative">
                   <input
                     type={showPassword ? "text" : "password"}

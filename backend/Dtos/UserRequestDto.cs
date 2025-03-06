@@ -26,5 +26,6 @@ namespace backend.Dtos
         public int RegisteredStationId { get; set; }
         public DateTime? HiredDate { get; set; }
         public string? StationCode { get; set; }
+      
     }
 }
