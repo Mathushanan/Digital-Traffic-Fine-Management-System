@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import RegisterStation from "./RegisterStation";
 import EditStations from "./EditStations";
+import RegisterStations from "./RegisterStation";
 
 const ManageStations = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ const ManageStations = () => {
         <Routes>
           {/* Ensure the correct routing without duplicating paths */}
           <Route path="/" element={<Navigate to="register" />} />
-          <Route path="register" element={<RegisterStation />} />
+          <Route path="register" element={<RegisterStations />} />
           <Route path="edit" element={<EditStations />} />
         </Routes>
       </div>

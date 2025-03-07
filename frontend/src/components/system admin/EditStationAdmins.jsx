@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Modal from "./EditStationModal";
 import ConfirmationModal from "../common/ConfirmationModal";
+import EditStationAdminModal from "./EditStationAdminModal";
 
 const EditStationAdmins = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +17,7 @@ const EditStationAdmins = () => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [currentStation, setCurrentStation] = useState(null);
+  const [currentStationAdmin, setCurrentStationAdmin] = useState(null);
 
   const fetchStationAdmins = async () => {
     try {
@@ -83,33 +84,33 @@ const EditStationAdmins = () => {
   }, [searchTerm, stationAdmins]);
 
   const handleEditClick = (stationAdmin) => {
-    setCurrentStation(stationAdmin);
-    console.log(stationAdmin);
+    setCurrentStationAdmin(stationAdmin);
+    console.log(currentStationAdmin);
     setShowEditModal(true);
   };
 
   const handleDeleteClick = (stationAdmin) => {
-    setCurrentStation(stationAdmin);
-    console.log(stationAdmin);
+    setCurrentStationAdmin(stationAdmin);
+
     setShowDeleteModal(true);
   };
 
   const handleConfirmDelete = () => {
     setShowDeleteModal(false);
-    handleDeleteStation(currentStationAdmin);
+    handleDeleteStationAdmin(currentStationAdmin);
   };
 
-  const handleDeleteStation = async (stationAdmin) => {
+  const handleDeleteStationAdmin = async (stationAdmin) => {
     try {
       const deleteStationAdminUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/delete-station-admin`;
+      }/delete-user`;
 
       // Get the token from localStorage
       const token = localStorage.getItem("authToken");
-      const stationCodeToDelete = station.StationCode;
-      const response = await axios.delete(deleteStationUrl, {
-        data: { stationCode: stationCodeToDelete },
+      const stationAdminIdToDelete = stationAdmin.UserId;
+      const response = await axios.delete(deleteStationAdminUrl, {
+        data: { userId: stationAdminIdToDelete },
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -117,11 +118,11 @@ const EditStationAdmins = () => {
       });
 
       if (response.status === 200) {
-        fetchStations();
-        setMessage(`Station Deleted successfully!`);
+        fetchStationAdmins();
+        setMessage(`Station Admin Deleted successfully!`);
         setMessageType("success");
       } else {
-        throw new Error("Failed to delete station");
+        throw new Error("Failed to delete the station admin!");
       }
     } catch (error) {
       setMessage(error.response ? error.response.data : error.message);
@@ -133,37 +134,41 @@ const EditStationAdmins = () => {
     }
   };
 
-  const handleSave = async (updatedStation) => {
+  const handleSave = async (updatedStationAdmin) => {
     try {
-      await handleUpdateStation(updatedStation);
-      setShowEditModal(false); // Close the modal after saving
+      await handleUpdateStationAdmin(updatedStationAdmin);
+      setShowEditModal(false);
     } catch (error) {
       console.error("Update failed:", error);
     }
   };
 
-  const handleUpdateStation = async (updatedStation) => {
+  const handleUpdateStationAdmin = async (updatedStationAdmin) => {
     try {
-      const updateStationUrl = `${
+      const updateStationAdminUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/update-station`;
+      }/update-user`;
 
       // Get the token from localStorage
       const token = localStorage.getItem("authToken");
 
-      const response = await axios.put(updateStationUrl, updatedStation, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(
+        updateStationAdminUrl,
+        updatedStationAdmin,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status === 200) {
-        fetchStations();
-        setMessage(`Station Updated successfully!`);
+        fetchStationAdmins();
+        setMessage(`Station Admin Updated successfully!`);
         setMessageType("success");
       } else {
-        throw new Error("Failed to update station");
+        throw new Error("Failed to update station admin!");
       }
     } catch (error) {
       setMessage(error.response ? error.response.data : error.message);
@@ -249,7 +254,7 @@ const EditStationAdmins = () => {
                       </h6>
                       <div className="text-start">
                         <h6>Contact</h6>
-                        <p className="fs-6">
+                        <p className="" style={{ fontSize: "13px" }}>
                           {stationAdmin.ContactNumber}
                           {" | "}
                           <span>
@@ -264,7 +269,7 @@ const EditStationAdmins = () => {
                       </div>
                       <div className="text-start">
                         <h6>Personal Details</h6>
-                        <p className="fs-6">
+                        <p className="" style={{ fontSize: "13px" }}>
                           NIC No: {stationAdmin.NicNumber}
                           <br />
                           License No: {stationAdmin.LicenseNumber}
@@ -276,6 +281,8 @@ const EditStationAdmins = () => {
                               .split("T")[0]
                           }
                           <br />
+                          Address: {stationAdmin.Address}
+                          <br />
                           Gender: {stationAdmin.Gender}
                         </p>
                       </div>
@@ -284,13 +291,13 @@ const EditStationAdmins = () => {
                       <div className="d-flex">
                         <button
                           className="btn btn-warning btn-sm d-flex align-items-center justify-content-center w-50"
-                          onClick={() => handleEditClick(station)}
+                          onClick={() => handleEditClick(stationAdmin)}
                         >
                           <FaEdit className="me-2" /> Edit
                         </button>
                         <button
                           className="btn btn-danger btn-sm d-flex align-items-center justify-content-center w-50 ms-2"
-                          onClick={() => handleDeleteClick(station)}
+                          onClick={() => handleDeleteClick(stationAdmin)}
                         >
                           <FaTrash className="me-2" /> Delete
                         </button>
@@ -306,10 +313,10 @@ const EditStationAdmins = () => {
         </div>
       </div>
       {/* Modal for editing */}
-      <Modal
+      <EditStationAdminModal
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
-        station={currentStation}
+        stationAdmin={currentStationAdmin}
         onSave={handleSave}
         aria-hidden={showEditModal ? "false" : "true"}
       />

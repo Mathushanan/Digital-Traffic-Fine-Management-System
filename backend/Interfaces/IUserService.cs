@@ -16,6 +16,12 @@ namespace backend.Interfaces
         Task<User?> GetStationAdminByBadgeNumberAsync(int badgeNumber);
         Task<User?> UpdateStationAdminRegisteredStaionIdAsync(int userId, int stationId);
         Task<bool> DeleteUserByUserIdAsync(int userId);
+        Task<bool> SetRegisteredStationIdToNull(int stationAdminId);
+
+        Task<List<User>> GetAllStationAdminsAsync();
+        Task<bool> DeleteUserAsync(int userId);
+        Task<User?> GetUserByUserIdAsync(int userId);
+        Task<bool> UpdateUserAsync(User user);
 
 
     }

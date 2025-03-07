@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Modal from "./EditStationModal";
 import ConfirmationModal from "../common/ConfirmationModal";
+import EditStationModal from "./EditStationModal";
 
 const EditStations = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -238,7 +239,7 @@ const EditStations = () => {
                       </h6>
                       <div className="text-start">
                         <h6>Contact</h6>
-                        <p className="fs-6">
+                        <p className="" style={{ fontSize: "13px" }}>
                           {station.ContactNumber} |{" "}
                           <span>
                             <a href={`mailto:${station.Email}`} className="">
@@ -253,7 +254,7 @@ const EditStations = () => {
                       {adminUser ? (
                         <div className="text-start" key={adminUser.UserId}>
                           <h6>Admin</h6>
-                          <p className="fs-7">
+                          <p className="" style={{ fontSize: "13px" }}>
                             {adminUser.FirstName} (Badge no:{" "}
                             {adminUser.BadgeNumber})
                             <br />
@@ -298,7 +299,7 @@ const EditStations = () => {
         </div>
       </div>
       {/* Modal for editing */}
-      <Modal
+      <EditStationModal
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
         station={currentStation}

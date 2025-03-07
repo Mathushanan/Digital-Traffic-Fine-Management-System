@@ -85,7 +85,49 @@ namespace backend.Services
             
            
         }
+        public async Task<bool> SetRegisteredStationIdToNull(int stationAdminId)
+        {
+            var user = await _systemDbContext.Users.FindAsync(stationAdminId);
+            if (user == null)
+            {
+                return false;
+            }
+            user.RegisteredStationId = null;
+            await _systemDbContext.SaveChangesAsync();
+            return true;
 
+        }
+        public async Task<List<User>> GetAllStationAdminsAsync()
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.UserType == "StationAdmin")
+                .ToListAsync();
+        }
+
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            var user = await _systemDbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            _systemDbContext.Users.Remove(user);
+            return await _systemDbContext.SaveChangesAsync() > 0;
+        }
+        public async Task<User?> GetUserByUserIdAsync(int userId)
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.UserId == userId)
+                .FirstOrDefaultAsync();
+
+        }
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            _systemDbContext.Users.Update(user);
+            return await _systemDbContext.SaveChangesAsync() > 0;
+        }
 
 
 

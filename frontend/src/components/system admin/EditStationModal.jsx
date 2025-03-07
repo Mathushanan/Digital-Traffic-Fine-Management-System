@@ -3,7 +3,7 @@ import { FaChevronDown } from "react-icons/fa";
 
 import { MdOutlineUpdate } from "react-icons/md";
 
-const Modal = ({ show, onClose, station, onSave }) => {
+const EditStationModal = ({ show, onClose, station, onSave }) => {
   const [stationName, setStationName] = useState("");
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
@@ -293,4 +293,4 @@ const Modal = ({ show, onClose, station, onSave }) => {
   );
 };
 
-export default Modal;
+export default EditStationModal;

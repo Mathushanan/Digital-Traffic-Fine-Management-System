@@ -8,6 +8,7 @@ namespace backend.Dtos
 {
     public class UserRequestDto
     {
+        public int UserId { get; set; }
         public string? UserType { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

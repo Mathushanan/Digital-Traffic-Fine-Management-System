@@ -21,14 +21,14 @@ namespace backend.Services
             this._systemDbContext = systemDbContext;
         }
 
-        public async Task<Station?> GetStationByParametersAsync(string stationCode, string stationName, string contactNumber, string email,int userId)
+        public async Task<Station?> GetStationByParametersAsync(string stationCode, string stationName, string contactNumber, string email)
         {
             return await _systemDbContext.Stations
             .Where(station => station.StationCode == stationCode ||
                               station.StationName == stationName ||
                               station.ContactNumber == contactNumber ||
                               station.Email == email
-                              || station.StationAdminId==userId)
+                              )
 
             .FirstOrDefaultAsync();
 
@@ -85,11 +85,21 @@ namespace backend.Services
             {
                 return null;
             }
+            if(userId == 0)
+            {
+                station.StationAdminId = null;
+                await _systemDbContext.SaveChangesAsync();
+                return station;
+            }
+            else
+            {
+                station.StationAdminId = userId;
+                await _systemDbContext.SaveChangesAsync();
+                return station;
+            }
+           
 
-            station.StationAdminId = userId;
-            await _systemDbContext.SaveChangesAsync();
-
-            return station;
+            
 
         }
 

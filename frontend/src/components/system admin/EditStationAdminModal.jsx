@@ -3,80 +3,52 @@ import { FaChevronDown } from "react-icons/fa";
 
 import { MdOutlineUpdate } from "react-icons/md";
 
-const Modal = ({ show, onClose, station, onSave }) => {
-  const [stationName, setStationName] = useState("");
+const EditStationAdminModal = ({ show, onClose, stationAdmin, onSave }) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
-  const [district, setDistrict] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [stationCode, setStationCode] = useState("");
-  const [stationAdminBadgeNumber, setStationAdminBadgeNumber] = useState("");
-
-  const districts = [
-    { value: "", label: "Select District" },
-    { value: "Colombo", label: "Colombo" },
-    { value: "Gampaha", label: "Gampaha" },
-    { value: "Kalutara", label: "Kalutara" },
-    { value: "Kandy", label: "Kandy" },
-    { value: "Matale", label: "Matale" },
-    { value: "Nuwara_eliya", label: "Nuwara Eliya" },
-    { value: "Galle", label: "Galle" },
-    { value: "Hambantota", label: "Hambantota" },
-    { value: "Matara", label: "Matara" },
-    { value: "Jaffna", label: "Jaffna" },
-    { value: "Killinochchi", label: "Killinochchi" },
-    { value: "Mannar", label: "Mannar" },
-    { value: "Mullaitivu", label: "Mullaitivu" },
-    { value: "Vavuniya", label: "Vavuniya" },
-    { value: "Badulla", label: "Badulla" },
-    { value: "Moneragala", label: "Moneragala" },
-    { value: "Ratnapura", label: "Ratnapura" },
-    { value: "Kegalle", label: "Kegalle" },
-    { value: "Puttalam", label: "Puttalam" },
-    { value: "Kurunegala", label: "Kurunegala" },
-    { value: "Trincomalee", label: "Trincomalee" },
-    { value: "Batticaloa", label: "Batticaloa" },
-    { value: "Ampara", label: "Ampara" },
-    { value: "Polonnaruwa", label: "Polonnaruwa" },
-    { value: "Anuradhapura", label: "Anuradhapura" },
-  ];
+  const [nicNumber, setNicNumber] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [badgeNumber, setBadgeNumber] = useState("");
 
   useEffect(() => {
-    if (station) {
-      setStationName(station.StationName);
-      setAddress(station.Address);
-      setDistrict(station.District);
-      setContactNumber(station.ContactNumber);
-      setEmail(station.Email);
-      setStationCode(station.StationCode);
-      const adminUser = station.Users.$values.find(
-        (user) => user.UserId === station.StationAdminId
-      );
-
-      if (adminUser) {
-        setStationAdminBadgeNumber(adminUser.BadgeNumber);
-      } else {
-        setStationAdminBadgeNumber("");
-      }
+    if (stationAdmin) {
+      setFirstName(stationAdmin.FirstName);
+      setLastName(stationAdmin.LastName);
+      setGender(stationAdmin.Gender);
+      setDateOfBirth(stationAdmin.DateOfBirth);
+      setAddress(stationAdmin.Address);
+      setContactNumber(stationAdmin.ContactNumber);
+      setEmail(stationAdmin.Email);
+      setNicNumber(stationAdmin.NicNumber);
+      setLicenseNumber(stationAdmin.LicenseNumber);
+      setBadgeNumber(stationAdmin.BadgeNumber);
     }
-  }, [station]);
+  }, [stationAdmin]);
 
   if (!show) return null;
 
   const handleSave = () => {
-    const updatedStation = {
-      ...station,
-      StationName: stationName,
+    const updatedStationAdmin = {
+      ...stationAdmin,
+      FirstName: firstName,
+      LastName: lastName,
+      Gender: gender,
+      DateOfBirth: dateOfBirth,
       Address: address,
-      District: district,
       ContactNumber: contactNumber,
       Email: email,
-      StationCode: stationCode,
-      StationAdminBadgeNumber: stationAdminBadgeNumber,
+      NicNumber: nicNumber,
+      LicenseNumber: licenseNumber,
+      BadgeNumber: badgeNumber,
     };
-    onSave(updatedStation);
+    onSave(updatedStationAdmin);
     onClose();
-    console.log(updatedStation);
+    console.log(updatedStationAdmin);
   };
 
   return (
@@ -111,7 +83,7 @@ const Modal = ({ show, onClose, station, onSave }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="modalLabel">
-                Edit Station
+                Edit Station Admin
               </h5>
               <button
                 type="button"
@@ -129,32 +101,130 @@ const Modal = ({ show, onClose, station, onSave }) => {
                   <form>
                     <div className="form-group mb-3 row row-cols-1 row-cols-md-2 g-3">
                       <div className="col">
-                        <label htmlFor="stationCode" className="form-label">
-                          Station Code
+                        <label htmlFor="firstName" className="form-label">
+                          First Name
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          id="stationCode"
-                          value={stationCode}
-                          onChange={(e) => setStationCode(e.target.value)}
+                          id="firstName"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
                           required
-                          placeholder="Station Code"
+                          placeholder="First Name"
+                          readOnly
+                          disabled
                         />
                       </div>
 
                       <div className="col">
-                        <label htmlFor="stationName" className="form-label">
-                          Station Name
+                        <label htmlFor="lastName" className="form-label">
+                          Last Name
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          id="stationName"
-                          value={stationName}
-                          onChange={(e) => setStationName(e.target.value)}
+                          id="lastName"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
                           required
-                          placeholder="Station Name"
+                          placeholder="Last Name"
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3 row row-cols-1 row-cols-md-2 g-3">
+                      <div className="col">
+                        <label htmlFor="nicNumber" className="form-label">
+                          NIC Number
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="nicNumber"
+                          value={nicNumber}
+                          onChange={(e) => setNicNumber(e.target.value)}
+                          required
+                          placeholder="Nic Number"
+                          readOnly
+                          disabled
+                        />
+                      </div>
+
+                      <div className="col">
+                        <label htmlFor="badgeNumber" className="form-label">
+                          Badge Number
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="badgeNumber"
+                          value={badgeNumber}
+                          onChange={(e) => setBadgeNumber(e.target.value)}
+                          required
+                          placeholder="Badge Number"
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label htmlFor="licenseNumber" className="form-label">
+                        License Number
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="licenseNumber"
+                        value={licenseNumber}
+                        onChange={(e) => setLicenseNumber(e.target.value)}
+                        required
+                        placeholder="License Number"
+                        readOnly
+                        disabled
+                      />
+                    </div>
+                    <div className="form-group mb-3 row row-cols-1 row-cols-md-2 g-3">
+                      <div className="col">
+                        <label htmlFor="dateOfBirth" className="form-label">
+                          Date Of Birth
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="dateOfBirth"
+                          value={
+                            dateOfBirth
+                              ? new Date(dateOfBirth)
+                                  .toISOString()
+                                  .split("T")[0]
+                              : ""
+                          }
+                          onChange={(e) => setDateOfBirth(e.target.value)}
+                          required
+                          placeholder="Date Of Birth"
+                          readOnly
+                          disabled
+                        />
+                      </div>
+
+                      <div className="col">
+                        <label htmlFor="gender" className="form-label">
+                          Gender
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="gender"
+                          value={gender}
+                          onChange={(e) => setGender(e.target.value)}
+                          required
+                          placeholder="Gender"
+                          readOnly
+                          disabled
                         />
                       </div>
                     </div>
@@ -191,9 +261,8 @@ const Modal = ({ show, onClose, station, onSave }) => {
                         />
                       </div>
                     </div>
-
                     {/* Address */}
-                    <div className="form-group mb-3">
+                    <div className="form-group">
                       <label htmlFor="address" className="form-label">
                         Address
                       </label>
@@ -205,58 +274,6 @@ const Modal = ({ show, onClose, station, onSave }) => {
                         onChange={(e) => setAddress(e.target.value)}
                         required
                         placeholder="Address"
-                      />
-                    </div>
-
-                    {/* District */}
-                    <div className="form-group mb-3 text-start position-relative">
-                      <label htmlFor="district" className="form-label">
-                        District
-                      </label>
-                      <select
-                        className="form-control fs-6 pe-5"
-                        id="district"
-                        value={district}
-                        onChange={(e) => setDistrict(e.target.value)}
-                        required
-                        style={{ appearance: "none", color: "#555" }}
-                      >
-                        {districts.map((district) => (
-                          <option key={district.value} value={district.value}>
-                            {district.label}
-                          </option>
-                        ))}
-                      </select>
-                      <FaChevronDown
-                        className="position-absolute"
-                        style={{
-                          right: "10px",
-                          top: "75%",
-                          transform: "translateY(-50%)",
-                          pointerEvents: "none",
-                          color: "#555",
-                        }}
-                      />
-                    </div>
-
-                    {/* Station Admin Badge Number */}
-                    <div className="form-group mb-3 text-start">
-                      <label
-                        htmlFor="stationAdminBadgeNumber"
-                        className="form-label"
-                      >
-                        Station Admin Badge Number
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control fs-6"
-                        id="stationAdminBadgeNumber"
-                        value={stationAdminBadgeNumber}
-                        onChange={(e) =>
-                          setStationAdminBadgeNumber(e.target.value)
-                        }
-                        required
-                        placeholder="Admin Badge Number"
                       />
                     </div>
                   </form>
@@ -290,4 +307,4 @@ const Modal = ({ show, onClose, station, onSave }) => {
   );
 };
 
-export default Modal;
+export default EditStationAdminModal;
