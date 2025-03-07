@@ -9,6 +9,8 @@ import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // Import React I
 import { FaSearch } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
+
 const RegisterStationAdmin = () => {
   const [registeredStationCode, setRegisteredStationCode] = useState("");
   const [firstName, setFirstName] = useState("");

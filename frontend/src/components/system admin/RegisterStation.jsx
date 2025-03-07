@@ -6,6 +6,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { MdAddBox } from "react-icons/md";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // Import React Icons
+import { FaPlus } from "react-icons/fa";
 
 const RegisterStations = () => {
   const [stationCode, setStationCode] = useState("");
@@ -219,7 +220,7 @@ const RegisterStations = () => {
                   alignItems: "center",
                 }}
               >
-                <MdAddBox style={{ marginRight: "8px", fontSize: "20px" }} />{" "}
+                <FaPlus style={{ marginRight: "8px", fontSize: "20px" }} />{" "}
                 REGISTER
               </button>
             </div>

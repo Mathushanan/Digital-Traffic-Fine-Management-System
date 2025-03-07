@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode";
 
 const verifyJwtToken = (token) => {
   if (token) {
-    console.log("executed!");
     try {
       const decodedToken = jwtDecode(token);
 

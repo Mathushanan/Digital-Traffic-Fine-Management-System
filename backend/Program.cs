@@ -58,6 +58,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<ITrafficPoliceService, TrafficPoliceService>();
 builder.Services.AddScoped<ILicenseHolderService, LicenseHolderService>();
+builder.Services.AddScoped<ITrafficViolationService, TrafficViolationService>();
 
 builder.ConfigureFunctionsWebApplication();
 

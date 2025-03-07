@@ -23,8 +23,9 @@ namespace backend
         private readonly IStationService _stationService;
         private readonly ITrafficPoliceService _trafficPoliceService;
         private readonly ILicenseHolderService _licenseHolderService;
+        private readonly ITrafficViolationService _trafficViolationService;
 
-        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService)
+        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService)
         {
             _logger = logger;
             this._passwordService = passwordService;
@@ -33,6 +34,8 @@ namespace backend
             this._stationService = stationService;
             this._trafficPoliceService = trafficPoliceService;
             this._licenseHolderService = licenseHolderService;
+            this._trafficViolationService = trafficViolationService;
+
         }
 
         [Function("RegisterSystemAdmin")]
@@ -968,6 +971,257 @@ namespace backend
             }
 
         }
+        [Function("RegisterTrafficViolation")]
+        public async Task<IActionResult> RegisterTrafficViolation([HttpTrigger(AuthorizationLevel.Function, "post", Route = "register-traffic-violation")] HttpRequest req)
+        {
+            try
+            {
+
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        // Read and deserialize the JSON request body
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<TrafficViolationRequestDto>(requestBody);
+
+                        if (data == null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body!");
+                        }
+
+                        //Accessing deserialized parameters
+                        string? sectionOfAct = data.SectionOfAct;
+                        string? violationType = data.ViolationType;
+                        string? provision = data.Provision;
+                        decimal fineAmount = data.FineAmount;
+                        int points = data.Points;
+                        int dueDays = data.DueDays;
+
+                        if (sectionOfAct == null || violationType== null || provision== null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing!");
+                        }
+                        else
+                        {
+
+                            var existingTrafficViolation = await _trafficViolationService.GetTrafficViolationByParametersAsync(sectionOfAct,provision);
+                            if (existingTrafficViolation != null)
+                            {
+                                return new ConflictObjectResult("Traffic Violation already registered with provided parameters!");
+                            }
+                            else
+                            {
+
+                                var newTrafficViolation = new TrafficViolation
+                                {
+                                    SectionOfAct= sectionOfAct,
+                                    ViolationType= violationType,
+                                    Provision= provision,
+                                    FineAmount= fineAmount,
+                                    Points= points,
+                                    DueDays= dueDays
+
+                                };
+                                int trafficViolationId = await _trafficViolationService.AddTrafficViolationAsync(newTrafficViolation);
+                                if (trafficViolationId > 0)
+                                {
+                                    return new OkObjectResult("Traffcic Violation registered successfully!");
+
+                                }
+                                else
+                                {
+                                    return new BadRequestObjectResult("Failed to register the traffic violation!");
+                                }
+
+
+                            }
+
+
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+
+            }
+        }
+        [Function("GetAllTrafficViolations")]
+        public async Task<IActionResult> GetAllTrafficViolations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "get-all-traffic-violations")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        var trafficViolations = await _trafficViolationService.GetAllTrafficViolationsAsync();
+                        var jsonOptions = new JsonSerializerOptions
+                        {
+                            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+                            MaxDepth = 32
+                        };
+
+                        // Serialize the stations with the custom options
+                        var jsonData = System.Text.Json.JsonSerializer.Serialize(trafficViolations, jsonOptions);
+                        return new OkObjectResult(jsonData);
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+        [Function("UpdateTrafficViolation")]
+        public async Task<IActionResult> UpdateTrafficViolation([HttpTrigger(AuthorizationLevel.Function, "put", Route = "update-traffic-violation")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        // Read and deserialize the JSON request body
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<TrafficViolationRequestDto>(requestBody);
+
+                        if (data == null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body!");
+                        }
+
+                        // Accessing deserialized parameters
+                        int violationId = data.ViolationId;
+                        string? violationType = data.ViolationType;
+                        string? sectionOfAct = data.SectionOfAct;
+                        string? provision = data.Provision;
+                        int? points = data.Points;
+                        int? dueDays = data.DueDays;
+                        decimal? fineAmount = data.FineAmount;
+
+
+                        // Check if the station exists
+                        var existingTrafficViolation = await _trafficViolationService.GetTrafficViolationByViolationIdAsync(violationId);
+                        if (existingTrafficViolation == null)
+                        {
+                            return new NotFoundObjectResult("Traffic Violation not found!");
+                        }
+
+                        else
+                        {
+                            // Update user details if provided
+                            existingTrafficViolation.ViolationType = violationType ?? existingTrafficViolation.ViolationType;
+                            existingTrafficViolation.SectionOfAct = sectionOfAct ?? existingTrafficViolation.SectionOfAct;
+                            existingTrafficViolation.Provision = provision?? existingTrafficViolation.Provision;
+                            existingTrafficViolation.Points = points??existingTrafficViolation.Points;
+                            existingTrafficViolation.DueDays = dueDays??existingTrafficViolation.DueDays;
+                            existingTrafficViolation.FineAmount = fineAmount??existingTrafficViolation.FineAmount;
+
+
+                            // Update user in the database
+                            var updateResult = await _trafficViolationService.UpdateTrafficViolationAsync(existingTrafficViolation);
+                            if (!updateResult)
+                            {
+                                return new BadRequestObjectResult("Failed to update the traffic violation!");
+                            }
+
+                            return new OkObjectResult("Traffic Violation updated successfully!");
+                        }
+                       
+
+
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+
 
 
 

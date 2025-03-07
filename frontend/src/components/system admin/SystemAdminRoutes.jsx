@@ -19,8 +19,8 @@ const SystemAdminRoutes = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-stations/*" element={<ManageStations />} />
         <Route path="/manage-users/*" element={<ManageUsers />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/traffic-violations" element={<TrafficViolations />} />
+        <Route path="/notifications/*" element={<Notifications />} />
+        <Route path="/traffic-violations/*" element={<TrafficViolations />} />
       </Routes>
     </div>
   );

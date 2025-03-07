@@ -353,11 +353,15 @@ namespace backend.Data
             {
                 entity.HasKey(t => t.ViolationId);
 
+                entity.Property(t => t.SectionOfAct)
+                    .HasMaxLength(100)
+                    .IsRequired(true);
+
                 entity.Property(t => t.ViolationType)
                     .HasMaxLength(100)
                     .IsRequired(true);
 
-                entity.Property(t => t.ViolationCategory)
+                entity.Property(t => t.Provision)
                     .HasMaxLength(100)
                     .IsRequired(true);
 
