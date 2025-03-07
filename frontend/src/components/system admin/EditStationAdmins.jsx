@@ -7,8 +7,8 @@ import ConfirmationModal from "../common/ConfirmationModal";
 
 const EditStationAdmins = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [stations, setStations] = useState(null);
-  const [filteredStations, setFilteredStations] = useState([]);
+  const [stationAdmins, setStationAdmins] = useState(null);
+  const [filteredStationAdmins, setFilteredStationAdmins] = useState([]);
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
   const messageClass =
@@ -18,11 +18,11 @@ const EditStationAdmins = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentStation, setCurrentStation] = useState(null);
 
-  const fetchStations = async () => {
+  const fetchStationAdmins = async () => {
     try {
       const fetchStationsUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/get-all-stations`;
+      }/get-all-station-admins`;
       const token = localStorage.getItem("authToken");
 
       const response = await axios.get(fetchStationsUrl, {
@@ -32,65 +32,78 @@ const EditStationAdmins = () => {
       });
 
       if (response.status === 200) {
-        const fetchedStations = response.data;
-        setStations(fetchedStations);
-        setFilteredStations(fetchedStations.$values); // Initialize filtered stations
+        const fetchedStationAdmins = response.data;
+        setStationAdmins(fetchedStationAdmins);
+        console.log(fetchedStationAdmins);
+        setFilteredStationAdmins(fetchedStationAdmins.$values); // Initialize filtered stations
       } else {
-        setMessage("Failed to fetch stations");
+        setMessage("Failed to fetch station admins");
         setMessageType("error");
       }
     } catch (error) {
       setMessage(
-        "Failed to fetch stations: " +
+        "Failed to fetch station admins: " +
           (error.response ? error.response.data : error.message)
       );
       setMessageType("error");
       console.error(
-        "Failed to fetch stations:",
+        "Failed to fetch station admins:",
         error.response ? error.response.data : error.message
       );
     }
   };
 
   useEffect(() => {
-    fetchStations();
+    fetchStationAdmins();
   }, []);
 
   // Filter stations based on search term
   useEffect(() => {
-    if (stations && searchTerm) {
+    if (stationAdmins && searchTerm) {
       const lowercasedSearchTerm = searchTerm.toLowerCase();
-      const filtered = stations.$values.filter((station) =>
-        station.StationName.toLowerCase().includes(lowercasedSearchTerm)
-      );
-      setFilteredStations(filtered);
-    } else {
-      setFilteredStations(stations ? stations.$values : []);
-    }
-  }, [searchTerm, stations]);
+      const isNumericSearch = !isNaN(searchTerm); // Check if searchTerm is a number
 
-  const handleEditClick = (station) => {
-    setCurrentStation(station);
-    console.log(station);
+      const filtered = stationAdmins.$values.filter(
+        (stationAdmin) =>
+          stationAdmin.FirstName.toLowerCase().includes(lowercasedSearchTerm) ||
+          stationAdmin.LastName.toLowerCase().includes(lowercasedSearchTerm) ||
+          stationAdmin.ContactNumber.includes(lowercasedSearchTerm) ||
+          (isNumericSearch &&
+            stationAdmin.BadgeNumber.toString().includes(searchTerm)) ||
+          stationAdmin.LicenseNumber.toLowerCase().includes(
+            lowercasedSearchTerm
+          ) ||
+          stationAdmin.NicNumber.toLowerCase().includes(lowercasedSearchTerm)
+      );
+
+      setFilteredStationAdmins(filtered);
+    } else {
+      setFilteredStationAdmins(stationAdmins ? stationAdmins.$values : []);
+    }
+  }, [searchTerm, stationAdmins]);
+
+  const handleEditClick = (stationAdmin) => {
+    setCurrentStation(stationAdmin);
+    console.log(stationAdmin);
     setShowEditModal(true);
   };
 
-  const handleDeleteClick = (station) => {
-    setCurrentStation(station);
-    console.log(station);
+  const handleDeleteClick = (stationAdmin) => {
+    setCurrentStation(stationAdmin);
+    console.log(stationAdmin);
     setShowDeleteModal(true);
   };
 
   const handleConfirmDelete = () => {
     setShowDeleteModal(false);
-    handleDeleteStation(currentStation);
+    handleDeleteStation(currentStationAdmin);
   };
 
-  const handleDeleteStation = async (station) => {
+  const handleDeleteStation = async (stationAdmin) => {
     try {
-      const deleteStationUrl = `${
+      const deleteStationAdminUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/delete-station`;
+      }/delete-station-admin`;
 
       // Get the token from localStorage
       const token = localStorage.getItem("authToken");
@@ -199,26 +212,22 @@ const EditStationAdmins = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search Stations..."
+            placeholder="Search Station Admins..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {filteredStations.length > 0 ? (
-            filteredStations.map((station) => {
-              const adminUser = station.Users.$values.find(
-                (user) => user.UserId === station.StationAdminId
-              );
-
+          {filteredStationAdmins.length > 0 ? (
+            filteredStationAdmins.map((stationAdmin) => {
               return (
-                <div className="col" key={station.StationId}>
+                <div className="col" key={stationAdmin.UserId}>
                   <div className="card shadow-lg rounded-3 border-light p-2">
                     <div className="card-body">
                       <div className="d-flex justify-content-between align-items-center w-100 mb-2">
                         <h5 className="card-title fs-6 text-muted mb-0 me-2">
-                          {station.StationName}
+                          {stationAdmin.FirstName} {stationAdmin.LastName}
                         </h5>
                         <p
                           className="px-2 py-1 rounded mb-0 text-success"
@@ -227,51 +236,50 @@ const EditStationAdmins = () => {
                             backgroundColor: "#d4f8d4",
                           }}
                         >
-                          {station.StationCode}
+                          {stationAdmin.BadgeNumber}
                         </p>
                       </div>
                       <h6
                         className="card-subtitle mb-3 text-muted text-start"
                         style={{ color: "#555", fontSize: "12px" }}
                       >
-                        {station.District}
+                        {stationAdmin.RegisteredStation.StationName}
+                        {", "}
+                        {stationAdmin.RegisteredStation.District}
                       </h6>
                       <div className="text-start">
                         <h6>Contact</h6>
                         <p className="fs-6">
-                          {station.ContactNumber} |{" "}
+                          {stationAdmin.ContactNumber}
+                          {" | "}
                           <span>
-                            <a href={`mailto:${station.Email}`} className="">
-                              {station.Email}
+                            <a
+                              href={`mailto:${stationAdmin.Email}`}
+                              className=""
+                            >
+                              {stationAdmin.Email}
                             </a>
                           </span>
-                          <br />
-                          {station.Address}
                         </p>
                       </div>
-                      {/* Admin Details */}
-                      {adminUser ? (
-                        <div className="text-start" key={adminUser.UserId}>
-                          <h6>Admin</h6>
-                          <p className="fs-7">
-                            {adminUser.FirstName} (Badge no:{" "}
-                            {adminUser.BadgeNumber})
-                            <br />
-                            {adminUser.ContactNumber} |{" "}
-                            <span>
-                              <a
-                                href={`mailto:${adminUser.Email}`}
-                                className=""
-                              >
-                                {adminUser.Email}
-                              </a>
-                            </span>
-                            <br />
-                          </p>
-                        </div>
-                      ) : (
-                        <p>No admin assigned</p>
-                      )}
+                      <div className="text-start">
+                        <h6>Personal Details</h6>
+                        <p className="fs-6">
+                          NIC No: {stationAdmin.NicNumber}
+                          <br />
+                          License No: {stationAdmin.LicenseNumber}
+                          <br />
+                          Date Of Birth:{" "}
+                          {
+                            new Date(stationAdmin.DateOfBirth)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+                          <br />
+                          Gender: {stationAdmin.Gender}
+                        </p>
+                      </div>
+
                       {/* Button Section */}
                       <div className="d-flex">
                         <button
@@ -309,7 +317,7 @@ const EditStationAdmins = () => {
         show={showDeleteModal}
         onConfirm={handleConfirmDelete}
         onClose={() => setShowDeleteModal(false)}
-        message={"Are you sure, Do you want to delete this station?"}
+        message={"Are you sure, Do you want to delete this station admin?"}
       />
     </>
   );

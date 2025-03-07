@@ -43,6 +43,7 @@ const Modal = ({ show, onClose, station, onSave }) => {
 
   useEffect(() => {
     if (station) {
+      console.log(station);
       setStationName(station.StationName);
       setAddress(station.Address);
       setDistrict(station.District);
@@ -140,6 +141,8 @@ const Modal = ({ show, onClose, station, onSave }) => {
                           onChange={(e) => setStationCode(e.target.value)}
                           required
                           placeholder="Station Code"
+                          disabled
+                          readOnly
                         />
                       </div>
 

@@ -14,7 +14,6 @@ const RegisterStations = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [district, setDistrict] = useState("");
   const [email, setEmail] = useState("");
-  const [stationAdminBadgeNumber, setStationAdminBadgeNumber] = useState("");
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
   const messageClass =
@@ -69,7 +68,6 @@ const RegisterStations = () => {
           district: district,
           contactNumber: contactNumber,
           email: email,
-          stationAdminBadgeNumber: stationAdminBadgeNumber,
         },
         {
           headers: {
@@ -207,17 +205,6 @@ const RegisterStations = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="Email"
-              />
-            </div>
-            <div className="form-group mb-3 text-start">
-              <input
-                type="number"
-                className="form-control fs-6"
-                id="stationAdminBadgeNumber"
-                value={stationAdminBadgeNumber}
-                onChange={(e) => setStationAdminBadgeNumber(e.target.value)}
-                required
-                placeholder="Admin Badge Number"
               />
             </div>
             <div className="form-group mb-3">
