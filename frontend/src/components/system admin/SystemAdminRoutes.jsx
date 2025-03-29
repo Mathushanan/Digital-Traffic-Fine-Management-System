@@ -15,7 +15,7 @@ const SystemAdminRoutes = () => {
     <div>
       <Routes>
         <Route path="/" element={<Navigate to="dashboard" />} />
-        <Route path="/audits" element={<Audits />} />
+        <Route path="/audits/*" element={<Audits />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-stations/*" element={<ManageStations />} />
         <Route path="/manage-users/*" element={<ManageUsers />} />
