@@ -36,7 +36,6 @@ namespace backend.Models
         public virtual ICollection<Fine>? OffenderFines { get; set; }
         public virtual ICollection<Fine>? IssuerFines { get; set; }
         public virtual ICollection<RealTimeTracking>? RealTimeTrackings { get; set; }
-        public virtual ICollection<Notification>? Notifications { get; set; }
         public virtual ICollection<Audit>? Audits { get; set; }
         
 

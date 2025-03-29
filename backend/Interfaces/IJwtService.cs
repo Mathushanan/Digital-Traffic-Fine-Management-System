@@ -12,5 +12,6 @@ namespace backend.Interfaces
     {
         string GenerateJwtToken(User user);
         ClaimsPrincipal? ValidateJwtToken(string token);
+        public string? GetUserEmailFromToken(string token);
     }
 }

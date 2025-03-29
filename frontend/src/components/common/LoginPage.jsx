@@ -34,8 +34,6 @@ const LoginPage = ({ setUser, setRole, setMessage, setMessageType }) => {
         // Set user and role in the parent component (App)
         setUser(true);
         setRole(userType);
-        setMessage("User successfully verified!");
-        setMessageType("success");
 
         if (userType == "SystemAdmin") {
           navigate("/system-admin");

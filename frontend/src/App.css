@@ -187,5 +187,6 @@ p,
 @media (max-width: 768px) {
   .modal-dialog {
     max-width: 100% !important;
+    
   }
 }

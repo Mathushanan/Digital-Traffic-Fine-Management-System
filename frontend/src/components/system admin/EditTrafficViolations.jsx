@@ -82,13 +82,11 @@ const EditTrafficViolations = () => {
 
   const handleEditClick = (trafficViolation) => {
     setCurrentTrafficViolation(trafficViolation);
-    console.log(trafficViolation);
     setShowEditModal(true);
   };
 
   const handleDeleteClick = (trafficViolation) => {
     setCurrentTrafficViolation(trafficViolation);
-    console.log(trafficViolation);
     setShowDeleteModal(true);
   };
 
@@ -105,7 +103,7 @@ const EditTrafficViolations = () => {
 
       // Get the token from localStorage
       const token = localStorage.getItem("authToken");
-      const trafficViolationIdToDelete = trafficViolation.TrafficViolationId;
+      const trafficViolationIdToDelete = trafficViolation.ViolationId;
       const response = await axios.delete(deleteTrafficViolationUrl, {
         data: { violationId: trafficViolationIdToDelete },
         headers: {
@@ -115,7 +113,7 @@ const EditTrafficViolations = () => {
       });
 
       if (response.status === 200) {
-        fetchTraffciViolations();
+        fetchTrafficViolations();
         setMessage(`Traffic Violation Deleted successfully!`);
         setMessageType("success");
       } else {

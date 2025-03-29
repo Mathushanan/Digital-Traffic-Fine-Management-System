@@ -11,6 +11,7 @@ using backend.Services;
 using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Microsoft.VisualBasic;
 
 namespace backend
 {
@@ -24,8 +25,10 @@ namespace backend
         private readonly ITrafficPoliceService _trafficPoliceService;
         private readonly ILicenseHolderService _licenseHolderService;
         private readonly ITrafficViolationService _trafficViolationService;
+        private readonly INotificationService _notificationService;
+        private readonly IAuditService _auditService;
 
-        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService)
+        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService, INotificationService notificationService, IAuditService auditService)
         {
             _logger = logger;
             this._passwordService = passwordService;
@@ -35,6 +38,8 @@ namespace backend
             this._trafficPoliceService = trafficPoliceService;
             this._licenseHolderService = licenseHolderService;
             this._trafficViolationService = trafficViolationService;
+            this._notificationService = notificationService;
+            this._auditService = auditService;
 
         }
 
@@ -224,6 +229,7 @@ namespace backend
                         string? contactNumber = data.ContactNumber;
                         string? email = data.Email;
 
+
                         if (stationCode == null || stationName == null || address == null || district == null || contactNumber == null || email == null)
                         {
                             return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing!");
@@ -250,14 +256,32 @@ namespace backend
 
                                 };
                                 int stationId = await _stationService.AddStationAsync(newStation);
+
+                                //add audit log
                                 if (stationId > 0)
                                 {
-                                    return new OkObjectResult("Station registered successfully!");
+                                    string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                    User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                    // Capture additional audit details
+                                    var auditEntry = new Audit
+                                    {
+                                        UserId = user!.UserId,
+                                        ApiEndPoint = "register-station",
+                                        RequestType = "POST",
+                                        TimeStamp = DateTime.UtcNow,
+                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                        RequestBody = requestBody,
+                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                        UserAgent = req.Headers["User-Agent"].ToString()
+                                    };
+                                    await _auditService.LogAuditAsync(auditEntry);
 
+                                    return new OkObjectResult("Station registered successfully!");
                                 }
                                 else
                                 {
-                                    return new BadRequestObjectResult("Failed to update the station admin's registered station!");
+                                    return new BadRequestObjectResult("Failed to register the station!");
                                 }
 
 
@@ -320,7 +344,34 @@ namespace backend
 
                         // Serialize the stations with the custom options
                         var jsonData = System.Text.Json.JsonSerializer.Serialize(stations, jsonOptions);
-                        return new OkObjectResult(jsonData);
+
+
+                        if (jsonData != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-all-stations",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(jsonData);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("User is not authorized for this action!");
+
+                        }
+                        
 
                     }
                     else
@@ -401,7 +452,7 @@ namespace backend
                             else
                             {
                                 var stationWithRegisteredSationAdmin = await _stationService.GetStationByStationAdminIdAsync(isValidStationAdmin.UserId);
-                                if (stationWithRegisteredSationAdmin != null)
+                                if (stationWithRegisteredSationAdmin?.StationCode != stationCode)
                                 {
                                     return new ConflictObjectResult("User already registered as Station Admin with other station!");
                                 }
@@ -429,8 +480,28 @@ namespace backend
                         {
                             return new BadRequestObjectResult("Failed to update the station!");
                         }
+                        else
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "update-station",
+                                RequestType = "PUT",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = requestBody,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult("Station updated successfully!");
+                        }
 
-                        return new OkObjectResult("Station updated successfully!");
+                        
 
                     }
                     else
@@ -488,19 +559,78 @@ namespace backend
                         {
                             return new NotFoundObjectResult("Station not found!");
                         }
-                        var isUpdated = await _userService.SetRegisteredStationIdToNull(existingStation.StationAdminId!.Value);
-                        if (!isUpdated)
+                        if (existingStation.StationAdminId != null)
                         {
-                            return new BadRequestObjectResult("Failed to delete the station!");
-                        }
+                            var isUpdated = await _userService.SetRegisteredStationIdToNull(existingStation.StationAdminId!.Value);
+                            if (!isUpdated)
+                            {
+                                return new BadRequestObjectResult("Failed to delete the station!");
+                            }
+                            else
+                            {
+                                bool isDeleted = await _stationService.DeleteStationAsync(existingStation);
+                                if (!isDeleted)
+                                {
+                                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                                }
+                                else
+                                {
+                                    string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                    User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                    // Capture additional audit details
+                                    var auditEntry = new Audit
+                                    {
+                                        UserId = user!.UserId,
+                                        ApiEndPoint = "delete-station",
+                                        RequestType = "DELETE",
+                                        TimeStamp = DateTime.UtcNow,
+                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                        RequestBody = requestBody,
+                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                        UserAgent = req.Headers["User-Agent"].ToString()
+                                    };
+                                    await _auditService.LogAuditAsync(auditEntry);
+                                    return new OkObjectResult("Station deleted successfully!");
+                                }
 
-                        bool isDeleted = await _stationService.DeleteStationAsync(existingStation);
-                        if (!isDeleted)
+                                
+                            }
+                            
+
+                        }
+                        else
                         {
-                            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                        }
+                            bool isDeleted = await _stationService.DeleteStationAsync(existingStation);
+                            if (!isDeleted)
+                            {
+                                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                            }
+                            else
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "delete-station",
+                                    RequestType = "DELETE",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = requestBody,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("Station deleted successfully!");
 
-                        return new OkObjectResult("Station deleted successfully!");
+                            }
+
+                          
+
+                        } 
 
                     }
                     else
@@ -561,6 +691,22 @@ namespace backend
                         }
                         else
                         {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "search-traffic-police",
+                                RequestType = "POST",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = requestBody,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
                             return new OkObjectResult(existingTrafficPolice);
                         }
 
@@ -712,6 +858,22 @@ namespace backend
                                         }
                                         else
                                         {
+                                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                            // Capture additional audit details
+                                            var auditEntry = new Audit
+                                            {
+                                                UserId = user!.UserId,
+                                                ApiEndPoint = "register-station-admin",
+                                                RequestType = "POST",
+                                                TimeStamp = DateTime.UtcNow,
+                                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                                RequestBody = requestBody,
+                                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                                UserAgent = req.Headers["User-Agent"].ToString()
+                                            };
+                                            await _auditService.LogAuditAsync(auditEntry);
                                             return new OkObjectResult("Station Admin registered successfully!");
                                         }
                                     }
@@ -776,7 +938,31 @@ namespace backend
 
                         // Serialize the station admins with the custom options
                         var jsonData = System.Text.Json.JsonSerializer.Serialize(stationAdmins, jsonOptions);
-                        return new OkObjectResult(jsonData);
+                        if (jsonData != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-all-stations",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(jsonData);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No station admins found!");
+                        }
+                       
 
                     }
                     else
@@ -838,7 +1024,7 @@ namespace backend
                         if (existingUser.UserType == "StationAdmin")
                         {
                             var isUpdated = await _stationService.UpdateStationAdminIdAsync(existingUser.RegisteredStationId!.Value, 0);
-                            if (isUpdated==null)
+                            if (isUpdated == null)
                             {
                                 return new BadRequestObjectResult("Failed to update the registered station admin id!");
                             }
@@ -851,7 +1037,23 @@ namespace backend
                                 }
                                 else
                                 {
-                                    return new OkObjectResult("Station deleted successfully!");
+                                    string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                    User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                    // Capture additional audit details
+                                    var auditEntry = new Audit
+                                    {
+                                        UserId = user!.UserId,
+                                        ApiEndPoint = "delete-user",
+                                        RequestType = "DELETE",
+                                        TimeStamp = DateTime.UtcNow,
+                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                        RequestBody = null,
+                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                        UserAgent = req.Headers["User-Agent"].ToString()
+                                    };
+                                    await _auditService.LogAuditAsync(auditEntry);
+                                    return new OkObjectResult("User deleted successfully!");
 
                                 }
 
@@ -911,11 +1113,11 @@ namespace backend
                         }
 
                         // Accessing deserialized parameters
-                        int  userId = data.UserId;
+                        int userId = data.UserId;
                         string? address = data.Address;
                         string? contactNumber = data.ContactNumber;
                         string? email = data.Email;
-                        
+
 
                         // Check if the station exists
                         var existingUser = await _userService.GetUserByUserIdAsync(userId);
@@ -938,15 +1140,35 @@ namespace backend
                             {
                                 return new BadRequestObjectResult("Failed to update the user!");
                             }
+                            else
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "update-user",
+                                    RequestType = "PUT",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = null,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("User updated successfully!");
+                            }
 
-                            return new OkObjectResult("User updated successfully!");
+                            
                         }
                         else
                         {
                             return new BadRequestObjectResult("Failed to update the user!");
                         }
 
-                        
+
 
                     }
                     else
@@ -1008,14 +1230,14 @@ namespace backend
                         int points = data.Points;
                         int dueDays = data.DueDays;
 
-                        if (sectionOfAct == null || violationType== null || provision== null)
+                        if (sectionOfAct == null || violationType == null || provision == null)
                         {
                             return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing!");
                         }
                         else
                         {
 
-                            var existingTrafficViolation = await _trafficViolationService.GetTrafficViolationByParametersAsync(sectionOfAct,provision);
+                            var existingTrafficViolation = await _trafficViolationService.GetTrafficViolationByParametersAsync(sectionOfAct, provision);
                             if (existingTrafficViolation != null)
                             {
                                 return new ConflictObjectResult("Traffic Violation already registered with provided parameters!");
@@ -1025,17 +1247,34 @@ namespace backend
 
                                 var newTrafficViolation = new TrafficViolation
                                 {
-                                    SectionOfAct= sectionOfAct,
-                                    ViolationType= violationType,
-                                    Provision= provision,
-                                    FineAmount= fineAmount,
-                                    Points= points,
-                                    DueDays= dueDays
+                                    SectionOfAct = sectionOfAct,
+                                    ViolationType = violationType,
+                                    Provision = provision,
+                                    FineAmount = fineAmount,
+                                    Points = points,
+                                    DueDays = dueDays
 
                                 };
                                 int trafficViolationId = await _trafficViolationService.AddTrafficViolationAsync(newTrafficViolation);
                                 if (trafficViolationId > 0)
                                 {
+                                    string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                    User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                    // Capture additional audit details
+                                    var auditEntry = new Audit
+                                    {
+                                        UserId = user!.UserId,
+                                        ApiEndPoint = "register-traffic-violation",
+                                        RequestType = "POST",
+                                        TimeStamp = DateTime.UtcNow,
+                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                        RequestBody = null,
+                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                        UserAgent = req.Headers["User-Agent"].ToString()
+                                    };
+                                    await _auditService.LogAuditAsync(auditEntry);
+
                                     return new OkObjectResult("Traffcic Violation registered successfully!");
 
                                 }
@@ -1104,7 +1343,31 @@ namespace backend
 
                         // Serialize the stations with the custom options
                         var jsonData = System.Text.Json.JsonSerializer.Serialize(trafficViolations, jsonOptions);
-                        return new OkObjectResult(jsonData);
+                        if (jsonData != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "update-user",
+                                RequestType = "PUT",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(jsonData);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No traffic violations found!");
+                        }
+                        
 
                     }
                     else
@@ -1179,10 +1442,10 @@ namespace backend
                             // Update user details if provided
                             existingTrafficViolation.ViolationType = violationType ?? existingTrafficViolation.ViolationType;
                             existingTrafficViolation.SectionOfAct = sectionOfAct ?? existingTrafficViolation.SectionOfAct;
-                            existingTrafficViolation.Provision = provision?? existingTrafficViolation.Provision;
-                            existingTrafficViolation.Points = points??existingTrafficViolation.Points;
-                            existingTrafficViolation.DueDays = dueDays??existingTrafficViolation.DueDays;
-                            existingTrafficViolation.FineAmount = fineAmount??existingTrafficViolation.FineAmount;
+                            existingTrafficViolation.Provision = provision ?? existingTrafficViolation.Provision;
+                            existingTrafficViolation.Points = points ?? existingTrafficViolation.Points;
+                            existingTrafficViolation.DueDays = dueDays ?? existingTrafficViolation.DueDays;
+                            existingTrafficViolation.FineAmount = fineAmount ?? existingTrafficViolation.FineAmount;
 
 
                             // Update user in the database
@@ -1191,12 +1454,316 @@ namespace backend
                             {
                                 return new BadRequestObjectResult("Failed to update the traffic violation!");
                             }
+                            else
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "update-traffic-violation",
+                                    RequestType = "PUT",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = null,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("Traffic Violation updated successfully!");
+                            }
 
-                            return new OkObjectResult("Traffic Violation updated successfully!");
+                            
                         }
-                       
 
 
+
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+        [Function("DeleteTrafficViolation")]
+        public async Task<IActionResult> DeleteTrafficViolation([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "delete-traffic-violation")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin" || userRole == "StationAdmin")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                        int violationId = data?.violationId!;
+
+                        if (violationId <= 0)
+                        {
+                            return new BadRequestObjectResult("ViolationId is required in the request body!");
+                        }
+
+                        var existingTrafficViolation = await _trafficViolationService.GetTrafficViolationByViolationIdAsync(violationId);
+                        if (existingTrafficViolation == null)
+                        {
+                            return new NotFoundObjectResult("Traffic Violation not found!");
+                        }
+                        else
+                        {
+                            bool isDeleted = await _trafficViolationService.DeleteTrafficViolationAsync(existingTrafficViolation.ViolationId);
+                            if (!isDeleted)
+                            {
+                                return new BadRequestObjectResult("Failed to delete the traffic violation!");
+                            }
+                            else
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "delete-traffic-violation",
+                                    RequestType = "DELETE",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = null,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("Traffic violation deleted successfully!");
+
+                            }
+
+                        }
+
+
+                    }
+
+
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+
+        [Function("SendNotification")]
+        public async Task<IActionResult> SendNotification([HttpTrigger(AuthorizationLevel.Function, "post", Route = "send-notification")] HttpRequest req)
+        {
+            try
+            {
+
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        // Read and deserialize the JSON request body
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<NotificationRequestDto>(requestBody);
+
+                        if (data == null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body!");
+                        }
+
+                        //Accessing deserialized parameters
+                        string? notifiedBy = data.MessageSender;
+                        string? receiverType = data.MessageReceiverType;
+                        string? message = data.MessageContent;
+                        DateTime? sentAt = data.SentAt;
+
+
+
+
+                        if (notifiedBy == null || receiverType == null || message == null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing!");
+                        }
+                        else
+                        {
+
+                            var newNotification = new Notification
+                            {
+                                NotifiedBy = notifiedBy,
+                                ReceiverType = receiverType,
+                                Message = message,
+                                SentAt = sentAt
+                            };
+
+                            int notificationId = await _notificationService.AddNotificationAsync(newNotification);
+                            if (notificationId > 0)
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "send-notification",
+                                    RequestType = "POST",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = null,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("Notification added successfully!");
+
+                            }
+                            else
+                            {
+                                return new BadRequestObjectResult("Failed to add the notification!");
+                            }
+
+
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+
+            }
+        }
+
+        [Function("GetAllNotificationsBySenderEmail")]
+        public async Task<IActionResult> GetAllNotificationsBySenderEmail([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-all-notifications-by-email")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                        string senderEmail = data?.senderEmail!;
+
+                        if (senderEmail == null)
+                        {
+                            return new BadRequestObjectResult("Email is required in the request body!");
+                        }
+
+                        var notifications = await _notificationService.GetAllNotificationsBySenderEmailAsync(senderEmail);
+                        var jsonOptions = new JsonSerializerOptions
+                        {
+                            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+                            MaxDepth = 32
+                        };
+
+                        // Serialize the stations with the custom options
+                        var jsonData = System.Text.Json.JsonSerializer.Serialize(notifications, jsonOptions);
+                        if (jsonData != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-all-notifications",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(jsonData);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No notifications found!");
+                        }
+                        
 
                     }
                     else

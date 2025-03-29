@@ -51,5 +51,18 @@ namespace backend.Services
             _systemDbContext.TrafficViolations.Update(trafficviolation);
             return await _systemDbContext.SaveChangesAsync() > 0;
         }
+        public async Task<bool> DeleteTrafficViolationAsync(int violationId)
+        {
+            var trafficViolation = await _systemDbContext.TrafficViolations.FindAsync(violationId);
+
+            if (trafficViolation == null)
+            {
+                return false;
+            }
+
+            _systemDbContext.TrafficViolations.Remove(trafficViolation);
+            return await _systemDbContext.SaveChangesAsync() > 0;
+
+        }
     }
 }

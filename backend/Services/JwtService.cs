@@ -92,5 +92,12 @@ namespace backend.Services
             }
         }
 
+        public string? GetUserEmailFromToken(string token)
+        {
+            var principal = ValidateJwtToken(token);
+            return principal?.Claims.FirstOrDefault(c => c.Type == "Email")?.Value;
+
+        }
+
     }
 }

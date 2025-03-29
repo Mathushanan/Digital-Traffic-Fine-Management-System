@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { FaSignInAlt } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
@@ -7,68 +7,59 @@ import { MdAddBox } from "react-icons/md";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // Import React Icons
 import { FaPlus } from "react-icons/fa";
+import { IoSend } from "react-icons/io5";
+import { jwtDecode } from "jwt-decode";
 
-const RegisterTrafficViolation = () => {
-  const [violationType, setViolationType] = useState("");
-  const [provision, setProvision] = useState("");
-  const [sectionOfAct, setSectionOfAct] = useState("");
-  const [fineAmount, setFineAmount] = useState("");
-  const [points, setPoints] = useState("");
-  const [dueDays, setDueDays] = useState("");
+const SendNotification = () => {
+  const [messageReceiver, setMessageReceiver] = useState("");
+  const [messageSender, setMessageSender] = useState("");
+  const [messageContent, setMessageContent] = useState("");
+  const [sentAt, setSentAt] = useState("");
+
+  useEffect(() => {
+    const now = new Date();
+    const formattedDate = now.toISOString(); // Formats to local date and time
+    setSentAt(formattedDate);
+
+    const token = localStorage.getItem("authToken");
+    const decodedToken = jwtDecode(token);
+    const email = decodedToken.Email;
+    setMessageSender(email);
+  }, []);
 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
 
-  const violationTypes = [
-    { value: "", label: "Select a Violation Category" },
-    { value: "court&fine", label: "Handled in Court & Requires Fine Payment" },
-    { value: "fine", label: "Requires only a Fine Payment" },
+  const messageReceivers = [
+    { value: "", label: "Select target receivers" },
+    { value: "toAllUsers", label: "To all users" },
+    { value: "toAllStationAdmins", label: "To all station admins" },
+    { value: "toAllTrafficPolices", label: "To all traffic police officers" },
+    { value: "toAllPublic", label: "To all public" },
   ];
-
-  const validateForm = () => {
-    if (!/^[0-9]+(\.[0-9]+)?$/.test(fineAmount)) {
-      return "Fine Amount must be a valid decimal number.";
-    }
-    if (!/^[0-9]+$/.test(points)) {
-      return "Points must be a valid integer.";
-    }
-    if (!/^[0-9]+$/.test(dueDays)) {
-      return "Due Days must be a valid integer.";
-    }
-    return null;
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(violationType);
-
-    const errorMessage = validateForm();
-    if (errorMessage) {
-      setMessage(errorMessage);
-      setMessageType("error");
-      return;
-    }
+    console.log(messageReceiver, messageSender, sentAt, messageContent);
 
     try {
-      const registerTrafficViolationUrl = `${
+      const sendMessageUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/register-traffic-violation`;
+      }/send-notification`;
 
       // Get the token from localStorage (or wherever you store the JWT token)
       const token = localStorage.getItem("authToken");
 
       const response = await axios.post(
-        registerTrafficViolationUrl,
+        sendMessageUrl,
         {
-          violationType: violationType,
-          provision: provision,
-          fineAmount: fineAmount,
-          points: points,
-          dueDays: dueDays,
-          sectionOfAct: sectionOfAct,
+          messageReceiverType: messageReceiver,
+          messageSender: messageSender,
+          messageContent: messageContent,
+          sentAt: sentAt,
         },
         {
           headers: {
@@ -78,14 +69,14 @@ const RegisterTrafficViolation = () => {
       );
 
       if (response.status == 200) {
-        setMessage(`New traffic violation registered successfully!`);
+        setMessage(`Message sent successfully!`);
         setMessageType("success");
       }
     } catch (error) {
       setMessage(`${error.response ? error.response.data : error.message}`);
       setMessageType("error");
       console.error(
-        "Registration failed:",
+        "Sending failed:",
         error.response ? error.response.data : error.message
       );
     }
@@ -125,20 +116,23 @@ const RegisterTrafficViolation = () => {
 
       <div className="container d-flex justify-content-center align-items-center mt-2">
         <div className="p-4" style={{ maxWidth: "600px", width: "100%" }}>
-          <h3 className="text-start mb-4">Register Traffic Violation</h3>
+          <h3 className="text-start mb-4">Send Message</h3>
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-3 text-start position-relative">
               <select
                 className="form-control fs-6 pe-5"
-                id="violationType"
-                value={violationType}
-                onChange={(e) => setViolationType(e.target.value)}
+                id="messageReceiver"
+                value={messageReceiver}
+                onChange={(e) => setMessageReceiver(e.target.value)}
                 required
                 style={{ appearance: "none", color: "#555" }}
               >
-                {violationTypes.map((violationType) => (
-                  <option key={violationType.value} value={violationType.value}>
-                    {violationType.label}
+                {messageReceivers.map((messageReceiver) => (
+                  <option
+                    key={messageReceiver.value}
+                    value={messageReceiver.value}
+                  >
+                    {messageReceiver.label}
                   </option>
                 ))}
               </select>
@@ -153,64 +147,46 @@ const RegisterTrafficViolation = () => {
                 }}
               />
             </div>
-            <div className="form-group mb-3 text-start">
-              <input
-                type="text"
-                className="form-control fs-6"
-                id="sectionOfAct"
-                value={sectionOfAct}
-                onChange={(e) => setSectionOfAct(e.target.value)}
-                required
-                placeholder="Section Of Act"
-              />
-            </div>
 
             <div className="form-group mb-3 text-start">
               <textarea
                 className="form-control fs-6"
-                id="provision"
-                name="provision"
+                id="messageContent"
+                name="messageContent"
                 required
-                placeholder="Provision"
-                rows="4"
-                value={provision}
-                onChange={(e) => setProvision(e.target.value)}
+                placeholder="Message Content"
+                rows="6"
+                value={messageContent}
+                onChange={(e) => setMessageContent(e.target.value)}
               ></textarea>
             </div>
             <div className="form-group mb-3 text-start">
               <input
-                type="number"
+                type="text"
                 className="form-control fs-6"
-                id="finaAmount"
-                value={fineAmount}
-                onChange={(e) => setFineAmount(e.target.value)}
+                id="messageSender"
+                value={messageSender}
+                onChange={(e) => setMessageSender(e.target.value)}
                 required
-                placeholder="Fine Amount"
+                placeholder="Message Sender"
+                readOnly
+                disabled
               />
             </div>
             <div className="form-group mb-3 text-start">
               <input
-                type="number"
+                type="text"
                 className="form-control fs-6"
-                id="points"
-                value={points}
-                onChange={(e) => setPoints(e.target.value)}
+                id="sentAt"
+                value={sentAt}
+                onChange={(e) => setSentAt(e.target.value)}
                 required
-                placeholder="Allocated Points"
+                placeholder="Sent At"
+                readOnly
+                disabled
               />
             </div>
 
-            <div className="form-group mb-3 text-start">
-              <input
-                type="number"
-                className="form-control fs-6 h-80"
-                id="dueDays"
-                value={dueDays}
-                onChange={(e) => setDueDays(e.target.value)}
-                required
-                placeholder="Due Days"
-              />
-            </div>
             <div className="form-group mb-3">
               <button
                 type="submit"
@@ -223,8 +199,7 @@ const RegisterTrafficViolation = () => {
                   alignItems: "center",
                 }}
               >
-                <FaPlus style={{ marginRight: "8px", fontSize: "20px" }} />{" "}
-                REGISTER
+                <IoSend style={{ marginRight: "8px", fontSize: "20px" }} /> SEND
               </button>
             </div>
           </form>
@@ -234,4 +209,4 @@ const RegisterTrafficViolation = () => {
   );
 };
 
-export default RegisterTrafficViolation;
+export default SendNotification;

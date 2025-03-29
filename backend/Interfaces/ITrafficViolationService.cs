@@ -14,5 +14,6 @@ namespace backend.Interfaces
         Task<List<TrafficViolation>> GetAllTrafficViolationsAsync();
         Task<bool> UpdateTrafficViolationAsync(TrafficViolation trafficviolation);
         Task<TrafficViolation?> GetTrafficViolationByViolationIdAsync(int violationId);
+        Task<bool> DeleteTrafficViolationAsync(int violationId);
     }
 }

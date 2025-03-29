@@ -236,11 +236,9 @@ namespace backend.Data
                     .HasMaxLength(100)
                     .IsRequired(true);
 
-                //Users:Notifications 1:M
-                entity.HasOne(n => n.Receiver)
-                    .WithMany(u => u.Notifications)
-                    .HasForeignKey(n => n.ReceiverId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.Property(n => n.ReceiverType)
+                    .HasMaxLength(1000)
+                    .IsRequired(true);
 
                 entity.Property(n => n.Message)
                     .HasMaxLength(1000)
@@ -248,10 +246,6 @@ namespace backend.Data
 
                 entity.Property(n => n.SentAt)
                     .HasColumnType("datetime")
-                    .IsRequired(true);
-
-                entity.Property(n => n.Status)
-                    .HasMaxLength(50)
                     .IsRequired(true);
             });
 
@@ -473,12 +467,6 @@ namespace backend.Data
                 entity.HasMany(u => u.RealTimeTrackings)
                     .WithOne(rt => rt.Officer)
                     .HasForeignKey(rt => rt.OfficerId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                //Users(receiver):Notifications 1:M
-                entity.HasMany(u => u.Notifications)
-                    .WithOne(n => n.Receiver)
-                    .HasForeignKey(n => n.ReceiverId)
                     .OnDelete(DeleteBehavior.Cascade);
 
                 //Users:Audits 1:M
