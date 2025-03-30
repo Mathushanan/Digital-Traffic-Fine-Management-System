@@ -202,7 +202,7 @@ const SideBar = ({ user, role }) => {
             </>
           )}
           {/* station admin */}
-          {user && role == "station-admin" && (
+          {user && role == "StationAdmin" && (
             <>
               <div className="nav-item mb-2">
                 <NavLink
@@ -278,7 +278,7 @@ const SideBar = ({ user, role }) => {
             </>
           )}
           {/* traffic police */}
-          {user && role == "traffic-police" && (
+          {user && role == "TrafficPolice" && (
             <>
               <div className="nav-item mb-2">
                 <NavLink
@@ -330,7 +330,7 @@ const SideBar = ({ user, role }) => {
             </>
           )}
           {/* public user */}
-          {user && role == "public-user" && (
+          {user && role == "PublicUser" && (
             <>
               <div className="nav-item mb-2">
                 <NavLink

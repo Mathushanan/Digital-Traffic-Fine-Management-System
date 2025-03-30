@@ -147,19 +147,31 @@ function App() {
                   {role === "StationAdmin" && (
                     <Route
                       path="/station-admin/*"
-                      element={<StationAdminRoutes />}
+                      element={
+                        <ProtectedRoute>
+                          <StationAdminRoutes />
+                        </ProtectedRoute>
+                      }
                     />
                   )}
                   {role === "PublicUser" && (
                     <Route
                       path="/public-user/*"
-                      element={<PublicUserRoutes />}
+                      element={
+                        <ProtectedRoute>
+                          <PublicUserRoutes />
+                        </ProtectedRoute>
+                      }
                     />
                   )}
                   {role === "TrafficPolice" && (
                     <Route
                       path="/traffic-police/*"
-                      element={<TrafficPoliceRoutes />}
+                      element={
+                        <ProtectedRoute>
+                          <TrafficPoliceRoutes />
+                        </ProtectedRoute>
+                      }
                     />
                   )}
                   <Route

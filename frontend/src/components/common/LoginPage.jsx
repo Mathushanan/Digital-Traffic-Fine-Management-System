@@ -37,6 +37,8 @@ const LoginPage = ({ setUser, setRole, setMessage, setMessageType }) => {
 
         if (userType == "SystemAdmin") {
           navigate("/system-admin");
+        } else if (userType == "StationAdmin") {
+          navigate("/station-admin");
         }
       }
     } catch (error) {
