@@ -36,6 +36,13 @@ namespace backend.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Notification>> GetAllStationAdminNotificationsBySenderEmailAsync(string senderEmail)
+        {
+            return await _systemDbContext.Notifications
+                .Where(n => n.NotifiedBy == senderEmail || n.ReceiverType== "toAllStationAdmins" || n.ReceiverType == "toAllUsers")
+                .ToListAsync();
+        }
+
 
     }
 }
