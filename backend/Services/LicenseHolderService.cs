@@ -26,5 +26,14 @@ namespace backend.Services
                 .Where(licenceHolder => licenceHolder.LicenseNumber == licenseNumber)
                 .SingleOrDefaultAsync();
         }
+        public async Task<LicenseHolder?> GetPublicUserByNicLicenseNumberAsync(string nicNumber, string licenseNumber)
+        {
+            return await _licenseHolderDbContext.LicenseHolders
+                .Where(licenseHolder =>
+                               licenseHolder.NicNumber == nicNumber &&
+                               licenseHolder.LicenseNumber == licenseNumber)
+                .FirstOrDefaultAsync();
+
+        }
     }
 }

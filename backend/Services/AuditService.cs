@@ -1,6 +1,7 @@
 ﻿using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,11 @@ namespace backend.Services
             await _systemDbContext.SaveChangesAsync();
 
             return audit.AuditId; // Assuming 'Id' is an integer
+        }
+        public async Task<List<Audit>> GetAllAuditsAsync()
+        {
+
+            return await _systemDbContext.Audits.ToListAsync();
         }
     }
 }

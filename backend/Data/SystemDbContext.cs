@@ -437,7 +437,7 @@ namespace backend.Data
 
                 entity.Property(u => u.BadgeNumber)
                     .HasMaxLength(100)
-                    .IsRequired(true);
+                    .IsRequired(false);
 
                 //Stations:Users 1:M
                 entity.HasOne(u => u.RegisteredStation)

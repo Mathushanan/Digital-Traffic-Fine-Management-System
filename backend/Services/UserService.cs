@@ -129,6 +129,31 @@ namespace backend.Services
             return await _systemDbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<List<User>> GetAllTrafficPoliceAsync()
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.UserType == "TrafficPolice")
+                .ToListAsync();
+        }
+
+        public async Task<User?> GetPublicUserByParametersAsync(string email, string nicNumber, string licenseNumber)
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.Email == email ||
+                               user.NicNumber == nicNumber ||
+                               user.LicenseNumber == licenseNumber)
+                .FirstOrDefaultAsync();
+
+        }
+
+        public async Task<List<User>> GetAllPublicUsersAsync()
+        {
+            return await _systemDbContext.Users
+                .Where(user => user.UserType == "PublicUser")
+                .ToListAsync();
+        }
+
+
 
 
     }

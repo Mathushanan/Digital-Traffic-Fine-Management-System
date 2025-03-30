@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -12,6 +13,7 @@ namespace backend.Models
         public int AuditId { get; set; }
 
         public int UserId { get; set; }
+        [JsonIgnore]
         public virtual User? User { get; set; }
 
         public string? ApiEndPoint { get; set; }

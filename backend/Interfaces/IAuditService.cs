@@ -10,5 +10,6 @@ namespace backend.Interfaces
     public interface IAuditService
     {
         Task<int> LogAuditAsync(Audit audit);
+        Task<List<Audit>> GetAllAuditsAsync();
     }
 }

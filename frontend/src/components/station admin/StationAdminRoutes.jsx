@@ -14,10 +14,10 @@ const StationAdminRoutes = () => {
         <Route path="/" element={<Navigate to="dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-officers/*" element={<ManageOfficers />} />
-        <Route path="/manage-public" element={<ManagePublic />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/payments" element={<Payments />} />
-        <Route path="/traffic-violations" element={<TrafficViolations />} />
+        <Route path="/manage-public/*" element={<ManagePublic />} />
+        <Route path="/notifications/*" element={<Notifications />} />
+        <Route path="/payments/*" element={<Payments />} />
+        <Route path="/traffic-violations/*" element={<TrafficViolations />} />
       </Routes>
     </div>
   );
