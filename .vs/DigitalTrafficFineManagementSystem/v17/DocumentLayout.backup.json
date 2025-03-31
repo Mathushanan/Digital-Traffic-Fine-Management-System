@@ -7,6 +7,22 @@
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\functions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\interfaces\\inotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\interfaces\\inotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -21,14 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\dtos\\trafficpoliceresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\dtos\\trafficpoliceresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\dtos\\userrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -49,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\data\\trafficpoliceofficerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\data\\trafficpoliceofficerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|solutionrelative:backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E04CC700-6A28-491C-BA55-15D57E81677D}|backend\\backend.csproj|c:\\users\\mathu\\onedrive\\desktop\\digitaltrafficfinemanagementsystem\\backend\\interfaces\\ilicenseholderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -234,9 +238,9 @@
               "Title": "Functions.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Functions.cs",
               "RelativeDocumentMoniker": "backend\\Functions.cs",
-              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Functions.cs*",
-              "RelativeToolTip": "backend\\Functions.cs*",
-              "ViewState": "AgIAAIEJAAAAAAAAAAAAwKkJAAAZAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Functions.cs",
+              "RelativeToolTip": "backend\\Functions.cs",
+              "ViewState": "AgIAALMEAAAAAAAAAAAiwMEEAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-04T13:39:32.048Z",
               "IsPinned": true,
@@ -245,6 +249,18 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\.gitignore",
+              "RelativeDocumentMoniker": "backend\\.gitignore",
+              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\.gitignore",
+              "RelativeToolTip": "backend\\.gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-03-31T05:15:32.39Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "PublicUserResponseDto.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Dtos\\PublicUserResponseDto.cs",
               "RelativeDocumentMoniker": "backend\\Dtos\\PublicUserResponseDto.cs",
@@ -256,7 +272,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "20250330123420_V6.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Migrations\\System\\20250330123420_V6.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\System\\20250330123420_V6.cs",
@@ -268,7 +284,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "TrafficPoliceResponseDto.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Dtos\\TrafficPoliceResponseDto.cs",
               "RelativeDocumentMoniker": "backend\\Dtos\\TrafficPoliceResponseDto.cs",
@@ -280,7 +296,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "IAuditService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\IAuditService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\IAuditService.cs",
@@ -292,7 +308,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "AuditService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\AuditService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\AuditService.cs",
@@ -304,7 +320,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "local.settings.json",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\local.settings.json",
               "RelativeDocumentMoniker": "backend\\local.settings.json",
@@ -316,7 +332,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "VehicleRegistration.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\VehicleRegistration.cs",
               "RelativeDocumentMoniker": "backend\\Models\\VehicleRegistration.cs",
@@ -328,7 +344,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "User_EligibleVehicleCategory.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User_EligibleVehicleCategory.cs",
               "RelativeDocumentMoniker": "backend\\Models\\User_EligibleVehicleCategory.cs",
@@ -340,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 33,
               "Title": "RealTimeTracking.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\RealTimeTracking.cs",
               "RelativeDocumentMoniker": "backend\\Models\\RealTimeTracking.cs",
@@ -352,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "Payment.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Payment.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Payment.cs",
@@ -364,7 +380,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "Fine.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Fine.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Fine.cs",
@@ -376,7 +392,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "EligibleVehicleCategory.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\EligibleVehicleCategory.cs",
               "RelativeDocumentMoniker": "backend\\Models\\EligibleVehicleCategory.cs",
@@ -388,7 +404,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "Dispute.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Dispute.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Dispute.cs",
@@ -400,7 +416,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 54,
               "Title": "20250308052927_V5.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Migrations\\System\\20250308052927_V5.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\System\\20250308052927_V5.cs",
@@ -412,7 +428,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "20250308051504_V4.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Migrations\\System\\20250308051504_V4.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\System\\20250308051504_V4.cs",
@@ -424,7 +440,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "Notification.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Notification.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Notification.cs",
@@ -436,7 +452,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "NotificationRequestDto.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Dtos\\NotificationRequestDto.cs",
               "RelativeDocumentMoniker": "backend\\Dtos\\NotificationRequestDto.cs",
@@ -448,33 +464,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "INotificationService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\INotificationService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\INotificationService.cs",
-              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\INotificationService.cs*",
-              "RelativeToolTip": "backend\\Interfaces\\INotificationService.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABnAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\INotificationService.cs",
+              "RelativeToolTip": "backend\\Interfaces\\INotificationService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T04:43:07.173Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T04:43:07.173Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "NotificationService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\NotificationService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\NotificationService.cs",
-              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\NotificationService.cs*",
-              "RelativeToolTip": "backend\\Services\\NotificationService.cs*",
-              "ViewState": "AgIAABgAAAAAAAAAAAAYwCYAAAAVAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\NotificationService.cs",
+              "RelativeToolTip": "backend\\Services\\NotificationService.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAAC0AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-08T04:39:16.495Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-08T04:39:16.495Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "ITrafficViolationService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\ITrafficViolationService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\ITrafficViolationService.cs",
@@ -486,7 +500,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "TrafficViolationService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\TrafficViolationService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\TrafficViolationService.cs",
@@ -498,7 +512,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "TrafficViolationRequestDto.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Dtos\\TrafficViolationRequestDto.cs",
               "RelativeDocumentMoniker": "backend\\Dtos\\TrafficViolationRequestDto.cs",
@@ -510,7 +524,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "20250307101318_V3.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Migrations\\System\\20250307101318_V3.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\System\\20250307101318_V3.cs",
@@ -522,7 +536,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "TrafficViolation.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\TrafficViolation.cs",
               "RelativeDocumentMoniker": "backend\\Models\\TrafficViolation.cs",
@@ -534,7 +548,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 34,
               "Title": "Station.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Station.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Station.cs",
@@ -546,7 +560,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "IPasswordService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\IPasswordService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\IPasswordService.cs",
@@ -558,7 +572,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "IJwtService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\IJwtService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\IJwtService.cs",
@@ -570,7 +584,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "JwtService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\JwtService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\JwtService.cs",
@@ -582,7 +596,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "IStationService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\IStationService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\IStationService.cs",
@@ -594,7 +608,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "LicenseHolder.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\LicenseHolder.cs",
               "RelativeDocumentMoniker": "backend\\Models\\LicenseHolder.cs",
@@ -606,7 +620,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "ILicenseHolderService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\ILicenseHolderService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\ILicenseHolderService.cs",
@@ -618,7 +632,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "LicenseHolderService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\LicenseHolderService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\LicenseHolderService.cs",
@@ -630,7 +644,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 53,
               "Title": "20250226073525_V1.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Migrations\\TrafficPolice\\20250226073525_V1.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\TrafficPolice\\20250226073525_V1.cs",
@@ -642,19 +656,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 4,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User.cs",
               "RelativeDocumentMoniker": "backend\\Models\\User.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\User.cs",
               "RelativeToolTip": "backend\\Models\\User.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAkwCQAAABDAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-26T07:14:10.917Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "SystemDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\SystemDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\SystemDbContext.cs",
@@ -666,7 +680,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "TrafficPoliceOfficerDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Data\\TrafficPoliceOfficerDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\TrafficPoliceOfficerDbContext.cs",
@@ -678,7 +692,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "TrafficPoliceOfficer.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\TrafficPoliceOfficer.cs",
               "RelativeDocumentMoniker": "backend\\Models\\TrafficPoliceOfficer.cs",
@@ -690,7 +704,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "StationService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\StationService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\StationService.cs",
@@ -702,7 +716,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 46,
               "Title": "PasswordService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\PasswordService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\PasswordService.cs",
@@ -714,7 +728,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "ITrafficPoliceService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\ITrafficPoliceService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\ITrafficPoliceService.cs",
@@ -726,7 +740,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "TrafficPoliceService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\TrafficPoliceService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\TrafficPoliceService.cs",
@@ -738,31 +752,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "IUserService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\IUserService.cs",
               "RelativeDocumentMoniker": "backend\\Interfaces\\IUserService.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Interfaces\\IUserService.cs",
               "RelativeToolTip": "backend\\Interfaces\\IUserService.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAADwvxoAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAwwBsAAABhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-26T06:51:03.371Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\UserService.cs",
               "RelativeDocumentMoniker": "backend\\Services\\UserService.cs",
               "ToolTip": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Services\\UserService.cs",
               "RelativeToolTip": "backend\\Services\\UserService.cs",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAAwJQAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAqwJ0AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-26T06:50:03.237Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "UserRequestDto.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Dtos\\UserRequestDto.cs",
               "RelativeDocumentMoniker": "backend\\Dtos\\UserRequestDto.cs",
@@ -774,7 +788,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "20250219034657_V2.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Migrations\\System\\20250219034657_V2.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\System\\20250219034657_V2.cs",
@@ -786,7 +800,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "Audit.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Audit.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Audit.cs",
@@ -798,7 +812,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 32,
               "Title": "Court.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Models\\Court.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Court.cs",
@@ -810,7 +824,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 47,
               "Title": "backend.csproj",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\backend.csproj",
               "RelativeDocumentMoniker": "backend\\backend.csproj",
@@ -822,7 +836,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 50,
               "Title": "main.jsx",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\frontend\\src\\main.jsx",
               "RelativeDocumentMoniker": "frontend\\src\\main.jsx",
@@ -834,7 +848,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "index.css",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\frontend\\src\\index.css",
               "RelativeDocumentMoniker": "frontend\\src\\index.css",
@@ -846,7 +860,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 48,
               "Title": "App.jsx",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\frontend\\src\\App.jsx",
               "RelativeDocumentMoniker": "frontend\\src\\App.jsx",
@@ -858,7 +872,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 49,
               "Title": "App.css",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\frontend\\src\\App.css",
               "RelativeDocumentMoniker": "frontend\\src\\App.css",
@@ -870,7 +884,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Mathu\\OneDrive\\Desktop\\DigitalTrafficFineManagementSystem\\backend\\Program.cs",
               "RelativeDocumentMoniker": "backend\\Program.cs",

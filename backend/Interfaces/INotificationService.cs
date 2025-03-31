@@ -12,5 +12,6 @@ namespace backend.Interfaces
         Task<int> AddNotificationAsync(Notification notification);
         Task<List<Notification>> GetAllNotificationsBySenderEmailAsync(string senderEmail);
         Task<List<Notification>> GetAllStationAdminNotificationsBySenderEmailAsync(string senderEmail);
+        Task<List<Notification>> GetAllPublicUserNotificationsBySenderEmailAsync(string senderEmail);
     }
 }

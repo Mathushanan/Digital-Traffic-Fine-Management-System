@@ -25,6 +25,7 @@ namespace backend.Interfaces
         Task<List<User>> GetAllTrafficPoliceAsync();
         Task<User?> GetPublicUserByParametersAsync(string email, string nicNumber, string licenseNumber);
         Task<List<User>> GetAllPublicUsersAsync();
+        Task<User?> GetPublicUserByNicLicenseNumberAsync(string nicNumber, string licenseNumber);
 
 
 

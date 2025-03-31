@@ -11,9 +11,9 @@ const PublicUserRoutes = () => {
       <Routes>
         <Route path="/" element={<Navigate to="dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/manage-account" element={<ManageAccount />} />
-        <Route path="/manage-fines" element={<ManageFines />} />
-        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/manage-account/*" element={<ManageAccount />} />
+        <Route path="/manage-fines/*" element={<ManageFines />} />
+        <Route path="/notifications/*" element={<Notifications />} />
       </Routes>
     </div>
   );

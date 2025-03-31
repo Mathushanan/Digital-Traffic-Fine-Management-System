@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -151,6 +152,16 @@ namespace backend.Services
             return await _systemDbContext.Users
                 .Where(user => user.UserType == "PublicUser")
                 .ToListAsync();
+        }
+
+
+        public async Task<User?> GetPublicUserByNicLicenseNumberAsync(string nicNumber, string licenseNumber)
+        {
+            return await _systemDbContext.Users
+               .Where(user => 
+                              user.NicNumber == nicNumber ||
+                              user.LicenseNumber == licenseNumber)
+               .FirstOrDefaultAsync();
         }
 
 

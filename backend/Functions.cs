@@ -371,7 +371,7 @@ namespace backend
                             return new BadRequestObjectResult("User is not authorized for this action!");
 
                         }
-                        
+
 
                     }
                     else
@@ -501,7 +501,7 @@ namespace backend
                             return new OkObjectResult("Station updated successfully!");
                         }
 
-                        
+
 
                     }
                     else
@@ -594,9 +594,9 @@ namespace backend
                                     return new OkObjectResult("Station deleted successfully!");
                                 }
 
-                                
+
                             }
-                            
+
 
                         }
                         else
@@ -628,9 +628,9 @@ namespace backend
 
                             }
 
-                          
 
-                        } 
+
+                        }
 
                     }
                     else
@@ -672,7 +672,7 @@ namespace backend
                 {
                     var claims = principal.Claims;
                     var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-                    if (userRole == "SystemAdmin" || userRole=="StationAdmin" )
+                    if (userRole == "SystemAdmin" || userRole == "StationAdmin")
                     {
                         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                         var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
@@ -962,7 +962,7 @@ namespace backend
                         {
                             return new BadRequestObjectResult("No station admins found!");
                         }
-                       
+
 
                     }
                     else
@@ -1059,37 +1059,37 @@ namespace backend
 
                             }
                         }
-                        else if(existingUser.UserType=="TrafficPolice" || existingUser.UserType == "PublicUser")
+                        else if (existingUser.UserType == "TrafficPolice" || existingUser.UserType == "PublicUser")
                         {
-                          
-                                bool isDeleted = await _userService.DeleteUserAsync(existingUser.UserId);
-                                if (!isDeleted)
-                                {
-                                    return new BadRequestObjectResult("Failed to delete the user!");
-                                }
-                                else
-                                {
-                                    string? userEmail = _jwtService.GetUserEmailFromToken(token!);
-                                    User? user = await _userService.GetUserByEmailAsync(userEmail!);
-                                    // Capture additional audit details
-                                    var auditEntry = new Audit
-                                    {
-                                        UserId = user!.UserId,
-                                        ApiEndPoint = "delete-user",
-                                        RequestType = "DELETE",
-                                        TimeStamp = DateTime.UtcNow,
-                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
-                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
-                                        RequestBody = null,
-                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
-                                        UserAgent = req.Headers["User-Agent"].ToString()
-                                    };
-                                    await _auditService.LogAuditAsync(auditEntry);
-                                    return new OkObjectResult("User deleted successfully!");
 
-                                }
+                            bool isDeleted = await _userService.DeleteUserAsync(existingUser.UserId);
+                            if (!isDeleted)
+                            {
+                                return new BadRequestObjectResult("Failed to delete the user!");
+                            }
+                            else
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "delete-user",
+                                    RequestType = "DELETE",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = null,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("User deleted successfully!");
 
-                            
+                            }
+
+
 
                         }
                         else
@@ -1135,7 +1135,7 @@ namespace backend
                 {
                     var claims = principal.Claims;
                     var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-                    if (userRole == "SystemAdmin" || userRole=="StationAdmin")
+                    if (userRole == "SystemAdmin" || userRole == "StationAdmin" || userRole == "PublicUser")
                     {
                         // Read and deserialize the JSON request body
                         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -1151,6 +1151,9 @@ namespace backend
                         string? address = data.Address;
                         string? contactNumber = data.ContactNumber;
                         string? email = data.Email;
+                        string? password = data.Password;
+
+
 
 
                         // Check if the station exists
@@ -1160,12 +1163,14 @@ namespace backend
                             return new NotFoundObjectResult("User not found!");
                         }
 
-                        if (existingUser.UserType == "StationAdmin" || existingUser.UserType=="TrafficPolice" || existingUser.UserType=="PublicUser")
+                        if (existingUser.UserType == "StationAdmin" || existingUser.UserType == "TrafficPolice")
                         {
                             // Update user details if provided
                             existingUser.Address = address ?? existingUser.Address;
                             existingUser.ContactNumber = contactNumber ?? existingUser.ContactNumber;
                             existingUser.Email = email ?? existingUser.Email;
+
+
 
 
                             // Update user in the database
@@ -1195,7 +1200,49 @@ namespace backend
                                 return new OkObjectResult("User updated successfully!");
                             }
 
-                            
+
+                        }
+                        else if (existingUser.UserType == "PublicUser")
+                        {
+                            // Update user details if provided
+                            existingUser.Address = address ?? existingUser.Address;
+                            existingUser.ContactNumber = contactNumber ?? existingUser.ContactNumber;
+                            existingUser.Email = email ?? existingUser.Email;
+
+                            if (password!=null)
+                            {
+                                existingUser.PasswordHash = _passwordService.HashPassword(existingUser, password!);
+                            }
+
+                           
+
+                            // Update user in the database
+                            var updateResult = await _userService.UpdateUserAsync(existingUser);
+                            if (!updateResult)
+                            {
+                                return new BadRequestObjectResult("Failed to update the user!");
+                            }
+                            else
+                            {
+                                string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                                // Capture additional audit details
+                                var auditEntry = new Audit
+                                {
+                                    UserId = user!.UserId,
+                                    ApiEndPoint = "update-user",
+                                    RequestType = "PUT",
+                                    TimeStamp = DateTime.UtcNow,
+                                    IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                    RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                    RequestBody = null,
+                                    QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                    UserAgent = req.Headers["User-Agent"].ToString()
+                                };
+                                await _auditService.LogAuditAsync(auditEntry);
+                                return new OkObjectResult("User updated successfully!");
+                            }
+
                         }
                         else
                         {
@@ -1401,7 +1448,7 @@ namespace backend
                         {
                             return new BadRequestObjectResult("No traffic violations found!");
                         }
-                        
+
 
                     }
                     else
@@ -1509,7 +1556,7 @@ namespace backend
                                 return new OkObjectResult("Traffic Violation updated successfully!");
                             }
 
-                            
+
                         }
 
 
@@ -1797,7 +1844,7 @@ namespace backend
                         {
                             return new BadRequestObjectResult("No notifications found!");
                         }
-                        
+
 
                     }
                     else
@@ -1843,10 +1890,10 @@ namespace backend
                     if (userRole == "SystemAdmin")
                     {
                         var audits = await _auditService.GetAllAuditsAsync();
-     
 
-                       
-                        if(audits != null)
+
+
+                        if (audits != null)
                         {
                             string? userEmail = _jwtService.GetUserEmailFromToken(token!);
                             User? user = await _userService.GetUserByEmailAsync(userEmail!);
@@ -1995,7 +2042,7 @@ namespace backend
                                     LicenseIssueDate = licenseIssueDate,
                                     LicenseExpiryDate = licenseExpiryDate,
                                     BadgeNumber = badgeNumber,
-                                    RegisteredStationId=user?.RegisteredStationId
+                                    RegisteredStationId = user?.RegisteredStationId
 
                                 };
 
@@ -2004,25 +2051,25 @@ namespace backend
 
                                 if (userId > 0)
                                 {
-   
-                                           
-                                            // Capture additional audit details
-                                            var auditEntry = new Audit
-                                            {
-                                                UserId = user!.UserId,
-                                                ApiEndPoint = "register-traffic-police",
-                                                RequestType = "POST",
-                                                TimeStamp = DateTime.UtcNow,
-                                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
-                                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
-                                                RequestBody = requestBody,
-                                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
-                                                UserAgent = req.Headers["User-Agent"].ToString()
-                                            };
-                                            await _auditService.LogAuditAsync(auditEntry);
-                                            return new OkObjectResult("Traffic police registered successfully!");
-                                        
-                                    
+
+
+                                    // Capture additional audit details
+                                    var auditEntry = new Audit
+                                    {
+                                        UserId = user!.UserId,
+                                        ApiEndPoint = "register-traffic-police",
+                                        RequestType = "POST",
+                                        TimeStamp = DateTime.UtcNow,
+                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                        RequestBody = requestBody,
+                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                        UserAgent = req.Headers["User-Agent"].ToString()
+                                    };
+                                    await _auditService.LogAuditAsync(auditEntry);
+                                    return new OkObjectResult("Traffic police registered successfully!");
+
+
                                 }
                                 else
                                 {
@@ -2090,11 +2137,11 @@ namespace backend
                     Email = tp.Email,
                     ContactNumber = tp.ContactNumber,
                     NicNumber = tp.NicNumber,
-                    LicenseNumber=tp.LicenseNumber,
+                    LicenseNumber = tp.LicenseNumber,
                     BadgeNumber = tp.BadgeNumber,
                     RegisteredStationId = tp.RegisteredStationId,
                     RegisteredStationName = tp.RegisteredStation?.StationName,
-                    RegisteredStationDistrict=tp.RegisteredStation?.District,
+                    RegisteredStationDistrict = tp.RegisteredStation?.District,
                 }).ToList();
 
                 var jsonOptions = new JsonSerializerOptions
@@ -2148,7 +2195,7 @@ namespace backend
                 {
                     var claims = principal.Claims;
                     var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-                    if (userRole == "StationAdmin")
+                    if (userRole == "StationAdmin" || userRole == "PublicUser")
                     {
                         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                         var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
@@ -2528,11 +2575,185 @@ namespace backend
 
         }
 
+        [Function("GetAllPublicUserNotifications")]
+        public async Task<IActionResult> GetAllPublicUserNotifications([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-all-public-user-notifications")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "PublicUser")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                        string senderEmail = data?.senderEmail!;
+
+                        if (senderEmail == null)
+                        {
+                            return new BadRequestObjectResult("Email is required in the request body!");
+                        }
+
+                        var notifications = await _notificationService.GetAllPublicUserNotificationsBySenderEmailAsync(senderEmail);
+                        var jsonOptions = new JsonSerializerOptions
+                        {
+                            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+                            MaxDepth = 32
+                        };
+
+                        // Serialize the stations with the custom options
+                        var jsonData = System.Text.Json.JsonSerializer.Serialize(notifications, jsonOptions);
+                        if (jsonData != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-all-public-user-notifications",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(jsonData);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No notifications found!");
+                        }
 
 
+                    }
+                    else
+                    {
 
+                        return new BadRequestObjectResult("User is not authorized for this action!");
 
+                    }
 
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+
+        [Function("getPublicUser")]
+        public async Task<IActionResult> GetPublicUser([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-public-user")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "StationAdmin" || userRole == "PublicUser")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+                        string nicNumber = data?.NicNumber!;
+                        string? licenseNumber = data?.LicenseNumber!;
+
+                        if (string.IsNullOrWhiteSpace(nicNumber) || string.IsNullOrWhiteSpace(licenseNumber))
+                        {
+                            return new BadRequestObjectResult("Nic number & License number are required in the request body!");
+                        }
+
+                        var existingPublicUser = await _userService.GetPublicUserByNicLicenseNumberAsync(nicNumber, licenseNumber);
+
+                        if (existingPublicUser == null)
+                        {
+                            return new NotFoundObjectResult("Public user not found!");
+                        }
+
+                        var publicUserDto = new PublicUserResponseDto
+                        {
+                            UserId = existingPublicUser.UserId,
+                            UserType = existingPublicUser.UserType,
+                            FirstName = existingPublicUser.FirstName,
+                            LastName = existingPublicUser.LastName,
+                            Gender = existingPublicUser.Gender,
+                            DateOfBirth = existingPublicUser.DateOfBirth,
+                            Address = existingPublicUser.Address,
+                            Email = existingPublicUser.Email,
+                            ContactNumber = existingPublicUser.ContactNumber,
+                            NicNumber = existingPublicUser.NicNumber,
+                            LicenseNumber = existingPublicUser.LicenseNumber,
+                            RegisteredStationId = existingPublicUser.RegisteredStationId,
+                            RegisteredStationName = existingPublicUser.RegisteredStation?.StationName,
+                            RegisteredStationDistrict = existingPublicUser.RegisteredStation?.District,
+                            AvailablePoints = existingPublicUser.AvailablePoints!.Value
+                        };
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "search-public-user",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(publicUserDto);
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
 
 
 
