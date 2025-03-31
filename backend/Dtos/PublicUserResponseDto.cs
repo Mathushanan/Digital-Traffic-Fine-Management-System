@@ -23,5 +23,7 @@ namespace backend.Dtos
         public int? RegisteredStationId { get; set; }
         public string? RegisteredStationName { get; set; }
         public int AvailablePoints { get; set; }
+        public DateTime? LicenseIssueDate { get; set; }
+        public DateTime? LicenseExpiryDate { get; set; }
     }
 }

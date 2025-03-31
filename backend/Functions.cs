@@ -27,8 +27,10 @@ namespace backend
         private readonly ITrafficViolationService _trafficViolationService;
         private readonly INotificationService _notificationService;
         private readonly IAuditService _auditService;
+        private readonly IUserEligibleVehicleCategoryService _userEligibleVehicleCategoryService;
+        private readonly IVehicleRegistrationService _vehicleRegistrationService;
 
-        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService, INotificationService notificationService, IAuditService auditService)
+        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService, INotificationService notificationService, IAuditService auditService,IUserEligibleVehicleCategoryService userEligibleVehicleCategory,IVehicleRegistrationService vehicleRegistrationService)
         {
             _logger = logger;
             this._passwordService = passwordService;
@@ -40,6 +42,8 @@ namespace backend
             this._trafficViolationService = trafficViolationService;
             this._notificationService = notificationService;
             this._auditService = auditService;
+            this._userEligibleVehicleCategoryService = userEligibleVehicleCategory;
+            this._vehicleRegistrationService = vehicleRegistrationService;
 
         }
 
@@ -1209,12 +1213,12 @@ namespace backend
                             existingUser.ContactNumber = contactNumber ?? existingUser.ContactNumber;
                             existingUser.Email = email ?? existingUser.Email;
 
-                            if (password!=null)
+                            if (password != null)
                             {
                                 existingUser.PasswordHash = _passwordService.HashPassword(existingUser, password!);
                             }
 
-                           
+
 
                             // Update user in the database
                             var updateResult = await _userService.UpdateUserAsync(existingUser);
@@ -2123,7 +2127,10 @@ namespace backend
                 if (userRole != "StationAdmin")
                     return new BadRequestObjectResult("User is not authorized for this action!");
 
-                var trafficPoliceEntities = await _userService.GetAllTrafficPoliceAsync();
+                var stationIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "RegisteredStationId")?.Value;
+                int registeredStationId = int.TryParse(stationIdClaim, out int parsedId) ? parsedId : 0;
+
+                var trafficPoliceEntities = await _userService.GetAllTrafficPoliceAsync(registeredStationId);
 
                 var trafficPoliceDtos = trafficPoliceEntities.Select(tp => new TrafficPoliceResponseDto
                 {
@@ -2318,6 +2325,8 @@ namespace backend
                         DateTime? licenseExpiryDate = licenseHolder.ExpiryDate;
 
 
+
+
                         string? userType = "PublicUser";
                         int availablePoints = 120;
 
@@ -2356,8 +2365,52 @@ namespace backend
 
                                 };
 
+                               
+
+
                                 newUser.PasswordHash = _passwordService.HashPassword(newUser, password!);
                                 var userId = await _userService.AddUserAsync(newUser);
+
+
+                                var categoryMap = new Dictionary<string, int>
+                                {
+                                     { "A1", 1 },
+                                     { "A", 2 },
+                                     { "B1", 3 },
+                                     { "B", 4 },
+                                     { "C1", 5 },
+                                     { "C", 6 },
+                                     { "CE", 7 },
+                                     { "D1", 8 },
+                                     { "D", 9 },
+                                     { "DE", 10 },
+                                     { "G1", 11 },
+                                     { "G", 12 },
+                                     { "J", 13 }
+                                };
+
+
+                                string? permittedvehicles = licenseHolder.PermittedVehicleCategories;
+
+                                if (!string.IsNullOrWhiteSpace(permittedvehicles))
+                                {
+                                    var categories = permittedvehicles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                                    foreach (var categoryCode in categories)
+                                    {
+                                        var trimmedCode = categoryCode.Trim();
+                                        if (categoryMap.TryGetValue(trimmedCode, out int categoryId))
+                                        {
+                                            await _userEligibleVehicleCategoryService.AddUserEligibleVehicleCategoryAsync(newUser.UserId, categoryId);
+                                        }
+                                        else
+                                        {
+                                            // Optional: Log or handle unknown category codes
+                                            Console.WriteLine($"Unknown vehicle category code: {trimmedCode}");
+                                        }
+                                    }
+                                }
+
 
                                 if (userId > 0)
                                 {
@@ -2435,7 +2488,10 @@ namespace backend
                 if (userRole != "StationAdmin")
                     return new BadRequestObjectResult("User is not authorized for this action!");
 
-                var publicUserEntities = await _userService.GetAllPublicUsersAsync();
+                var stationIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "RegisteredStationId")?.Value;
+                int registeredStationId = int.TryParse(stationIdClaim, out int parsedId) ? parsedId : 0;
+
+                var publicUserEntities = await _userService.GetAllPublicUsersAsync(registeredStationId);
 
                 var publicUserDtos = publicUserEntities.Select(tp => new PublicUserResponseDto
                 {
@@ -2840,6 +2896,192 @@ namespace backend
                 };
             }
 
+        }
+
+        [Function("getLicenseHolderDetails")]
+        public async Task<IActionResult> GetLicenseHolderDetails([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-license-holder-details")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+
+                        string? licenseNumber = data?.LicenseNumber!;
+
+                        if (string.IsNullOrWhiteSpace(licenseNumber))
+                        {
+                            return new BadRequestObjectResult("License number is required in the request body!");
+                        }
+
+                        var existingPublicUser = await _userService.GetPublicUserByLicenseNumberAsync(licenseNumber);
+
+                        if (existingPublicUser == null)
+                        {
+                            return new NotFoundObjectResult("Public user not found!");
+                        }
+
+                        var publicUserDto = new PublicUserResponseDto
+                        {
+                            UserId = existingPublicUser.UserId,
+                            UserType = existingPublicUser.UserType,
+                            FirstName = existingPublicUser.FirstName,
+                            LastName = existingPublicUser.LastName,
+                            Gender = existingPublicUser.Gender,
+                            DateOfBirth = existingPublicUser.DateOfBirth,
+                            Address = existingPublicUser.Address,
+                            Email = existingPublicUser.Email,
+                            ContactNumber = existingPublicUser.ContactNumber,
+                            NicNumber = existingPublicUser.NicNumber,
+                            LicenseNumber = existingPublicUser.LicenseNumber,
+                            RegisteredStationId = existingPublicUser.RegisteredStationId,
+                            RegisteredStationName = existingPublicUser.RegisteredStation?.StationName,
+                            RegisteredStationDistrict = existingPublicUser.RegisteredStation?.District,
+                            AvailablePoints = existingPublicUser.AvailablePoints!.Value,
+                            LicenseIssueDate=existingPublicUser.LicenseIssueDate,
+                            LicenseExpiryDate = existingPublicUser.LicenseExpiryDate
+                        };
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-license-holder-details",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(publicUserDto);
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+        [Function("getVehicleRegistrationDetails")]
+        public async Task<IActionResult> GetVehicleRegistrationDetails([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-vehicle-registration-details")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<VehicleRegistrationRequestDto>(requestBody);
+
+                        string? vehicleNumber = data?.VehicleNumber!;
+
+                        if (string.IsNullOrWhiteSpace(vehicleNumber))
+                        {
+                            return new BadRequestObjectResult("Vehicle number is required in the request body!");
+                        }
+
+                        var existingVehicle = await _vehicleRegistrationService.GetVehicleByVehicleNumberAsync(vehicleNumber);
+
+                        if (existingVehicle == null)
+                        {
+                            return new NotFoundObjectResult("Vehicle not found!");
+                        }
+
+                        var vehicleRegistrationDto = new VehicleRegistrationResponseDto
+                        {
+                            VehicleId = existingVehicle.VehicleId,
+                            VehicleNumber = existingVehicle.VehicleNumber,
+                            VehicleCategory = existingVehicle.VehicleCategory,
+                            NicNumber = existingVehicle.NicNumber,
+                            Make = existingVehicle.Make,
+                            Model = existingVehicle.Model,
+                            Year = existingVehicle.Year,
+                            Color = existingVehicle.Color,
+                            RegistrationNo = existingVehicle.RegistrationNo,
+                            RegistrationDate = existingVehicle.RegistrationDate,
+                            IsRoadTaxPaid = existingVehicle.IsRoadTaxPaid,
+                            IsInsuranced = existingVehicle.IsInsuranced
+
+                        };
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-vehicle-registration-details",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(vehicleRegistrationDto);
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
         }
 
 

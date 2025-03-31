@@ -11,7 +11,7 @@ const Notifications = () => {
       <ul className="nav nav-tabs">
         <li className="nav-item">
           <Link
-            to="/public-user/notifications/view" // Absolute path
+            to="/traffic-police/notifications/view" // Absolute path
             className={`nav-link ${
               location.pathname.includes("view") ? "active" : ""
             }`}

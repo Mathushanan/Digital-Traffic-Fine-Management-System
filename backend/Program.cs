@@ -61,6 +61,9 @@ builder.Services.AddScoped<ILicenseHolderService, LicenseHolderService>();
 builder.Services.AddScoped<ITrafficViolationService, TrafficViolationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IUserEligibleVehicleCategoryService, UserEligibleVehicleCategoryService>();
+builder.Services.AddScoped<IVehicleRegistrationService, VehicleRegistrationService>();
+
 builder.ConfigureFunctionsWebApplication();
 
 builder.Build().Run();

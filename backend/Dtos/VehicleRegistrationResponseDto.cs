@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace backend.Models
+namespace backend.Dtos
 {
-    public class VehicleRegistration
+    public class VehicleRegistrationResponseDto
     {
         public int VehicleId { get; set; }
         public string? VehicleNumber { get; set; }
@@ -21,8 +20,5 @@ namespace backend.Models
         public DateTime? RegistrationDate { get; set; }
         public bool IsRoadTaxPaid { get; set; }
         public bool IsInsuranced { get; set; }
-
-        public virtual ICollection<Fine>? Fines { get; set; }
-
     }
 }

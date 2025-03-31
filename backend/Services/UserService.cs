@@ -130,10 +130,10 @@ namespace backend.Services
             return await _systemDbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<User>> GetAllTrafficPoliceAsync()
+        public async Task<List<User>> GetAllTrafficPoliceAsync(int registeredStationId)
         {
             return await _systemDbContext.Users
-                .Where(user => user.UserType == "TrafficPolice")
+                .Where(user => user.UserType == "TrafficPolice" && user.RegisteredStationId==registeredStationId)
                 .ToListAsync();
         }
 
@@ -147,10 +147,10 @@ namespace backend.Services
 
         }
 
-        public async Task<List<User>> GetAllPublicUsersAsync()
+        public async Task<List<User>> GetAllPublicUsersAsync(int registeredStationId)
         {
             return await _systemDbContext.Users
-                .Where(user => user.UserType == "PublicUser")
+                .Where(user => user.UserType == "PublicUser" && user.RegisteredStationId==registeredStationId)
                 .ToListAsync();
         }
 
@@ -160,6 +160,15 @@ namespace backend.Services
             return await _systemDbContext.Users
                .Where(user => 
                               user.NicNumber == nicNumber ||
+                              user.LicenseNumber == licenseNumber)
+               .FirstOrDefaultAsync();
+        }
+
+        public async Task<User?> GetPublicUserByLicenseNumberAsync(string licenseNumber)
+        {
+            return await _systemDbContext.Users
+               .Where(user =>
+                             
                               user.LicenseNumber == licenseNumber)
                .FirstOrDefaultAsync();
         }

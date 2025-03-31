@@ -501,6 +501,10 @@ namespace backend.Data
                     .HasMaxLength(20)
                     .IsRequired(true);
 
+                entity.Property(v => v.VehicleCategory)
+                   .HasMaxLength(50)
+                   .IsRequired(true);
+
                 entity.Property(v => v.NicNumber)
                     .HasMaxLength(20)
                     .IsRequired(true);

@@ -22,11 +22,11 @@ namespace backend.Interfaces
         Task<bool> DeleteUserAsync(int userId);
         Task<User?> GetUserByUserIdAsync(int userId);
         Task<bool> UpdateUserAsync(User user);
-        Task<List<User>> GetAllTrafficPoliceAsync();
+        Task<List<User>> GetAllTrafficPoliceAsync(int registeredStationId);
         Task<User?> GetPublicUserByParametersAsync(string email, string nicNumber, string licenseNumber);
-        Task<List<User>> GetAllPublicUsersAsync();
+        Task<List<User>> GetAllPublicUsersAsync(int registeredStationId);
         Task<User?> GetPublicUserByNicLicenseNumberAsync(string nicNumber, string licenseNumber);
-
+        Task<User?> GetPublicUserByLicenseNumberAsync(string licenseNumber);
 
 
 
