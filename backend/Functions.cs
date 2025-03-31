@@ -2755,6 +2755,93 @@ namespace backend
             }
         }
 
+        [Function("GetAllTrafficPoliceNotifications")]
+        public async Task<IActionResult> GetAllTrafficPoliceNotifications([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-all-traffic-police-notifications")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                        string senderEmail = data?.senderEmail!;
+
+                        if (senderEmail == null)
+                        {
+                            return new BadRequestObjectResult("Email is required in the request body!");
+                        }
+
+                        var notifications = await _notificationService.GetAllTrafficPoliceNotificationsBySenderEmailAsync(senderEmail);
+                        var jsonOptions = new JsonSerializerOptions
+                        {
+                            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+                            MaxDepth = 32
+                        };
+
+                        // Serialize the stations with the custom options
+                        var jsonData = System.Text.Json.JsonSerializer.Serialize(notifications, jsonOptions);
+                        if (jsonData != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-all-traffic-police-notifications",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(jsonData);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No notifications found!");
+                        }
+
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+
 
 
     }

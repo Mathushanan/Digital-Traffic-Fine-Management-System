@@ -13,5 +13,6 @@ namespace backend.Interfaces
         Task<List<Notification>> GetAllNotificationsBySenderEmailAsync(string senderEmail);
         Task<List<Notification>> GetAllStationAdminNotificationsBySenderEmailAsync(string senderEmail);
         Task<List<Notification>> GetAllPublicUserNotificationsBySenderEmailAsync(string senderEmail);
+        Task<List<Notification>> GetAllTrafficPoliceNotificationsBySenderEmailAsync(string senderEmail);
     }
 }

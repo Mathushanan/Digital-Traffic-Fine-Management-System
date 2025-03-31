@@ -50,6 +50,13 @@ namespace backend.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Notification>> GetAllTrafficPoliceNotificationsBySenderEmailAsync(string senderEmail)
+        {
+            return await _systemDbContext.Notifications
+                .Where(n => n.NotifiedBy == senderEmail || n.ReceiverType == "toAllTrafficPolices" || n.ReceiverType == "toAllUsers")
+                .ToListAsync();
+        }
+
 
     }
 }
