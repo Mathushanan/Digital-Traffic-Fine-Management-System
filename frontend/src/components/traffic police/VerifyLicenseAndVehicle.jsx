@@ -10,6 +10,12 @@ import { FaSearch } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdVerifiedUser } from "react-icons/md";
+import srilankanFlag from "../../assets/srilankan_flag.png"; // Import your image here
+import srilankanGovSymbol from "../../assets/srilankan_gov_symbol.png"; // Import your image here
+import { HiStatusOnline } from "react-icons/hi";
+import { FaBan } from "react-icons/fa";
+import vehicleRegistrationHeader from "../../assets/vehicle_registration_header.png"; // Import your image here
+import { MdPending } from "react-icons/md";
 
 const VerifyLicenseAndVehicle = () => {
   const [licenseNumber, setLicenseNumber] = useState("");
@@ -27,6 +33,8 @@ const VerifyLicenseAndVehicle = () => {
   const [licenseExpiryDate, setLicenseExpiryDate] = useState("");
   const [availablePoints, setAvailablePoints] = useState("");
   const [registeredStation, setRegisteredStation] = useState("");
+  const [isLicenseActive, setIsLicenseActive] = useState(false);
+  const [permittedVehicles, setPermittedVehicles] = useState("A, A1");
 
   const [vehicleOwnerNicNumber, setVehicleOwnerNicNumber] = useState("");
   const [make, setMake] = useState("");
@@ -38,6 +46,8 @@ const VerifyLicenseAndVehicle = () => {
   const [isRoadTaxPaid, setIsRoadTaxPaid] = useState("");
   const [isInsuranced, setIsInsuranced] = useState("");
   const [vehicleCategory, setVehicleCategory] = useState("");
+
+  const [isFinePaid, setIsFinePaid] = useState(true);
 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
@@ -85,7 +95,7 @@ const VerifyLicenseAndVehicle = () => {
         setLicenseExpiryDate(fetchedUser.licenseExpiryDate);
         setLicenseIssueDate(fetchedUser.licenseIssueDate);
         setAvailablePoints(fetchedUser.availablePoints);
-        setRegisteredStation(fetchedUser.registeredStation);
+        setRegisteredStation(fetchedUser.registeredStationName);
         setAvailablePoints(fetchedUser.availablePoints);
         setNicNumber(fetchedUser.nicNumber);
 
@@ -242,32 +252,54 @@ const VerifyLicenseAndVehicle = () => {
               </button>
             </div>
             {/* License Details*/}
-            {true && (
-              <div className="license-card mb-4 shadow-lg p-3">
-                <div className="license-header bg-primary text-white text-center">
-                  <h5>DRIVING LICENSE</h5>
-                  <p className="m-0 text-uppercase">
-                    Democratic Socialist Republic of Sri Lanka
-                  </p>
-                </div>
-                <div className="license-body border border-dark rounded bg-light text-dark p-3">
-                  <div className="row">
-                    <div className="col-md-3 text-center">
-                      <div className="photo-placeholder bg-secondary text-white mb-3">
-                        Your Photo
-                      </div>
-                      <p className="text-muted">
-                        <strong>SL</strong>
-                      </p>
-                      <p className="text-muted small">Holographic Security</p>
+            {showLicenseHolderDetails && (
+              <div className="license-card mb-4 mt-4 shadow-lg p-3 rounded  card">
+                <div className="license-header text-center ">
+                  <div className="d-flex justify-content-between align-items-center">
+                    {/* Left Image */}
+                    <div
+                      className=" d-flex justify-content-center align-items-center"
+                      style={{ width: "80px", height: "80px" }}
+                    >
+                      <img
+                        src={srilankanFlag}
+                        alt="srilankan_flag"
+                        className="w-100 h-100 object-fit-contain"
+                      />
                     </div>
 
-                    <div className="col-md-9">
+                    {/* Center Text */}
+                    <div className="flex-grow-1 text-center px-3">
+                      <h5 className="mb-1" style={{ fontWeight: "bold" }}>
+                        DRIVING LICENSE
+                      </h5>
+                      <p
+                        className="m-0 text-uppercase"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Democratic Socialist Republic of Sri Lanka
+                      </p>
+                    </div>
+
+                    {/* Right Image */}
+                    <div
+                      className="d-flex justify-content-center align-items-center"
+                      style={{ width: "80px", height: "80px" }}
+                    >
+                      <img
+                        src={srilankanGovSymbol}
+                        alt="srilankan_Gov_symbol"
+                        className="w-50 h-100 object-fit-contain"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="license-body text-start text-dark p-3">
+                  <div className="row">
+                    <div className="col-md-12">
                       <div className="row">
+                        {/* Left Column */}
                         <div className="col-md-6">
-                          <p>
-                            <strong>License Number:</strong> {licenseNumber}
-                          </p>
                           <p>
                             <strong>Name:</strong> {firstName} {lastName}
                           </p>
@@ -278,72 +310,279 @@ const VerifyLicenseAndVehicle = () => {
                             <strong>Date of Birth:</strong>{" "}
                             {new Date(dateOfBirth).toLocaleDateString()}
                           </p>
-                        </div>
-                        <div className="col-md-6">
-                          <p>
-                            <strong>License Issued:</strong> {licenseIssueDate}
-                          </p>
-                          <p>
-                            <strong>License Expiry:</strong> {licenseExpiryDate}
-                          </p>
                           <p>
                             <strong>Contact:</strong> {contactNumber}
                           </p>
+                        </div>
+                        {/* Right Column */}
+                        <div className="col-md-6">
                           <p>
-                            <strong>Email:</strong> {email}
+                            <strong>Nic Number:</strong> {nicNumber}
                           </p>
                           <p>
-                            <strong>Address:</strong> {address}
+                            <strong>License Number:</strong> {licenseNumber}
+                          </p>
+                          <p>
+                            <strong>License Issued:</strong>{" "}
+                            {new Date(licenseIssueDate).toLocaleDateString()}
+                          </p>
+                          <p>
+                            <strong>License Expiry:</strong>{" "}
+                            {new Date(licenseExpiryDate).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
-                      <p>
-                        <strong>Registered Station:</strong> {registeredStation}
-                      </p>
+                      <div className="row align-items-center">
+                        <div className="col-md-9 ">
+                          <p>
+                            <strong>Address:</strong> {address}
+                          </p>
+                          <p className="">
+                            <strong>Registered Station:</strong>{" "}
+                            {registeredStation}
+                          </p>
+                        </div>
+                        <div className="col-md-3 ">
+                          <p
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              color: "#1A73E8",
+                              margin: "10px 0",
+                            }}
+                          >
+                            <strong>{permittedVehicles}</strong>{" "}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="row align-items-center justify-content-between mt-2">
+                        {availablePoints && (
+                          <div className="col-md-3 available-points">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: " #b8860b",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              {availablePoints} Points
+                            </span>
+                          </div>
+                        )}
+                        {new Date(licenseExpiryDate) > Date.now() ? (
+                          <div className="col-md-3 license-active-status">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#28a745",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Active
+                              <HiStatusOnline
+                                style={{ marginLeft: "5px", fontSize: "20px" }}
+                              />
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="col-md-3 license-disabled-status">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#dc3545",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Expired
+                              <FaBan
+                                style={{ marginLeft: "5px", fontSize: "18px" }}
+                              />
+                            </span>
+                          </div>
+                        )}
+                        {isFinePaid ? (
+                          <div className="col-md-3 tax-paid-status">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#28a745",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Fine Paid
+                              <FaCheckCircle
+                                style={{ marginLeft: "5px", fontSize: "15px" }}
+                              />
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="col-md-3 not-tax-paid-status ">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#dc3545",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Fine pending
+                              <MdPending
+                                style={{ marginLeft: "5px", fontSize: "18px" }}
+                              />
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {true && (
-              <div className="card shadow-sm">
-                <div className="card-header bg-secondary text-white">
-                  Vehicle Details
+            {showVehicleRegistrationDetails && (
+              <div className="license-card mb-4 shadow-lg p-3 rounded  card">
+                <div className="license-header text-center ">
+                  <div className="d-flex justify-content-between align-items-center">
+                    {/* Left Image */}
+
+                    {/* Center Text */}
+                    <div className="flex-grow-1 text-start ">
+                      <h5 className="mb-1" style={{ fontWeight: "bold" }}>
+                        VEHICLE REGISTRATION
+                      </h5>
+                      <p
+                        className="m-0 text-uppercase"
+                        style={{ fontSize: "12px" }}
+                      >
+                        Department of Motor Traffic (DMT)
+                      </p>
+                    </div>
+
+                    {/* Right Image */}
+                    <div
+                      className="d-flex justify-content-center align-items-center"
+                      style={{ width: "80px", height: "80px" }}
+                    >
+                      <img
+                        src={vehicleRegistrationHeader}
+                        alt="srilankan_Gov_symbol"
+                        className="w-100 h-100 object-fit-contain"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="card-body">
-                  <p>
-                    <strong>Owner NIC:</strong> {nicNumber}
-                  </p>
-                  <p>
-                    <strong>Make:</strong> {make}
-                  </p>
-                  <p>
-                    <strong>Model:</strong> {model}
-                  </p>
-                  <p>
-                    <strong>Color:</strong> {color}
-                  </p>
-                  <p>
-                    <strong>Year:</strong> {new Date(year).getFullYear()}
-                  </p>
-                  <p>
-                    <strong>Registration No:</strong> {registrationNumber}
-                  </p>
-                  <p>
-                    <strong>Registration Date:</strong>{" "}
-                    {new Date(registrationDate).toLocaleDateString()}
-                  </p>
-                  <p>
-                    <strong>Road Tax Paid:</strong>{" "}
-                    {isRoadTaxPaid ? "Yes" : "No"}
-                  </p>
-                  <p>
-                    <strong>Insuranced:</strong> {isInsuranced ? "Yes" : "No"}
-                  </p>
-                  <p>
-                    <strong>Category:</strong> {vehicleCategory}
-                  </p>
+                <div className="license-body text-start  text-dark p-3">
+                  <div className="row">
+                    <div className="col-md-12">
+                      <div className="row">
+                        {/* Left Column */}
+                        <div className="col-md-6">
+                          <p>
+                            <strong>Make:</strong> {make}
+                          </p>
+                          <p>
+                            <strong>Modal:</strong> {model}
+                          </p>
+                          <p>
+                            <strong>Color:</strong> {color}
+                          </p>
+                          <p>
+                            <strong>Category:</strong> {vehicleCategory}
+                          </p>
+                        </div>
+                        {/* Right Column */}
+                        <div className="col-md-6">
+                          <p>
+                            <strong>Owner's NIC:</strong>{" "}
+                            {vehicleOwnerNicNumber}
+                          </p>
+                          <p>
+                            <strong>Year:</strong> {year}
+                          </p>
+                          <p>
+                            <strong>Registration No:</strong>{" "}
+                            {registrationNumber}
+                          </p>
+                          <p>
+                            <strong>Registration Date:</strong>{" "}
+                            {new Date(registrationDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="row align-items-center justify-content-between mt-2">
+                        {isInsuranced ? (
+                          <div className="col-md-4 insuranced-status">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#28a745",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Insured
+                              <FaCheckCircle
+                                style={{ marginLeft: "5px", fontSize: "15px" }}
+                              />
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="col-md-4 not-insuranced-status">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#dc3545",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Not Insured
+                              <FaTimesCircle
+                                style={{ marginLeft: "5px", fontSize: "15px" }}
+                              />
+                            </span>
+                          </div>
+                        )}
+                        {!isRoadTaxPaid ? (
+                          <div className="col-md-4 tax-paid-status">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#28a745",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Tax Paid
+                              <FaCheckCircle
+                                style={{ marginLeft: "5px", fontSize: "15px" }}
+                              />
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="col-md-4 not-tax-paid-status ">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#dc3545",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              Tax not paid
+                              <FaTimesCircle
+                                style={{ marginLeft: "5px", fontSize: "15px" }}
+                              />
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
