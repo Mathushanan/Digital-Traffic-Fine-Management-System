@@ -102,6 +102,13 @@ namespace backend.Services
             
 
         }
+        public async Task<Station?> GetStationByIdAsync(int stationId)
+        {
+          
+            return await _systemDbContext.Stations
+                .Where(station => station.StationId == stationId)
+                .SingleOrDefaultAsync();
+        }
 
 
     }

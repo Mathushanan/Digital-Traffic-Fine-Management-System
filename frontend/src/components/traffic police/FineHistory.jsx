@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
 
-const ViolationHistory = () => {
+const FineHistory = () => {
   const [fines, setFines] = useState([]);
 
   const [message, setMessage] = useState(null);
@@ -11,19 +12,20 @@ const ViolationHistory = () => {
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
 
-  const [licenseNumber, setLicenseNumber] = useState("L001234579");
-
-  const fetchFinesByLicenseNumber = async (e) => {
-    e.preventDefault();
+  const fetchFinesByIssuerEmail = async () => {
     try {
       const fetchFinesUrl = `${
         import.meta.env.VITE_API_BASE_URL
       }/get-fine-details`;
       const token = localStorage.getItem("authToken");
 
+      const decodedToken = jwtDecode(token);
+
+      const email = decodedToken.Email;
+
       const response = await axios.post(
         fetchFinesUrl,
-        { licenseNumber: licenseNumber },
+        { issuerEmail: email },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,6 +52,9 @@ const ViolationHistory = () => {
       );
     }
   };
+  useEffect(() => {
+    fetchFinesByIssuerEmail();
+  }, []);
 
   return (
     <>
@@ -84,25 +89,7 @@ const ViolationHistory = () => {
 
       <div className="container ">
         {/* Search Bar */}
-        <div className="mb-4 w-full flex items-center p-2 gap-2">
-          <form className="d-flex" onSubmit={fetchFinesByLicenseNumber}>
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="License Number..."
-              aria-label="Search"
-              value={licenseNumber}
-              onChange={(e) => setLicenseNumber(e.target.value)}
-            />
-            <button
-              className="btn btn-outline-success"
-              type="submit"
-              style={{ backgroundColor: "#55798f", color: "white" }}
-            >
-              Search
-            </button>
-          </form>
-        </div>
+        <div className="mb-4 w-full flex items-center p-2 gap-2"></div>
 
         <div className="d-flex flex-column gap-3">
           {fines.length > 0 ? (
@@ -230,4 +217,4 @@ const ViolationHistory = () => {
   );
 };
 
-export default ViolationHistory;
+export default FineHistory;

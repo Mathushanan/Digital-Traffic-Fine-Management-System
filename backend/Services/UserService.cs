@@ -173,6 +173,37 @@ namespace backend.Services
                .FirstOrDefaultAsync();
         }
 
+        public async Task<string> GetEligibleVehicleCategories(int userId)
+        {
+            var categories = _systemDbContext.User_EligibleVehicleCategories
+                .Where(uevc => uevc.UserId == userId)
+                .Select(uevc => uevc.EligibleVehicleCategory!.CategoryName)
+                .Where(name => name != null)
+                .ToList();
+
+            return string.Join(", ", categories);
+        }
+
+        public async Task<User?> GetUserByLicenseNumberAsync( string licenseNumber)
+        {
+            return await _systemDbContext.Users
+               .Where(user => user.LicenseNumber == licenseNumber)
+               .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> DeductPointsAsync(int offenderId, int points)
+        {
+            var user = await _systemDbContext.Users.FindAsync(offenderId);
+            if (user == null)
+            {
+                return false;
+            }
+            user.AvailablePoints = user.AvailablePoints - points;
+            await _systemDbContext.SaveChangesAsync();
+
+            return true;
+
+        }
 
 
 

@@ -34,7 +34,7 @@ const VerifyLicenseAndVehicle = () => {
   const [availablePoints, setAvailablePoints] = useState("");
   const [registeredStation, setRegisteredStation] = useState("");
   const [isLicenseActive, setIsLicenseActive] = useState(false);
-  const [permittedVehicles, setPermittedVehicles] = useState("A, A1");
+  const [permittedVehicles, setPermittedVehicles] = useState("");
 
   const [vehicleOwnerNicNumber, setVehicleOwnerNicNumber] = useState("");
   const [make, setMake] = useState("");
@@ -47,8 +47,6 @@ const VerifyLicenseAndVehicle = () => {
   const [isInsuranced, setIsInsuranced] = useState("");
   const [vehicleCategory, setVehicleCategory] = useState("");
 
-  const [isFinePaid, setIsFinePaid] = useState(true);
-
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
   const messageClass =
@@ -58,6 +56,8 @@ const VerifyLicenseAndVehicle = () => {
     useState(false);
   const [showVehicleRegistrationDetails, setShowVehicleRegistrationDetails] =
     useState(false);
+
+  const [fetchedFines, setFetchedFines] = useState(null);
 
   const handleLicenseSearch = async (e) => {
     e.preventDefault();
@@ -98,6 +98,7 @@ const VerifyLicenseAndVehicle = () => {
         setRegisteredStation(fetchedUser.registeredStationName);
         setAvailablePoints(fetchedUser.availablePoints);
         setNicNumber(fetchedUser.nicNumber);
+        setPermittedVehicles(fetchedUser.permittedVehicles);
 
         setShowLicenseHolderDetails(true);
       } else {
@@ -166,9 +167,48 @@ const VerifyLicenseAndVehicle = () => {
     }
   };
 
+  const fetchFines = async (e) => {
+    e.preventDefault();
+
+    try {
+      const fetchFinesUrl = `${import.meta.env.VITE_API_BASE_URL}/get-fines`;
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.post(
+        fetchFinesUrl,
+        { licenseNumber: licenseNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const fetchedFines = response.data;
+        console.log(fetchedFines);
+        setFetchedFines(fetchedFines);
+      } else {
+        setMessage("Failed to fetch fines!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to fetch fines: " +
+          (error.response ? error.response.data : error.message)
+      );
+      setMessageType("error");
+      console.error(
+        "Failed to fetch fines:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   const handleSearchBoth = (e) => {
     handleLicenseSearch(e);
     handleVehicleSearch(e);
+    fetchFines(e);
   };
 
   return (
@@ -403,7 +443,7 @@ const VerifyLicenseAndVehicle = () => {
                             </span>
                           </div>
                         )}
-                        {isFinePaid ? (
+                        {fetchedFines == null ? (
                           <div className="col-md-3 tax-paid-status">
                             <span
                               className="status-text"
@@ -413,7 +453,7 @@ const VerifyLicenseAndVehicle = () => {
                                 alignItems: "center",
                               }}
                             >
-                              Fine Paid
+                              Fine paid
                               <FaCheckCircle
                                 style={{ marginLeft: "5px", fontSize: "15px" }}
                               />
@@ -547,7 +587,7 @@ const VerifyLicenseAndVehicle = () => {
                             </span>
                           </div>
                         )}
-                        {!isRoadTaxPaid ? (
+                        {isRoadTaxPaid ? (
                           <div className="col-md-4 tax-paid-status">
                             <span
                               className="status-text"

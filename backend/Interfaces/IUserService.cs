@@ -27,7 +27,10 @@ namespace backend.Interfaces
         Task<List<User>> GetAllPublicUsersAsync(int registeredStationId);
         Task<User?> GetPublicUserByNicLicenseNumberAsync(string nicNumber, string licenseNumber);
         Task<User?> GetPublicUserByLicenseNumberAsync(string licenseNumber);
+        Task<string> GetEligibleVehicleCategories(int userId);
 
+        Task<User?> GetUserByLicenseNumberAsync(string licenseNumber);
+        Task<bool> DeductPointsAsync(int offenderId, int points);
 
 
         }

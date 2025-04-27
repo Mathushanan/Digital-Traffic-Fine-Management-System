@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Microsoft.VisualBasic;
+using Grpc.Core;
 
 namespace backend
 {
@@ -29,8 +30,10 @@ namespace backend
         private readonly IAuditService _auditService;
         private readonly IUserEligibleVehicleCategoryService _userEligibleVehicleCategoryService;
         private readonly IVehicleRegistrationService _vehicleRegistrationService;
+        private readonly ICourtService _courtService;
+        private readonly IFineService _fineService;
 
-        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService, INotificationService notificationService, IAuditService auditService,IUserEligibleVehicleCategoryService userEligibleVehicleCategory,IVehicleRegistrationService vehicleRegistrationService)
+        public Functions(ILogger<Functions> logger, IPasswordService passwordService, IUserService userService, IJwtService jwtService, IStationService stationService, ITrafficPoliceService trafficPoliceService, ILicenseHolderService licenseHolderService, ITrafficViolationService trafficViolationService, INotificationService notificationService, IAuditService auditService, IUserEligibleVehicleCategoryService userEligibleVehicleCategory, IVehicleRegistrationService vehicleRegistrationService, ICourtService courtService, IFineService fineService)
         {
             _logger = logger;
             this._passwordService = passwordService;
@@ -44,6 +47,8 @@ namespace backend
             this._auditService = auditService;
             this._userEligibleVehicleCategoryService = userEligibleVehicleCategory;
             this._vehicleRegistrationService = vehicleRegistrationService;
+            this._courtService = courtService;
+            this._fineService = fineService;
 
         }
 
@@ -1417,7 +1422,7 @@ namespace backend
                 {
                     var claims = principal.Claims;
                     var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-                    if (userRole == "SystemAdmin")
+                    if (userRole == "SystemAdmin" || userRole == "TrafficPolice")
                     {
                         var trafficViolations = await _trafficViolationService.GetAllTrafficViolationsAsync();
                         var jsonOptions = new JsonSerializerOptions
@@ -2365,7 +2370,7 @@ namespace backend
 
                                 };
 
-                               
+
 
 
                                 newUser.PasswordHash = _passwordService.HashPassword(newUser, password!);
@@ -2928,6 +2933,7 @@ namespace backend
                         }
 
                         var existingPublicUser = await _userService.GetPublicUserByLicenseNumberAsync(licenseNumber);
+                        string permittedVehicles = await _userService.GetEligibleVehicleCategories(existingPublicUser!.UserId);
 
                         if (existingPublicUser == null)
                         {
@@ -2951,8 +2957,9 @@ namespace backend
                             RegisteredStationName = existingPublicUser.RegisteredStation?.StationName,
                             RegisteredStationDistrict = existingPublicUser.RegisteredStation?.District,
                             AvailablePoints = existingPublicUser.AvailablePoints!.Value,
-                            LicenseIssueDate=existingPublicUser.LicenseIssueDate,
-                            LicenseExpiryDate = existingPublicUser.LicenseExpiryDate
+                            LicenseIssueDate = existingPublicUser.LicenseIssueDate,
+                            LicenseExpiryDate = existingPublicUser.LicenseExpiryDate,
+                            PermittedVehicles = permittedVehicles
                         };
 
                         string? userEmail = _jwtService.GetUserEmailFromToken(token!);
@@ -3083,9 +3090,773 @@ namespace backend
                 };
             }
         }
+        [Function("GetTrafficViolations")]
+        public async Task<IActionResult> GetTrafficViolations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "get-traffic-violations")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin" || userRole == "TrafficPolice")
+                    {
+                        var trafficViolations = await _trafficViolationService.GetAllTrafficViolationsAsync();
 
 
+                        if (trafficViolations != null)
+                        {
+                            var trafficViolationsDto = trafficViolations.Select(tv => new TrafficViolationResponseDto
+                            {
+                                ViolationId = tv.ViolationId,
+                                SectionOfAct = tv.SectionOfAct,
+                                ViolationType = tv.ViolationType,
+                                Provision = tv.Provision,
+                                FineAmount = tv.FineAmount,
+                                DueDays = tv.DueDays,
+                                Points = tv.Points
+                            }).ToList();
 
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-traffic-violations",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(trafficViolationsDto);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No traffic violations found!");
+                        }
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+        [Function("GetCourts")]
+        public async Task<IActionResult> GetCourts([HttpTrigger(AuthorizationLevel.Function, "get", Route = "get-courts")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin" || userRole == "TrafficPolice")
+                    {
+                        var courts = await _courtService.GetAllCourtsAsync();
+
+
+                        if (courts != null)
+                        {
+                            var courtsDto = courts.Select(tv => new CourtDto
+                            {
+                                CourtId = tv.CourtId,
+                                CourtName = tv.CourtName,
+                                CourtType = tv.CourtType,
+                                Location = tv.Location,
+                                Jurisdiction = tv.Jurisdiction,
+                                ContactNumber = tv.ContactNumber,
+                                EstablishedDate = tv.EstablishedDate
+                            }).ToList();
+
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-courts",
+                                RequestType = "GET",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(courtsDto);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No courts found!");
+                        }
+
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+
+        [Function("AddFine")]
+        public async Task<IActionResult> AddFine([HttpTrigger(AuthorizationLevel.Function, "post", Route = "add-fine")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice")
+                    {
+                        // Read and deserialize the JSON request body
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<FineRequestDto>(requestBody);
+
+                        if (data == null)
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body.");
+                        }
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        User? offender = await _userService.GetUserByLicenseNumberAsync(data.LicenseNumber!);
+
+                        VehicleRegistration? vehicle = await _vehicleRegistrationService.GetVehicleByVehicleNumberAsync(data.VehicleNumber!);
+
+                        Station? station = await _stationService.GetStationByIdAsync(data.StationId);
+
+                        int issuerId = user!.UserId;
+                        int offenderId = offender!.UserId;
+                        int vehicleId = vehicle!.VehicleId;
+                        int stationId = data.StationId;
+                        int courtId = data.CourtId;
+                        DateTime violationDate = data.ViolationDate;
+                        string? longitude = data.Longitude;
+                        string? latitude = data.Latitude;
+                        string? status = data.Status;
+                        string? district = station?.District;
+
+                        string? userType = "TrafficPolice";
+
+
+                        if (longitude == null || latitude == null || status == null || district == null || userType != "TrafficPolice")
+                        {
+                            return new BadRequestObjectResult("Invalid JSON request body. Required fields are missing/User type is wrong!");
+                        }
+                        else
+                        {
+
+                            if (data.AssignedFines == null || !data.AssignedFines.Any())
+                            {
+                                return new BadRequestObjectResult("No assigned fines provided.");
+                            }
+
+                            foreach (var fineDetail in data.AssignedFines)
+                            {
+                                var newFine = new Fine
+                                {
+                                    IssuerId = issuerId,
+                                    OffenderId = offenderId,
+                                    VehicleId = vehicleId,
+                                    StationId = stationId,
+                                    CourtId = courtId,
+                                    ViolationDate = violationDate,
+                                    Longitude = longitude,
+                                    Latitude = latitude,
+                                    Status = status,
+                                    District = district,
+                                    ViolationId = fineDetail.ViolationId,
+                                    DueDate = DateTime.Now.AddDays(fineDetail.DueDays)
+                                };
+
+                                var fineId = await _fineService.AddFineAsync(newFine);
+                                TrafficViolation? trafficViolation =  await _trafficViolationService.GetTrafficViolationByViolationIdAsync(fineDetail.ViolationId);
+                                int pointsToDeduct = trafficViolation!.Points;
+                                var isPointsDeducted = await _userService.DeductPointsAsync(offenderId, pointsToDeduct);
+
+                                if (fineId <= 0 && !isPointsDeducted)
+                                {
+                                    return new BadRequestObjectResult("Failed to add one of the fines.");
+                                }
+                            }
+
+
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "add-fine",
+                                RequestType = "POST",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = requestBody,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult("Fine added successfully!");
+
+                        }
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+        [Function("getFines")]
+        public async Task<IActionResult> GetFines([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-fines")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
+
+                        string? licenseNumber = data?.LicenseNumber!;
+
+                        if (string.IsNullOrWhiteSpace(licenseNumber))
+                        {
+                            return new BadRequestObjectResult("License number is required in the request body!");
+                        }
+
+                        var existingPublicUser = await _userService.GetPublicUserByLicenseNumberAsync(licenseNumber);
+
+                        if (existingPublicUser == null)
+                        {
+                            return new NotFoundObjectResult("Public user not found!");
+                        }
+                        else
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                            int userId = existingPublicUser.UserId;
+                            var fines = await _fineService.GetFinesByUserIdAndStatusAsync(userId, "pending");
+
+                            var fineDtos = fines.Select(f => new FineResponseDto
+                            {
+                                FineId = f.FineId,
+                                OffenderId = f.OffenderId,
+                                IssuerId = f.IssuerId,
+                                VehicleId = f.VehicleId,
+                                ViolationId = f.ViolationId,
+                                StationId = f.StationId,
+                                CourtId = f.CourtId,
+                                ViolationDate = f.ViolationDate,
+                                DueDate = f.DueDate,
+                                District = f.District,
+                                Longitude = f.Longitude,
+                                Latitude = f.Latitude,
+                                Status = f.Status
+                            }).ToList();
+
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-fines",
+                                RequestType = "POST",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = requestBody,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+
+                            return new OkObjectResult(fineDtos);
+
+                        }
+
+
+                       
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+        [Function("getFineDetails")]
+        public async Task<IActionResult> GetFineDetails([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-fine-details")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice" || userRole == "PublicUser")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        var data = JObject.Parse(requestBody);
+
+                        string? LicenseNumber = data["licenseNumber"]?.ToString();
+                        string? IssuerEmail = data["issuerEmail"]?.ToString();
+                        string? OffenderEmail = data["offenderEmail"]?.ToString();
+                        string? fineType = data["typeOfFines"]?.ToString();
+
+                      
+
+
+                        if (!string.IsNullOrEmpty(LicenseNumber) )
+                         {
+                             string? licenseNumber = LicenseNumber;
+
+                             if (string.IsNullOrWhiteSpace(licenseNumber))
+                             {
+                                 return new BadRequestObjectResult("License number is required in the request body!");
+                             }
+
+                             var existingPublicUser = await _userService.GetPublicUserByLicenseNumberAsync(licenseNumber);
+
+                             if (existingPublicUser == null)
+                             {
+                                 return new NotFoundObjectResult("Public user not found!");
+                             }
+                             else
+                             {
+                                 string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                 User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                                 int userId = existingPublicUser.UserId;
+                                 var fines = await _fineService.GetFinesByUserIdAndStatusAsync(userId, "pending");
+
+                                 var fineDtos = fines.Select(f => new FineHistoryResponseDto
+                                 {
+
+                                     FineId = f.FineId,
+
+                                     OffenderName = f.Offender?.FirstName + " " + f.Offender?.LastName,
+                                     IssuerName = f.Issuer?.FirstName + " " + f.Issuer?.LastName,
+                                     BadgeNumber = f.Issuer?.BadgeNumber,
+                                     VehicleNumber = f.Vehicle?.VehicleNumber,
+                                     SectionOfAct = f.Violation?.SectionOfAct,
+                                     Provision = f.Violation?.Provision,
+                                     Amount = f.Violation?.FineAmount,
+                                     DeductedPoints = f.Violation!.Points,
+                                     StationName = f.Station?.StationName,
+                                     CourtName = f.Court?.CourtName,
+                                     ViolationDate = f.ViolationDate,
+                                     DueDate = f.DueDate,
+                                     Longitude = f.Longitude,
+                                     Latitude = f.Latitude,
+                                     Status = f.Status
+                                 }).ToList();
+
+                                 var auditEntry = new Audit
+                                 {
+                                     UserId = user!.UserId,
+                                     ApiEndPoint = "get-fine-details",
+                                     RequestType = "POST",
+                                     TimeStamp = DateTime.UtcNow,
+                                     IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                     RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                     RequestBody = requestBody,
+                                     QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                     UserAgent = req.Headers["User-Agent"].ToString()
+                                 };
+                                 await _auditService.LogAuditAsync(auditEntry);
+
+                                 return new OkObjectResult(fineDtos);
+                             }
+                         }
+                         else if(!string.IsNullOrEmpty(IssuerEmail))
+                         {
+                             string? issuerEmail = IssuerEmail;
+
+                             if (string.IsNullOrWhiteSpace(issuerEmail))
+                             {
+                                 return new BadRequestObjectResult("Email is required in the request body!");
+                             }
+
+                             var trafficPolice = await _userService.GetUserByEmailAsync(issuerEmail);
+
+                             if (trafficPolice == null)
+                             {
+                                 return new NotFoundObjectResult("TrafficPolice not found!");
+                             }
+                             else
+                             {
+                                 string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                 User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                                 int userId = trafficPolice.UserId;
+                                 var fines = await _fineService.GetFinesByTrafficPoliceUserIdAsync(userId);
+
+                                 var fineDtos = fines.Select(f => new FineHistoryResponseDto
+                                 {
+
+                                     FineId = f.FineId,
+
+                                     OffenderName = f.Offender?.FirstName + " " + f.Offender?.LastName,
+                                     IssuerName = f.Issuer?.FirstName + " " + f.Issuer?.LastName,
+                                     BadgeNumber = f.Issuer?.BadgeNumber,
+                                     VehicleNumber = f.Vehicle?.VehicleNumber,
+                                     SectionOfAct = f.Violation?.SectionOfAct,
+                                     Provision = f.Violation?.Provision,
+                                     Amount = f.Violation?.FineAmount,
+                                     DeductedPoints = f.Violation!.Points,
+                                     StationName = f.Station?.StationName,
+                                     CourtName = f.Court?.CourtName,
+                                     ViolationDate = f.ViolationDate,
+                                     DueDate = f.DueDate,
+                                     Longitude = f.Longitude,
+                                     Latitude = f.Latitude,
+                                     Status = f.Status
+                                 }).ToList();
+
+                                 var auditEntry = new Audit
+                                 {
+                                     UserId = user!.UserId,
+                                     ApiEndPoint = "get-fine-details",
+                                     RequestType = "POST",
+                                     TimeStamp = DateTime.UtcNow,
+                                     IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                     RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                     RequestBody = requestBody,
+                                     QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                     UserAgent = req.Headers["User-Agent"].ToString()
+                                 };
+                                 await _auditService.LogAuditAsync(auditEntry);
+
+                                 return new OkObjectResult(fineDtos);
+                             }
+                         }
+                         else if(!string.IsNullOrEmpty(OffenderEmail)) {
+                             string? offenderEmail = OffenderEmail;
+
+                             if (string.IsNullOrWhiteSpace(offenderEmail))
+                             {
+                                 return new BadRequestObjectResult("Email is required in the request body!");
+                             }
+
+                             var publicUser = await _userService.GetUserByEmailAsync(offenderEmail);
+
+                             if (publicUser == null)
+                             {
+                                 return new NotFoundObjectResult("Public user not found!");
+                             }
+                             else
+                             {
+                                 string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                                 User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                                 int userId = publicUser.UserId;
+                                 if (fineType == "all")
+                                 {
+                                     var fines = await _fineService.GetFinesByPublicUserIdAsync(userId);
+
+                                     var fineDtos = fines.Select(f => new FineHistoryResponseDto
+                                     {
+
+                                         FineId = f.FineId,
+
+                                         OffenderName = f.Offender?.FirstName + " " + f.Offender?.LastName,
+                                         IssuerName = f.Issuer?.FirstName + " " + f.Issuer?.LastName,
+                                         BadgeNumber = f.Issuer?.BadgeNumber,
+                                         VehicleNumber = f.Vehicle?.VehicleNumber,
+                                         SectionOfAct = f.Violation?.SectionOfAct,
+                                         Provision = f.Violation?.Provision,
+                                         Amount = f.Violation?.FineAmount,
+                                         DeductedPoints = f.Violation!.Points,
+                                         StationName = f.Station?.StationName,
+                                         CourtName = f.Court?.CourtName,
+                                         ViolationDate = f.ViolationDate,
+                                         DueDate = f.DueDate,
+                                         Longitude = f.Longitude,
+                                         Latitude = f.Latitude,
+                                         Status = f.Status
+                                     }).ToList();
+
+                                     var auditEntry = new Audit
+                                     {
+                                         UserId = user!.UserId,
+                                         ApiEndPoint = "get-fine-details",
+                                         RequestType = "POST",
+                                         TimeStamp = DateTime.UtcNow,
+                                         IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                         RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                         RequestBody = requestBody,
+                                         QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                         UserAgent = req.Headers["User-Agent"].ToString()
+                                     };
+                                     await _auditService.LogAuditAsync(auditEntry);
+
+                                     return new OkObjectResult(fineDtos);
+
+                                 }else if (fineType == "paid")
+                                 {
+                                     var fines = await _fineService.GetFinesByUserIdAndStatusAsync(userId,"paid");
+
+                                     var fineDtos = fines.Select(f => new FineHistoryResponseDto
+                                     {
+
+                                         FineId = f.FineId,
+
+                                         OffenderName = f.Offender?.FirstName + " " + f.Offender?.LastName,
+                                         IssuerName = f.Issuer?.FirstName + " " + f.Issuer?.LastName,
+                                         BadgeNumber = f.Issuer?.BadgeNumber,
+                                         VehicleNumber = f.Vehicle?.VehicleNumber,
+                                         SectionOfAct = f.Violation?.SectionOfAct,
+                                         Provision = f.Violation?.Provision,
+                                         Amount = f.Violation?.FineAmount,
+                                         DeductedPoints = f.Violation!.Points,
+                                         StationName = f.Station?.StationName,
+                                         CourtName = f.Court?.CourtName,
+                                         ViolationDate = f.ViolationDate,
+                                         DueDate = f.DueDate,
+                                         Longitude = f.Longitude,
+                                         Latitude = f.Latitude,
+                                         Status = f.Status
+                                     }).ToList();
+
+                                     var auditEntry = new Audit
+                                     {
+                                         UserId = user!.UserId,
+                                         ApiEndPoint = "get-fine-details",
+                                         RequestType = "POST",
+                                         TimeStamp = DateTime.UtcNow,
+                                         IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                         RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                         RequestBody = requestBody,
+                                         QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                         UserAgent = req.Headers["User-Agent"].ToString()
+                                     };
+                                     await _auditService.LogAuditAsync(auditEntry);
+
+                                     return new OkObjectResult(fineDtos);
+                                 }
+                                 else if (fineType == "pending")
+                                {
+                                    var fines = await _fineService.GetFinesByUserIdAndStatusAsync(userId, "pending");
+
+                                    var fineDtos = fines.Select(f => new FineHistoryResponseDto
+                                     {
+
+                                         FineId = f.FineId,
+
+                                         OffenderName = f.Offender?.FirstName + " " + f.Offender?.LastName,
+                                         IssuerName = f.Issuer?.FirstName + " " + f.Issuer?.LastName,
+                                         BadgeNumber = f.Issuer?.BadgeNumber,
+                                         VehicleNumber = f.Vehicle?.VehicleNumber,
+                                         SectionOfAct = f.Violation?.SectionOfAct,
+                                         Provision = f.Violation?.Provision,
+                                         Amount = f.Violation?.FineAmount,
+                                         DeductedPoints = f.Violation!.Points,
+                                         StationName = f.Station?.StationName,
+                                         CourtName = f.Court?.CourtName,
+                                         ViolationDate = f.ViolationDate,
+                                         DueDate = f.DueDate,
+                                         Longitude = f.Longitude,
+                                         Latitude = f.Latitude,
+                                         Status = f.Status
+                                     }).ToList();
+
+                                     var auditEntry = new Audit
+                                     {
+                                         UserId = user!.UserId,
+                                         ApiEndPoint = "get-fine-details",
+                                         RequestType = "POST",
+                                         TimeStamp = DateTime.UtcNow,
+                                         IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                         RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                         RequestBody = requestBody,
+                                         QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                         UserAgent = req.Headers["User-Agent"].ToString()
+                                     };
+                                     await _auditService.LogAuditAsync(auditEntry);
+
+                                     return new OkObjectResult(fineDtos);
+                                 }
+                                else
+                                {
+                                    var fines = await _fineService.GetFinesByUserIdAndStatusAsync(userId, "disputed");
+
+                                    var fineDtos = fines.Select(f => new FineHistoryResponseDto
+                                    {
+
+                                        FineId = f.FineId,
+
+                                        OffenderName = f.Offender?.FirstName + " " + f.Offender?.LastName,
+                                        IssuerName = f.Issuer?.FirstName + " " + f.Issuer?.LastName,
+                                        BadgeNumber = f.Issuer?.BadgeNumber,
+                                        VehicleNumber = f.Vehicle?.VehicleNumber,
+                                        SectionOfAct = f.Violation?.SectionOfAct,
+                                        Provision = f.Violation?.Provision,
+                                        Amount = f.Violation?.FineAmount,
+                                        DeductedPoints = f.Violation!.Points,
+                                        StationName = f.Station?.StationName,
+                                        CourtName = f.Court?.CourtName,
+                                        ViolationDate = f.ViolationDate,
+                                        DueDate = f.DueDate,
+                                        Longitude = f.Longitude,
+                                        Latitude = f.Latitude,
+                                        Status = f.Status
+                                    }).ToList();
+
+                                    var auditEntry = new Audit
+                                    {
+                                        UserId = user!.UserId,
+                                        ApiEndPoint = "get-fine-details",
+                                        RequestType = "POST",
+                                        TimeStamp = DateTime.UtcNow,
+                                        IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                        RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                        RequestBody = requestBody,
+                                        QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                        UserAgent = req.Headers["User-Agent"].ToString()
+                                    };
+                                    await _auditService.LogAuditAsync(auditEntry);
+
+                                    return new OkObjectResult(fineDtos);
+                                }
+
+
+                            }
+                         }
+                         else
+                         {
+                             return new BadRequestObjectResult("User is not authorized for this action!");
+                         }
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
     }
 
 }

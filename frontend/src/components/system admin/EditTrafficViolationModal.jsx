@@ -24,13 +24,12 @@ const EditTrafficViolationModal = ({
 
   useEffect(() => {
     if (trafficViolation) {
-      console.log(trafficViolation);
-      setViolationType(trafficViolation.ViolationType);
-      setProvision(trafficViolation.Provision);
-      setSectionOfAct(trafficViolation.SectionOfAct);
-      setFineAmount(trafficViolation.FineAmount);
-      setPoints(trafficViolation.Points);
-      setDueDays(trafficViolation.DueDays);
+      setViolationType(trafficViolation.violationType);
+      setProvision(trafficViolation.provision);
+      setSectionOfAct(trafficViolation.sectionOfAct);
+      setFineAmount(trafficViolation.fineAmount);
+      setPoints(trafficViolation.points);
+      setDueDays(trafficViolation.dueDays);
     }
   }, [trafficViolation]);
 
@@ -179,7 +178,7 @@ const EditTrafficViolationModal = ({
 
                     {/* Contact Number & Email */}
                     <div className="form-group mb-3 row row-cols-1 row-cols-md-2 g-3">
-                      <div class="col">
+                      <div className="col">
                         <label htmlFor="points" className="form-label">
                           Points
                         </label>

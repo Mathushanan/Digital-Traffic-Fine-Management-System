@@ -25,7 +25,7 @@ const EditTrafficViolations = () => {
     try {
       const fetchTrafficViolationsUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/get-all-traffic-violations`;
+      }/get-traffic-violations`;
       const token = localStorage.getItem("authToken");
 
       const response = await axios.get(fetchTrafficViolationsUrl, {
@@ -37,7 +37,7 @@ const EditTrafficViolations = () => {
       if (response.status === 200) {
         const fetchedTrafficViolations = response.data;
         setTrafficViolations(fetchedTrafficViolations);
-        setFilteredTrafficViolations(fetchedTrafficViolations.$values);
+        setFilteredTrafficViolations(fetchedTrafficViolations);
       } else {
         setMessage("Failed to fetch traffic violations!");
         setMessageType("error");
@@ -63,20 +63,18 @@ const EditTrafficViolations = () => {
   useEffect(() => {
     if (trafficViolations && searchTerm) {
       const lowercasedSearchTerm = searchTerm.toLowerCase();
-      const filtered = trafficViolations.$values.filter(
+      const filtered = trafficViolations.filter(
         (trafficViolation) =>
-          trafficViolation.Provision.toLowerCase().includes(
-            lowercasedSearchTerm
-          ) ||
-          trafficViolation.SectionOfAct.toLowerCase().includes(
-            lowercasedSearchTerm
-          )
+          trafficViolation.provision
+            .toLowerCase()
+            .includes(lowercasedSearchTerm) ||
+          trafficViolation.sectionOfAct
+            .toLowerCase()
+            .includes(lowercasedSearchTerm)
       );
       setFilteredTrafficViolations(filtered);
     } else {
-      setFilteredTrafficViolations(
-        trafficViolations ? trafficViolations.$values : []
-      );
+      setFilteredTrafficViolations(trafficViolations ? trafficViolations : []);
     }
   }, [searchTerm, trafficViolations]);
 
@@ -227,19 +225,19 @@ const EditTrafficViolations = () => {
                 <div
                   className="card shadow-lg rounded-3 p-1"
                   style={{ borderLeft: "5px solid #55798f" }}
-                  key={trafficViolation.ViolationId}
+                  key={trafficViolation.violationId}
                 >
                   <div className="card-body">
                     <div className="d-flex justify-content-between align-items-center w-100 ">
                       <div className="">
                         <h5 className="card-title fs-6 text-muted text-start mb-0 ">
-                          {trafficViolation.Provision}
+                          {trafficViolation.provision}
                         </h5>
                         <p
                           className="text-start"
                           style={{ color: "#555", fontSize: "14px" }}
                         >
-                          {"Section Of Act: " + trafficViolation.SectionOfAct}
+                          {"Section Of Act: " + trafficViolation.sectionOfAct}
                         </p>
                       </div>
 
@@ -264,7 +262,7 @@ const EditTrafficViolations = () => {
                       className="card-subtitle mb-3 text-muted text-start"
                       style={{ color: "#555", fontSize: "14px" }}
                     >
-                      Fine Amount: {trafficViolation.FineAmount} LKR
+                      Fine Amount: {trafficViolation.fineAmount} LKR
                     </h6>
 
                     <div
@@ -272,10 +270,10 @@ const EditTrafficViolations = () => {
                       style={{ color: "#555", fontSize: "14px" }}
                     >
                       <p className="mb-1">
-                        Allocated Points: {trafficViolation.Points}
+                        Allocated Points: {trafficViolation.points}
                       </p>
                       <p className="mb-0">
-                        Due Days: {trafficViolation.DueDays}
+                        Due Days: {trafficViolation.dueDays}
                       </p>
                     </div>
                   </div>
@@ -283,7 +281,7 @@ const EditTrafficViolations = () => {
               );
             })
           ) : (
-            <p>No stations found</p>
+            <p>No traffic violations found</p>
           )}
         </div>
       </div>
