@@ -51,9 +51,29 @@ namespace backend.Services
                 .ToListAsync();
 
         }
+        public async Task<Fine?> GetFineByFineIdAsync(int fineId)
+        {
+            return await _systemDbContext.Fines
+                .Where(fine => fine.FineId == fineId)
+                .FirstOrDefaultAsync(); 
+        }
+
+        public async Task<bool> UpdateFineStatusAsync(int fineId,string status)
+        {
+            var fine = await _systemDbContext.Fines.FindAsync(fineId);
+            if (fine == null)
+            {
+                return false;
+            }
+            fine.Status = status;
+            await _systemDbContext.SaveChangesAsync();
+            return true;
+
+        }
 
 
-       
+
+
 
     }
 }

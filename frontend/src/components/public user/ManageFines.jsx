@@ -5,6 +5,8 @@ import ViewPendingFines from "./ViewPendingFines";
 import ViewPaidFines from "./ViewPaidFines";
 import ViewAllFines from "./ViewAllFines";
 import ViewDisputedFines from "./ViewDisputedFines";
+import PaymentSuccess from "./PaymentSuccess";
+import PaymentCancel from "./PaymentCancel";
 
 const ManageFines = () => {
   const location = useLocation();
@@ -62,6 +64,8 @@ const ManageFines = () => {
           <Route path="paid" element={<ViewPaidFines />} />
           <Route path="all" element={<ViewAllFines />} />
           <Route path="disputes" element={<ViewDisputedFines />} />
+          <Route path="payment-success" element={<PaymentSuccess />} />
+          <Route path="payment-cancel" element={<PaymentCancel />} />
         </Routes>
       </div>
     </div>

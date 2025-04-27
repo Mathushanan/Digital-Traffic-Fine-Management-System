@@ -200,22 +200,6 @@ p,
   .license-disabled-status {
     margin-top: 10px;
   }
-  .fine-details-btn-span {
-    font-size: 8px !important;
-  }
-
-  .paid-fine-details-btn-span {
-    font-size: 8px !important;
-  }
-  .pending-details-btn-span {
-    font-size: 8px !important;
-  }
-  .paid-fine-details-btn {
-    padding: 1 0 !important;
-  }
-  .pending-fine-details-btn {
-    padding: 1 0 !important;
-  }
 }
 
 .license-card {
@@ -308,42 +292,34 @@ p,
   padding: 5px 2px;
 }
 
-.available-points {
+.paid-fine-details-btn,
+.pending-fine-details-btn,
+.disputed-fine-details-btn {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
   height: 100%;
-  border-radius: 3px; /* Rounded corners for modern look */
-  background-color: #fff8e1; /* Soft gold */
-  padding: 5px 2px;
+  border-radius: 5px;
+  background-color: #d4edda; /* You can set different background per status */
+  color: #155724;
+  font-weight: 600;
+  padding: 6px 10px;
+  gap: 5px; /* Nice little gap between icon and text */
 }
 
-.paid-fine-details-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  border-radius: 3px; /* Rounded corners for modern look */
-  background-color: #eafbe7; /* Soft gold */
-  padding: 5px 2px;
+.paid-fine-details-btn svg,
+.pending-fine-details-btn svg,
+.disputed-fine-details-btn svg {
+  font-size: 16px !important; /* Set icon size with !important to ensure it's applied */
+  font-weight: bold;
 }
 
 .pending-fine-details-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  border-radius: 3px; /* Rounded corners for modern look */
-  background-color: #fff8e1; /* Soft gold */
-  padding: 5px 2px;
+  background-color: #fff3cd;
+  color: #856404;
 }
 
-.fine-details-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  border-radius: 3px; /* Rounded corners for modern look */
-  background-color: #fff8e1; /* Soft gold */
-  padding: 5px 2px;
+.disputed-fine-details-btn {
+  background-color: #f8d7da;
+  color: #721c24;
 }

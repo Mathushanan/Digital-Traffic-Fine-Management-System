@@ -175,11 +175,11 @@ namespace backend.Services
 
         public async Task<string> GetEligibleVehicleCategories(int userId)
         {
-            var categories = _systemDbContext.User_EligibleVehicleCategories
+            var categories = await _systemDbContext.User_EligibleVehicleCategories
                 .Where(uevc => uevc.UserId == userId)
                 .Select(uevc => uevc.EligibleVehicleCategory!.CategoryName)
                 .Where(name => name != null)
-                .ToList();
+                .ToListAsync();
 
             return string.Join(", ", categories);
         }

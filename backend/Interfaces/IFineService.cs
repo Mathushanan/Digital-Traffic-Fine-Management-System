@@ -13,6 +13,8 @@ namespace backend.Interfaces
         Task<List<Fine>> GetFinesByUserIdAndStatusAsync(int userId, string status);
         Task<List<Fine>> GetFinesByTrafficPoliceUserIdAsync(int userId);
         Task<List<Fine>> GetFinesByPublicUserIdAsync(int userId);
+        Task<Fine?> GetFineByFineIdAsync(int fineId);
+        Task<bool> UpdateFineStatusAsync(int fineId, string status);
 
     }
 }

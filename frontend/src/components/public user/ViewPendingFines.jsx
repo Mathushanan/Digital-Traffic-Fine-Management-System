@@ -3,6 +3,15 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
+import {
+  MdCheckCircle,
+  MdHourglassEmpty,
+  MdErrorOutline,
+} from "react-icons/md";
+import { FaCreditCard } from "react-icons/fa6";
+import { loadStripe } from "@stripe/stripe-js"; // Stripe.js script
+
+const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_KEY}`);
 
 const ViewPendingFines = () => {
   const [fines, setFines] = useState([]);
@@ -56,6 +65,50 @@ const ViewPendingFines = () => {
     fetchFinesByIssuerEmail();
   }, []);
 
+  const handleFinePayment = async (fineId, fineAmount) => {
+    try {
+      const makePaymentUrl = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/make-payment`;
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.post(
+        makePaymentUrl,
+        {
+          fineId,
+          amount: fineAmount, // Amount in cents
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response);
+
+      if (response.status === 200) {
+        // 2. Use Stripe to redirect to the payment page
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: response.data.sessionId, // Session ID from backend
+        });
+      } else {
+        setMessage("Failed to make payment!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to make paymnet!" +
+          (error.response ? error.response.data : error.message)
+      );
+      setMessageType("error");
+      console.error(
+        "Failed to make payment:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
   return (
     <>
       {/* Message Display Section */}
@@ -100,7 +153,7 @@ const ViewPendingFines = () => {
                   style={{ borderLeft: "5px solid #55798f" }}
                   key={fine.fineId}
                 >
-                  <div className="card-body">
+                  <div className="card-body ">
                     <div className="row justify-content-between align-items-center w-100 ">
                       <div className="col-9 ">
                         <h5 className="card-title fs-6 text-muted text-start mb-1 ">
@@ -109,59 +162,23 @@ const ViewPendingFines = () => {
                       </div>
 
                       {/* Button Section */}
-                      <div className="col-3 d-flex gap-2 ">
+                      <div className="col-3">
                         {fine.status === "paid" ? (
-                          <div className=" paid-fine-details-btn px-3 border border-success">
-                            <span
-                              className="status-text paid-fine-details-btn-span text-success"
-                              style={{
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Paid
-                            </span>
+                          <div className="paid-fine-details-btn px-2">
+                            <MdCheckCircle />
+                            Paid
                           </div>
                         ) : fine.status === "disputed" ? (
-                          <div className=" pending-fine-details-btn px-2 border border-warning">
-                            <span
-                              className="status-text fine-details-btn-span"
-                              style={{
-                                color: " #b8860b",
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Disputed
-                            </span>
+                          <div className="disputed-fine-details-btn px-2">
+                            <MdErrorOutline />
+                            Disputed
                           </div>
                         ) : (
-                          <div className=" pending-fine-details-btn px-2 border border-warning">
-                            <span
-                              className="status-text fine-details-btn-span"
-                              style={{
-                                color: " #b8860b",
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Pending
-                            </span>
+                          <div className="pending-fine-details-btn px-2">
+                            <MdHourglassEmpty />
+                            Pending
                           </div>
                         )}
-
-                        <div className=" fine-details-btn  px-2 border border-warning">
-                          <span
-                            className="status-text fine-details-btn-span"
-                            style={{
-                              color: " #b8860b",
-                              alignItems: "center",
-                              fontSize: "14px",
-                            }}
-                          >
-                            {fine.deductedPoints} Points
-                          </span>
-                        </div>
                       </div>
                     </div>
 
@@ -174,7 +191,7 @@ const ViewPendingFines = () => {
                     </h6>
 
                     <div
-                      className="text-start row "
+                      className="text-start row  "
                       style={{ color: "#555", fontSize: "14px" }}
                     >
                       <div className="col-6">
@@ -213,9 +230,31 @@ const ViewPendingFines = () => {
                           {fine.courtName}
                         </p>
                         <p className="mb-0">
-                          <span className="fw-bold">Status:</span> {fine.status}
+                          <span className="fw-bold">Deducted Points:</span>{" "}
+                          {fine.deductedPoints}{" "}
                         </p>
                       </div>
+                    </div>
+                    <div className="text-start row  mt-3 ">
+                      <button
+                        type="submit"
+                        className="btn w-100"
+                        style={{
+                          backgroundColor: "#55798f",
+                          color: "white",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onClick={() =>
+                          handleFinePayment(fine.fineId, fine.amount)
+                        }
+                      >
+                        <FaCreditCard
+                          style={{ marginRight: "8px", fontSize: "20px" }}
+                        />{" "}
+                        Pay Fine
+                      </button>
                     </div>
                   </div>
                 </div>

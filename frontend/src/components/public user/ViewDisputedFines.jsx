@@ -3,6 +3,11 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
+import {
+  MdCheckCircle,
+  MdHourglassEmpty,
+  MdErrorOutline,
+} from "react-icons/md";
 
 const ViewDisputedFines = () => {
   const [fines, setFines] = useState([]);
@@ -109,59 +114,23 @@ const ViewDisputedFines = () => {
                       </div>
 
                       {/* Button Section */}
-                      <div className="col-3 d-flex gap-2 ">
+                      <div className="col-3">
                         {fine.status === "paid" ? (
-                          <div className=" paid-fine-details-btn px-3 border border-success">
-                            <span
-                              className="status-text paid-fine-details-btn-span text-success"
-                              style={{
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Paid
-                            </span>
+                          <div className="paid-fine-details-btn px-2">
+                            <MdCheckCircle />
+                            Paid
                           </div>
                         ) : fine.status === "disputed" ? (
-                          <div className=" pending-fine-details-btn px-2 border border-warning">
-                            <span
-                              className="status-text fine-details-btn-span"
-                              style={{
-                                color: " #b8860b",
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Disputed
-                            </span>
+                          <div className="disputed-fine-details-btn px-2">
+                            <MdErrorOutline />
+                            Disputed
                           </div>
                         ) : (
-                          <div className=" pending-fine-details-btn px-2 border border-warning">
-                            <span
-                              className="status-text fine-details-btn-span"
-                              style={{
-                                color: " #b8860b",
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Pending
-                            </span>
+                          <div className="pending-fine-details-btn px-2">
+                            <MdHourglassEmpty />
+                            Pending
                           </div>
                         )}
-
-                        <div className=" fine-details-btn  px-2 border border-warning">
-                          <span
-                            className="status-text fine-details-btn-span"
-                            style={{
-                              color: " #b8860b",
-                              alignItems: "center",
-                              fontSize: "14px",
-                            }}
-                          >
-                            {fine.deductedPoints} Points
-                          </span>
-                        </div>
                       </div>
                     </div>
 
@@ -213,7 +182,8 @@ const ViewDisputedFines = () => {
                           {fine.courtName}
                         </p>
                         <p className="mb-0">
-                          <span className="fw-bold">Status:</span> {fine.status}
+                          <span className="fw-bold">Deducted Points:</span>{" "}
+                          {fine.deductedPoints}{" "}
                         </p>
                       </div>
                     </div>
