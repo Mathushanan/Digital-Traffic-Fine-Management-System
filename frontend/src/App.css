@@ -311,7 +311,6 @@ p,
 .pending-fine-details-btn svg,
 .disputed-fine-details-btn svg {
   font-size: 16px !important; /* Set icon size with !important to ensure it's applied */
-  font-weight: bold;
 }
 
 .pending-fine-details-btn {
@@ -322,4 +321,31 @@ p,
 .disputed-fine-details-btn {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+.points-btn {
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  height: 100%;
+  border-radius: 5px;
+  background-color: #d4edda; /* You can set different background per status */
+  color: #155724;
+  font-weight: 600;
+  padding: 6px 10px;
+  gap: 5px;
+}
+
+.custom-print-button {
+  color: gray;
+  background: none;
+  border: none;
+}
+
+.custom-print-button:hover {
+  color: blue;
+}
+
+.custom-print-button:hover .print-text {
+  text-decoration: underline;
 }

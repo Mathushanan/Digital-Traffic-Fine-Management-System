@@ -70,6 +70,21 @@ namespace backend.Services
             return true;
 
         }
+        public async Task<List<Fine>> GetAllFinesByStationIdAsync(int stationId)
+        {
+            return await _systemDbContext.Fines
+                .Where(fine => fine.StationId == stationId)
+                .ToListAsync();
+
+        }
+        public async Task<List<Fine>> GetFinesByStationIdAndStatusAsync(int stationId, string status)
+        {
+            return await _systemDbContext.Fines
+                .Where(fine => fine.StationId == stationId &&
+                               fine.Status == status)
+                .ToListAsync();
+
+        }
 
 
 

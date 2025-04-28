@@ -4,6 +4,7 @@ using Stripe;
 using Stripe.Checkout;
 using Stripe.V2;
 using backend.Models;
+using static System.Net.WebRequestMethods;
 
 namespace backend.Services
 {
@@ -35,8 +36,12 @@ namespace backend.Services
                                     Currency = "lkr", // Your currency (e.g., "usd", "lkr")
                                     ProductData = new SessionLineItemPriceDataProductDataOptions
                                     {
-                                        Name = $"Fine ID: {fineId}",
-                                        Description = $"Violation: {description}"
+                                        Name = $"Department Of Motor Traffic Fine Payment",
+                                        Description = $"Violation: {description}",
+                                        Images = new List<string>
+                                        {
+                                            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Emblem_of_Sri_Lanka.svg/634px-Emblem_of_Sri_Lanka.svg.png"
+                                        }
                                     },
                                 },
                                 Quantity = 1,

@@ -23,5 +23,13 @@ namespace backend.Dtos
         public string? Latitude { get; set; }
         public string? Status { get; set; }
 
+        public string? OffenderName { get; set; }
+        public string? IssuerName { get; set; }
+        public string? VehicleNumber { get; set; }
+        public string? SectionOfAct{ get; set; }
+        public string? Provision { get; set; }
+        public string? StationName { get; set; }
+        public string? CourtName { get; set; }
+
     }
 }

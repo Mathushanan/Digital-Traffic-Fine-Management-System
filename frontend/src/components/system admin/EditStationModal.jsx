@@ -44,18 +44,15 @@ const EditStationModal = ({ show, onClose, station, onSave }) => {
   useEffect(() => {
     if (station) {
       console.log(station);
-      setStationName(station.StationName);
-      setAddress(station.Address);
-      setDistrict(station.District);
-      setContactNumber(station.ContactNumber);
-      setEmail(station.Email);
-      setStationCode(station.StationCode);
-      const adminUser = station.Users.$values.find(
-        (user) => user.UserId === station.StationAdminId
-      );
+      setStationName(station.stationName);
+      setAddress(station.address);
+      setDistrict(station.district);
+      setContactNumber(station.contactNumber);
+      setEmail(station.email);
+      setStationCode(station.stationCode);
 
-      if (adminUser) {
-        setStationAdminBadgeNumber(adminUser.BadgeNumber);
+      if (station.adminId) {
+        setStationAdminBadgeNumber(station.badgeNumber);
       } else {
         setStationAdminBadgeNumber("");
       }

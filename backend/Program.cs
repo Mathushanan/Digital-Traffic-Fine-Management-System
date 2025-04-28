@@ -66,6 +66,7 @@ builder.Services.AddScoped<IVehicleRegistrationService, VehicleRegistrationServi
 builder.Services.AddScoped<ICourtService, CourtService>();
 builder.Services.AddScoped<IFineService, FineService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IDisputeService, DisputeService>();
 
 builder.ConfigureFunctionsWebApplication();
 

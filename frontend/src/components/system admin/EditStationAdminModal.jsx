@@ -17,16 +17,16 @@ const EditStationAdminModal = ({ show, onClose, stationAdmin, onSave }) => {
 
   useEffect(() => {
     if (stationAdmin) {
-      setFirstName(stationAdmin.FirstName);
-      setLastName(stationAdmin.LastName);
-      setGender(stationAdmin.Gender);
-      setDateOfBirth(stationAdmin.DateOfBirth);
-      setAddress(stationAdmin.Address);
-      setContactNumber(stationAdmin.ContactNumber);
-      setEmail(stationAdmin.Email);
-      setNicNumber(stationAdmin.NicNumber);
-      setLicenseNumber(stationAdmin.LicenseNumber);
-      setBadgeNumber(stationAdmin.BadgeNumber);
+      setFirstName(stationAdmin.firstName);
+      setLastName(stationAdmin.lastName);
+      setGender(stationAdmin.gender);
+      setDateOfBirth(stationAdmin.dateOfBirth);
+      setAddress(stationAdmin.address);
+      setContactNumber(stationAdmin.contactNumber);
+      setEmail(stationAdmin.email);
+      setNicNumber(stationAdmin.nicNumber);
+      setLicenseNumber(stationAdmin.licenseNumber);
+      setBadgeNumber(stationAdmin.badgeNumber);
     }
   }, [stationAdmin]);
 

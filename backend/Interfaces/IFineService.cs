@@ -15,6 +15,8 @@ namespace backend.Interfaces
         Task<List<Fine>> GetFinesByPublicUserIdAsync(int userId);
         Task<Fine?> GetFineByFineIdAsync(int fineId);
         Task<bool> UpdateFineStatusAsync(int fineId, string status);
+        Task<List<Fine>> GetAllFinesByStationIdAsync(int stationId);
+        Task<List<Fine>> GetFinesByStationIdAndStatusAsync(int stationId, string status);
 
     }
 }

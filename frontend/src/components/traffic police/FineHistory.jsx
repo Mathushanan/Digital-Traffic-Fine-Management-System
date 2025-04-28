@@ -125,7 +125,7 @@ const FineHistory = () => {
                         ) : (
                           <div className=" pending-fine-details-btn px-2 border border-warning">
                             <span
-                              className="status-text fine-details-btn-span"
+                              className="status-text "
                               style={{
                                 color: " #b8860b",
                                 alignItems: "center",
@@ -137,11 +137,11 @@ const FineHistory = () => {
                           </div>
                         )}
 
-                        <div className=" fine-details-btn  px-2 border border-warning">
+                        <div className=" points-btn  px-2 border border-success">
                           <span
-                            className="status-text fine-details-btn-span"
+                            className="status-text "
                             style={{
-                              color: " #b8860b",
+                              color: " #155724",
                               alignItems: "center",
                               fontSize: "14px",
                             }}

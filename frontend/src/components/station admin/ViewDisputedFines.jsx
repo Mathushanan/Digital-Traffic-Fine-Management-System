@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+import {
+  MdCheckCircle,
+  MdHourglassEmpty,
+  MdErrorOutline,
+} from "react-icons/md";
 
-const ViolationHistory = () => {
+const ViewDisputedFines = () => {
   const [fines, setFines] = useState([]);
 
   const [message, setMessage] = useState(null);
@@ -11,19 +17,20 @@ const ViolationHistory = () => {
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
 
-  const [licenseNumber, setLicenseNumber] = useState("L001234579");
-
-  const fetchFinesByLicenseNumber = async (e) => {
-    e.preventDefault();
+  const fetchFinesByIssuerEmail = async () => {
     try {
       const fetchFinesUrl = `${
         import.meta.env.VITE_API_BASE_URL
       }/get-fine-details`;
       const token = localStorage.getItem("authToken");
 
+      const decodedToken = jwtDecode(token);
+
+      const stationId = decodedToken.RegisteredStationId;
+
       const response = await axios.post(
         fetchFinesUrl,
-        { licenseNumber: licenseNumber },
+        { stationId: stationId, typeOfFines: "disputed" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,6 +57,9 @@ const ViolationHistory = () => {
       );
     }
   };
+  useEffect(() => {
+    fetchFinesByIssuerEmail();
+  }, []);
 
   return (
     <>
@@ -84,25 +94,7 @@ const ViolationHistory = () => {
 
       <div className="container ">
         {/* Search Bar */}
-        <div className="mb-4 w-full flex items-center p-2 gap-2">
-          <form className="d-flex" onSubmit={fetchFinesByLicenseNumber}>
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="License Number..."
-              aria-label="Search"
-              value={licenseNumber}
-              onChange={(e) => setLicenseNumber(e.target.value)}
-            />
-            <button
-              className="btn btn-outline-success"
-              type="submit"
-              style={{ backgroundColor: "#55798f", color: "white" }}
-            >
-              Search
-            </button>
-          </form>
-        </div>
+        <div className="mb-4 w-full flex items-center p-2 gap-2"></div>
 
         <div className="d-flex flex-column gap-3">
           {fines.length > 0 ? (
@@ -122,46 +114,23 @@ const ViolationHistory = () => {
                       </div>
 
                       {/* Button Section */}
-                      <div className="col-3 d-flex gap-2 ">
-                        {fine.status === "Paid" ? (
-                          <div className=" paid-fine-details-btn px-3 border border-success">
-                            <span
-                              className="status-text paid-fine-details-btn-span text-success"
-                              style={{
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Paid
-                            </span>
+                      <div className="col-3">
+                        {fine.status === "paid" ? (
+                          <div className="paid-fine-details-btn px-2">
+                            <MdCheckCircle />
+                            Paid
+                          </div>
+                        ) : fine.status === "disputed" ? (
+                          <div className="disputed-fine-details-btn px-2">
+                            <MdErrorOutline />
+                            Disputed
                           </div>
                         ) : (
-                          <div className=" pending-fine-details-btn px-2 border border-warning">
-                            <span
-                              className="status-text fine-details-btn-span"
-                              style={{
-                                color: " #b8860b",
-                                alignItems: "center",
-                                fontSize: "14px",
-                              }}
-                            >
-                              Pending
-                            </span>
+                          <div className="pending-fine-details-btn px-2">
+                            <MdHourglassEmpty />
+                            Pending
                           </div>
                         )}
-
-                        <div className=" points-btn  px-2 border border-success">
-                          <span
-                            className="status-text "
-                            style={{
-                              color: " #155724",
-                              alignItems: "center",
-                              fontSize: "14px",
-                            }}
-                          >
-                            {fine.deductedPoints} Points
-                          </span>
-                        </div>
                       </div>
                     </div>
 
@@ -213,7 +182,8 @@ const ViolationHistory = () => {
                           {fine.courtName}
                         </p>
                         <p className="mb-0">
-                          <span className="fw-bold">Status:</span> {fine.status}
+                          <span className="fw-bold">Deducted Points:</span>{" "}
+                          {fine.deductedPoints}{" "}
                         </p>
                       </div>
                     </div>
@@ -230,4 +200,4 @@ const ViolationHistory = () => {
   );
 };
 
-export default ViolationHistory;
+export default ViewDisputedFines;

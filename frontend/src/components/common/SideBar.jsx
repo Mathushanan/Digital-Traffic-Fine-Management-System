@@ -221,18 +221,6 @@ const SideBar = ({ user, role }) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/station-admin/payments"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <RiMoneyEuroCircleFill className="me-2" /> PAYMENTS
-                </NavLink>
-              </div>
-
-              <div className="nav-item mb-2">
-                <NavLink
-                  className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
-                  }
                   to="/station-admin/manage-officers"
                   onClick={() => setIsOpen(false)}
                 >
@@ -260,7 +248,7 @@ const SideBar = ({ user, role }) => {
                   to="/station-admin/traffic-violations"
                   onClick={() => setIsOpen(false)}
                 >
-                  <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS
+                  <FaCarCrash className="me-2" /> MANAGE Fines
                 </NavLink>
               </div>
 

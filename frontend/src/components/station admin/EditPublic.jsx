@@ -34,6 +34,7 @@ const EditPublic = () => {
 
       if (response.status === 200) {
         const fetchedPublicUsers = response.data;
+        console.log(fetchedPublicUsers);
         setPublicUsers(fetchedPublicUsers);
         setFilteredPublicUsers(fetchedPublicUsers);
       } else {
