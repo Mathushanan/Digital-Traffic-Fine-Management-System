@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import axios from "axios";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaCreditCard,
+  FaQuestionCircle,
+} from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import {
   MdCheckCircle,
   MdHourglassEmpty,
   MdErrorOutline,
 } from "react-icons/md";
-import { FaCreditCard } from "react-icons/fa6";
-import { loadStripe } from "@stripe/stripe-js"; // Stripe.js script
+import axios from "axios";
+import { loadStripe } from "@stripe/stripe-js";
+import ConfirmationModal from "../common/ConfirmationModal";
 
 const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_KEY}`);
 
 const ViewPendingFines = () => {
   const [fines, setFines] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [fineIdToDispute, setFineIdToDispute] = useState(null); // Add this state
 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
@@ -29,7 +35,6 @@ const ViewPendingFines = () => {
       const token = localStorage.getItem("authToken");
 
       const decodedToken = jwtDecode(token);
-
       const email = decodedToken.Email;
 
       const response = await axios.post(
@@ -43,8 +48,7 @@ const ViewPendingFines = () => {
       );
 
       if (response.status === 200) {
-        const fetchedFines = response.data;
-        setFines(fetchedFines);
+        setFines(response.data);
       } else {
         setMessage("Failed to fetch fines!");
         setMessageType("error");
@@ -55,12 +59,9 @@ const ViewPendingFines = () => {
           (error.response ? error.response.data : error.message)
       );
       setMessageType("error");
-      console.error(
-        "Failed to fetch fines:",
-        error.response ? error.response.data : error.message
-      );
     }
   };
+
   useEffect(() => {
     fetchFinesByIssuerEmail();
   }, []);
@@ -74,10 +75,7 @@ const ViewPendingFines = () => {
 
       const response = await axios.post(
         makePaymentUrl,
-        {
-          fineId,
-          amount: fineAmount, // Amount in cents
-        },
+        { fineId, amount: fineAmount },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,13 +83,10 @@ const ViewPendingFines = () => {
         }
       );
 
-      console.log(response);
-
       if (response.status === 200) {
-        // 2. Use Stripe to redirect to the payment page
         const stripe = await stripePromise;
         const { error } = await stripe.redirectToCheckout({
-          sessionId: response.data.sessionId, // Session ID from backend
+          sessionId: response.data.sessionId,
         });
       } else {
         setMessage("Failed to make payment!");
@@ -99,19 +94,58 @@ const ViewPendingFines = () => {
       }
     } catch (error) {
       setMessage(
-        "Failed to make paymnet!" +
+        "Failed to make payment!" +
           (error.response ? error.response.data : error.message)
       );
       setMessageType("error");
-      console.error(
-        "Failed to make payment:",
-        error.response ? error.response.data : error.message
-      );
     }
   };
+
+  const handleDisputeFine = (fineId) => {
+    setFineIdToDispute(fineId); // Store the fineId to dispute
+    setShowModal(true); // Show the confirmation modal
+  };
+
+  const confirmDisputeFine = async () => {
+    if (!fineIdToDispute) return;
+    try {
+      const disputeFineUrl = `${import.meta.env.VITE_API_BASE_URL}/add-dispute`;
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.post(
+        disputeFineUrl,
+        { fineId: fineIdToDispute },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        fetchFinesByIssuerEmail();
+        setMessage("Fine disputed successfully!");
+        setMessageType("success");
+      } else {
+        setMessage("Failed to dispute the fine!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to dispute the fine!" +
+          (error.response ? error.response.data : error.message)
+      );
+      setMessageType("error");
+    }
+    setShowModal(false); // Close the modal after confirmation
+  };
+
+  const closeModal = () => {
+    setShowModal(false); // Close the modal when canceled
+  };
+
   return (
     <>
-      {/* Message Display Section */}
       {message && (
         <div
           className={`alert ${messageClass} alert-dismissible fade show w-100 w-md-50 shadow-lg rounded start-50 translate-middle-x mt-4`}
@@ -126,12 +160,9 @@ const ViewPendingFines = () => {
             )}
             <span>{message}</span>
           </div>
-
           <button
             type="button"
             className="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
             onClick={() => {
               setMessage(null);
               setMessageType(null);
@@ -140,102 +171,91 @@ const ViewPendingFines = () => {
         </div>
       )}
 
-      <div className="container ">
-        {/* Search Bar */}
-        <div className="mb-4 w-full flex items-center p-2 gap-2"></div>
-
+      <div className="container">
         <div className="d-flex flex-column gap-3">
           {fines.length > 0 ? (
-            fines.map((fine) => {
-              return (
-                <div
-                  className="card shadow-lg rounded-3 p-1"
-                  style={{ borderLeft: "5px solid #55798f" }}
-                  key={fine.fineId}
-                >
-                  <div className="card-body ">
-                    <div className="row justify-content-between align-items-center w-100 ">
-                      <div className="col-9 ">
-                        <h5 className="card-title fs-6 text-muted text-start mb-1 ">
-                          {fine.provision + " "}({fine.sectionOfAct})
-                        </h5>
-                      </div>
-
-                      {/* Button Section */}
-                      <div className="col-3">
-                        {fine.status === "paid" ? (
-                          <div className="paid-fine-details-btn px-2">
-                            <MdCheckCircle />
-                            Paid
-                          </div>
-                        ) : fine.status === "disputed" ? (
-                          <div className="disputed-fine-details-btn px-2">
-                            <MdErrorOutline />
-                            Disputed
-                          </div>
-                        ) : (
-                          <div className="pending-fine-details-btn px-2">
-                            <MdHourglassEmpty />
-                            Pending
-                          </div>
-                        )}
-                      </div>
+            fines.map((fine) => (
+              <div
+                className="card shadow-lg rounded-3 p-1"
+                style={{ borderLeft: "5px solid #55798f" }}
+                key={fine.fineId}
+              >
+                <div className="card-body">
+                  <div className="row justify-content-between align-items-center w-100">
+                    <div className="col-9">
+                      <h5 className="card-title fs-6 text-muted text-start mb-1">
+                        {fine.provision + " "}({fine.sectionOfAct})
+                      </h5>
                     </div>
-
-                    <h6
-                      className="card-subtitle mb-3 text-muted text-start"
-                      style={{ color: "#555", fontSize: "14px" }}
-                    >
-                      Fine Amount:{" "}
-                      <span className="text-danger">{fine.amount} LKR</span>
-                    </h6>
-
-                    <div
-                      className="text-start row  "
-                      style={{ color: "#555", fontSize: "14px" }}
-                    >
-                      <div className="col-6">
-                        <p className="text-start mb-0">
-                          <span className="fw-bold"> Offender:</span>
-                          {fine.offenderName}
-                        </p>
-                        <p className="text-start mb-0">
-                          <span className="fw-bold">Issuer:</span>{" "}
-                          {fine.issuerName} ({fine.badgeNumber})
-                        </p>
-                        <p className="mb-0">
-                          <span className="fw-bold">Violation Date:</span>{" "}
-                          {
-                            new Date(fine.violationDate)
-                              .toISOString()
-                              .split("T")[0]
-                          }
-                        </p>
-                        <p className="mb-0">
-                          <span className="fw-bold">Due Date:</span>{" "}
-                          {new Date(fine.dueDate).toISOString().split("T")[0]}
-                        </p>
-                      </div>
-                      <div className="col-6">
-                        <p className="text-start mb-0">
-                          <span className="fw-bold"> Vehicle Number:</span>{" "}
-                          {fine.vehicleNumber}
-                        </p>
-                        <p className="text-start mb-0">
-                          <span className="fw-bold">Station:</span>{" "}
-                          {fine.stationName}
-                        </p>
-                        <p className="mb-0">
-                          <span className="fw-bold">Court:</span>{" "}
-                          {fine.courtName}
-                        </p>
-                        <p className="mb-0">
-                          <span className="fw-bold">Deducted Points:</span>{" "}
-                          {fine.deductedPoints}{" "}
-                        </p>
-                      </div>
+                    <div className="col-3">
+                      {fine.status === "paid" ? (
+                        <div className="paid-fine-details-btn px-2">
+                          <MdCheckCircle /> Paid
+                        </div>
+                      ) : fine.status === "disputed" ? (
+                        <div className="disputed-fine-details-btn px-2">
+                          <MdErrorOutline /> Disputed
+                        </div>
+                      ) : (
+                        <div className="pending-fine-details-btn px-2">
+                          <MdHourglassEmpty /> Pending
+                        </div>
+                      )}
                     </div>
-                    <div className="text-start row  mt-3 ">
+                  </div>
+                  <h6
+                    className="card-subtitle mb-3 text-muted text-start"
+                    style={{ color: "#555", fontSize: "14px" }}
+                  >
+                    Fine Amount:{" "}
+                    <span className="text-danger">{fine.amount} LKR</span>
+                  </h6>
+                  <div
+                    className="text-start row"
+                    style={{ color: "#555", fontSize: "14px" }}
+                  >
+                    <div className="col-6">
+                      <p className="text-start mb-0">
+                        <span className="fw-bold">Offender:</span>{" "}
+                        {fine.offenderName}
+                      </p>
+                      <p className="text-start mb-0">
+                        <span className="fw-bold">Issuer:</span>{" "}
+                        {fine.issuerName} ({fine.badgeNumber})
+                      </p>
+                      <p className="mb-0">
+                        <span className="fw-bold">Violation Date:</span>{" "}
+                        {
+                          new Date(fine.violationDate)
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                      </p>
+                      <p className="mb-0">
+                        <span className="fw-bold">Due Date:</span>{" "}
+                        {new Date(fine.dueDate).toISOString().split("T")[0]}
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-start mb-0">
+                        <span className="fw-bold">Vehicle Number:</span>{" "}
+                        {fine.vehicleNumber}
+                      </p>
+                      <p className="text-start mb-0">
+                        <span className="fw-bold">Station:</span>{" "}
+                        {fine.stationName}
+                      </p>
+                      <p className="mb-0">
+                        <span className="fw-bold">Court:</span> {fine.courtName}
+                      </p>
+                      <p className="mb-0">
+                        <span className="fw-bold">Deducted Points:</span>{" "}
+                        {fine.deductedPoints}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-start row mt-3">
+                    <div className="col-6">
                       <button
                         type="submit"
                         className="btn w-100"
@@ -256,15 +276,39 @@ const ViewPendingFines = () => {
                         Pay Fine
                       </button>
                     </div>
+                    <div className="col-6">
+                      <button
+                        type="submit"
+                        className="btn btn-warning w-100"
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onClick={() => handleDisputeFine(fine.fineId)} // Trigger modal
+                      >
+                        <FaQuestionCircle
+                          style={{ marginRight: "8px", fontSize: "20px" }}
+                        />{" "}
+                        Dispute Fine
+                      </button>
+                    </div>
                   </div>
                 </div>
-              );
-            })
+              </div>
+            ))
           ) : (
             <p>No fines found</p>
           )}
         </div>
       </div>
+
+      <ConfirmationModal
+        show={showModal}
+        onConfirm={confirmDisputeFine} // Confirm dispute
+        onClose={closeModal}
+        message="Are you sure you want to dispute this fine?"
+      />
     </>
   );
 };
