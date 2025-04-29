@@ -19,5 +19,6 @@ namespace backend.Interfaces
         Task<Station?> GetStationByStationAdminIdAsync(int stationAdminId);
         Task<Station?> UpdateStationAdminIdAsync(int stationId, int userId);
         Task<Station?> GetStationByIdAsync(int stationId);
+        Task<int> GetTotalStationsAsync();
     }
 }

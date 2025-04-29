@@ -205,6 +205,20 @@ namespace backend.Services
 
         }
 
+        public async Task<int> GetTotalUsersByUserTypeAsync(string userType)
+        {
+            return await _systemDbContext.Users
+                .Where(u => u.UserType == userType)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalUsersByUserTypeAndStationIdAsync(string userType,int stationId)
+        {
+            return await _systemDbContext.Users
+                .Where(u => u.UserType == userType && u.RegisteredStationId==stationId)
+                .CountAsync();
+        }
+
+
 
 
     }

@@ -135,9 +135,13 @@ const ViewNotifications = () => {
                     >
                       {"Sent by: " + notification.NotifiedBy}
                       <br />
-                      {"Sent to: " + notification.ReceiverType}
+                      {"Sent to: " +
+                        (notification.ReceiverType?.charAt(0).toUpperCase() +
+                          notification.ReceiverType?.slice(1))}
+
                       <br />
-                      {"Sent At: " + notification.SentAt}
+                      {"Sent At: " +
+                        new Date(notification.SentAt).toLocaleString()}
                     </p>
 
                     <div className="d-flex justify-content-between align-items-center w-100 ">

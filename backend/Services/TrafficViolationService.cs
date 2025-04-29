@@ -64,5 +64,10 @@ namespace backend.Services
             return await _systemDbContext.SaveChangesAsync() > 0;
 
         }
+        public async Task<int> GetTotalTrafficViolationsAsync()
+        {
+            return await _systemDbContext.TrafficViolations.CountAsync();
+        }
+
     }
 }

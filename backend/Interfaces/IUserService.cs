@@ -32,6 +32,8 @@ namespace backend.Interfaces
         Task<User?> GetUserByLicenseNumberAsync(string licenseNumber);
         Task<bool> DeductPointsAsync(int offenderId, int points);
 
+        Task<int> GetTotalUsersByUserTypeAsync(string userType);
+        Task<int> GetTotalUsersByUserTypeAndStationIdAsync(string userType, int stationId);
 
         }
 }

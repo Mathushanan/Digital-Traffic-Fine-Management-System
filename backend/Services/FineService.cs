@@ -86,6 +86,81 @@ namespace backend.Services
 
         }
 
+        public async Task<int> GetTotalFinesAsync()
+        {
+            return await _systemDbContext.Fines.CountAsync();
+        }
+        public async Task<int> GetTotalPendingFinesAsync()
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "pending")
+                .CountAsync();
+        }
+        public async Task<int> GetTotalPaidFinesAsync()
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "paid")
+                .CountAsync();
+        }
+        public async Task<int> GetTotalDisputedFinesAsync()
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "disputed")
+                .CountAsync();
+        }
+
+
+
+        public async Task<int> GetTotalFinesByStationIdAsync(int stationId)
+        {
+            return await _systemDbContext.Fines.Where(u => u.StationId == stationId).CountAsync();
+        }
+        public async Task<int> GetTotalPendingFinesByStationIdAsync(int stationId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "pending" && u.StationId == stationId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalPaidFinesByStationIdAsync(int stationId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "paid" && u.StationId == stationId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalDisputedFinesByStationIdAsync(int stationId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "disputed" && u.StationId == stationId)
+                .CountAsync();
+        }
+
+
+
+
+
+        public async Task<int> GetTotalFinesByIssuerIdAsync(int issuerId)
+        {
+            return await _systemDbContext.Fines.Where(u => u.IssuerId == issuerId).CountAsync();
+        }
+        public async Task<int> GetTotalPendingFinesByIssuerIdAsync(int issuerId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "pending" && u.IssuerId == issuerId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalPaidFinesByIssuerIdAsync(int issuerId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "paid" && u.IssuerId == issuerId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalDisputedFinesByIssuerIdAsync(int issuerId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "disputed" && u.IssuerId == issuerId)
+                .CountAsync();
+        }
+
 
 
 

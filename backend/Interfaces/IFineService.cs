@@ -17,6 +17,20 @@ namespace backend.Interfaces
         Task<bool> UpdateFineStatusAsync(int fineId, string status);
         Task<List<Fine>> GetAllFinesByStationIdAsync(int stationId);
         Task<List<Fine>> GetFinesByStationIdAndStatusAsync(int stationId, string status);
+        Task<int> GetTotalFinesAsync();
+        Task<int> GetTotalPaidFinesAsync();
+        Task<int> GetTotalPendingFinesAsync();
+        Task<int> GetTotalDisputedFinesAsync();
+
+        Task<int> GetTotalFinesByStationIdAsync(int stationId);
+        Task<int> GetTotalPaidFinesByStationIdAsync(int stationId);
+        Task<int> GetTotalPendingFinesByStationIdAsync(int stationId);
+        Task<int> GetTotalDisputedFinesByStationIdAsync(int stationId);
+
+        Task<int> GetTotalFinesByIssuerIdAsync(int issuerId);
+        Task<int> GetTotalPaidFinesByIssuerIdAsync(int issuerId);
+        Task<int> GetTotalPendingFinesByIssuerIdAsync(int issuerId);
+        Task<int> GetTotalDisputedFinesByIssuerIdAsync(int issuerId);
 
     }
 }

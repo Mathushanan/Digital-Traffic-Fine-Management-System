@@ -12,5 +12,8 @@ namespace backend.Interfaces
         Task<string> CreateCheckoutSessionAsync(int fineId,decimal? amount,string description);
         Task<bool> AddPaymentAsync(Payment payment);
         Task<bool> ConfirmPaymentAsync(string sessionId);
+        Task<decimal> GetTotalRevenueAsync();
+        Task<decimal> GetTotalRevenueByStationIdAsync(int stationId);
+        Task<decimal> GetTotalRevenueByIssuerIdAsync(int issuerId);
     }
 }

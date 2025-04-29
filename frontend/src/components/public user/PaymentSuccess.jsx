@@ -76,6 +76,39 @@ const PaymentSuccess = () => {
       );
     }
   };
+  const getFineDetails = async (fineId) => {
+    try {
+      const getFineDetailsUrl = `${import.meta.env.VITE_API_BASE_URL}/get-fine`;
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.post(
+        getFineDetailsUrl,
+        { fineId: fineId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setFine(response.data);
+      } else {
+        setMessage("Failed to fetch fine details!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to fetch fine details! " +
+          (error.response ? error.response.data : error.message)
+      );
+      setMessageType("error");
+      console.error(
+        "Failed to fetch fine details:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -103,7 +136,9 @@ const PaymentSuccess = () => {
     doc.text(`Fine ID: ${fineId}`, 20, 70);
     doc.text(`Section Of Act: ${fine.sectionOfAct}`, 110, 70);
     doc.text(`Provision: ${fine.provision}`, 20, 80);
+    doc.setFontSize(10);
     doc.text(`Session ID: ${sessionId}`, 20, 90);
+    doc.setFontSize(12);
     doc.text(`Offender Name: ${fine.offenderName}`, 20, 100);
     doc.text(`Issuer Name: ${fine.issuerName}`, 110, 100);
 
@@ -164,40 +199,6 @@ const PaymentSuccess = () => {
 
     // Save the PDF
     doc.save("fine_payment_receipt.pdf");
-  };
-
-  const getFineDetails = async (fineId) => {
-    try {
-      const getFineDetailsUrl = `${import.meta.env.VITE_API_BASE_URL}/get-fine`;
-      const token = localStorage.getItem("authToken");
-
-      const response = await axios.post(
-        getFineDetailsUrl,
-        { fineId: fineId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setFine(response.data);
-      } else {
-        setMessage("Failed to fetch fine details!");
-        setMessageType("error");
-      }
-    } catch (error) {
-      setMessage(
-        "Failed to fetch fine details! " +
-          (error.response ? error.response.data : error.message)
-      );
-      setMessageType("error");
-      console.error(
-        "Failed to fetch fine details:",
-        error.response ? error.response.data : error.message
-      );
-    }
   };
 
   return (

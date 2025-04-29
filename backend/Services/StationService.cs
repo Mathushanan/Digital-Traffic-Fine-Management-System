@@ -110,6 +110,12 @@ namespace backend.Services
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<int> GetTotalStationsAsync()
+        {
+            return await _systemDbContext.Stations.CountAsync();
+        }
+
+
 
     }
 }

@@ -438,12 +438,12 @@ const RegisterStationAdmin = () => {
                     <option value="" disabled>
                       Select a Station
                     </option>
-                    {stations?.$values?.map((station) => (
+                    {stations.map((station) => (
                       <option
-                        key={station.StationCode}
-                        value={station.StationCode}
+                        key={station.stationCode}
+                        value={station.stationCode}
                       >
-                        {station.StationName}, {station.District}
+                        {station.stationName}, {station.district}
                       </option>
                     ))}
                   </select>

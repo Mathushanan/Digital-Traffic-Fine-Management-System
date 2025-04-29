@@ -11,7 +11,7 @@ const StationAdminRoutes = () => {
     <div>
       <Routes>
         <Route path="/" element={<Navigate to="dashboard" />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/*" element={<Dashboard />} />
         <Route path="/manage-officers/*" element={<ManageOfficers />} />
         <Route path="/manage-public/*" element={<ManagePublic />} />
         <Route path="/notifications/*" element={<Notifications />} />

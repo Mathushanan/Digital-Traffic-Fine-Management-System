@@ -5,6 +5,7 @@ using Stripe.Checkout;
 using Stripe.V2;
 using backend.Models;
 using static System.Net.WebRequestMethods;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services
 {
@@ -82,6 +83,27 @@ namespace backend.Services
             // Return true if changes were saved, false otherwise
             return changes > 0;
         }
+        public async Task<decimal> GetTotalRevenueAsync()
+        {
+            return await _systemDbContext.Payments
+                .SumAsync(p => p.Amount);
+        }
+
+        public async Task<decimal> GetTotalRevenueByStationIdAsync(int stationId)
+        {
+            return await _systemDbContext.Payments
+                .Where(p => p.Fine != null && p.Fine.StationId == stationId)
+                .SumAsync(p => p.Amount);
+        }
+
+        public async Task<decimal> GetTotalRevenueByIssuerIdAsync(int issuerId)
+        {
+            return await _systemDbContext.Payments
+                .Where(p => p.Fine != null && p.Fine.IssuerId == issuerId)
+                .SumAsync(p => p.Amount);
+        }
+
+
 
     }
 
