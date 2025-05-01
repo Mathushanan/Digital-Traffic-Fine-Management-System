@@ -220,6 +220,18 @@ p,
   margin-bottom: 5px;
 }
 
+.available-points {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  border-radius: 3px; /* Rounded corners for modern look */
+  background-color: #fff3cd; /* Light green background */
+
+  padding: 5px 2px;
+}
+
 .license-active-status {
   display: flex;
   align-items: center;

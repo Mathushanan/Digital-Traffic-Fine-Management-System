@@ -121,7 +121,7 @@ const AddFine = () => {
       !fetchedUser.permittedVehicles.includes(fetchedVehicle.vehicleCategory)
     ) {
       const fine = fetchedTrafficViolations.find(
-        (violation) => violation.sectionOfAct === "21"
+        (violation) => violation.sectionOfAct === "130"
       );
       if (fine) applicableFines.push(fine);
     }

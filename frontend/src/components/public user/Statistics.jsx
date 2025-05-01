@@ -4,10 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import srilankanFlag from "../../assets/srilankan_flag.png"; // Import your image here
 import srilankanGovSymbol from "../../assets/srilankan_gov_symbol.png"; // Import your image here
-
 import { HiStatusOnline } from "react-icons/hi";
 import { FaBan } from "react-icons/fa";
-
 import { MdPending } from "react-icons/md";
 
 const Statistics = () => {
@@ -37,16 +35,17 @@ const Statistics = () => {
 
   const [statistics, setStatistics] = useState([]);
 
-  const fetchFines = async (e) => {
-    e.preventDefault();
-
+  const fetchFines = async () => {
     try {
       const fetchFinesUrl = `${import.meta.env.VITE_API_BASE_URL}/get-fines`;
       const token = localStorage.getItem("authToken");
 
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+
       const response = await axios.post(
         fetchFinesUrl,
-        { licenseNumber: licenseNumber },
+        { licenseNumber: decodedToken.LicenseNumber },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,15 +78,15 @@ const Statistics = () => {
     try {
       const fetchStatisticsUrl = `${
         import.meta.env.VITE_API_BASE_URL
-      }/get-traffic-police-statistics`;
+      }/get-public-user-statistics`;
       const token = localStorage.getItem("authToken");
       const decodedToken = jwtDecode(token);
       console.log(decodedToken);
-      const issuerEmail = decodedToken.Email;
+      const offenderEmail = decodedToken.Email;
 
       const response = await axios.post(
         fetchStatisticsUrl,
-        { issuerEmail: issuerEmail },
+        { offenderEmail: offenderEmail },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -119,11 +118,11 @@ const Statistics = () => {
 
   useEffect(() => {
     fetchStatistics();
+    handleLicenseSearch();
+    fetchFines();
   }, []);
 
-  const handleLicenseSearch = async (e) => {
-    e.preventDefault();
-
+  const handleLicenseSearch = async () => {
     try {
       const searchLicenseHolderUrl = `${
         import.meta.env.VITE_API_BASE_URL
@@ -131,10 +130,10 @@ const Statistics = () => {
 
       // Get the token from localStorage (or wherever you store the JWT token)
       const token = localStorage.getItem("authToken");
-
+      const decodedToken = jwtDecode(token);
       const response = await axios.post(
         searchLicenseHolderUrl,
-        { licenseNumber: licenseNumber },
+        { licenseNumber: decodedToken.LicenseNumber },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -161,8 +160,6 @@ const Statistics = () => {
         setAvailablePoints(fetchedUser.availablePoints);
         setNicNumber(fetchedUser.nicNumber);
         setPermittedVehicles(fetchedUser.permittedVehicles);
-
-        setShowLicenseHolderDetails(true);
       } else {
         setMessage("Failed to fetch user details!");
         setMessageType("error");
@@ -277,9 +274,9 @@ const Statistics = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-12">
-            <div className="w-50">
-              <div className="license-card mb-4 mt-1 shadow-lg p-3 rounded  card">
+          <div className="col-md-12 text-center d-flex justify-content-center ">
+            <div className=" " style={{ maxWidth: "600px", width: "100%" }}>
+              <div className="license-card shadow-lg p-3 rounded  card">
                 <div className="license-header text-center ">
                   <div className="d-flex justify-content-between align-items-center">
                     {/* Left Image */}
@@ -320,7 +317,7 @@ const Statistics = () => {
                     </div>
                   </div>
                 </div>
-                <div className="license-body text-start text-dark p-3">
+                <div className="license-body text-start text-dark px-3 py-2">
                   <div className="row">
                     <div className="col-md-12">
                       <div className="row">

@@ -57,7 +57,7 @@ const VerifyLicenseAndVehicle = () => {
   const [showVehicleRegistrationDetails, setShowVehicleRegistrationDetails] =
     useState(false);
 
-  const [fetchedFines, setFetchedFines] = useState(null);
+  const [fetchedFines, setFetchedFines] = useState([]);
 
   const handleLicenseSearch = async (e) => {
     e.preventDefault();
@@ -82,7 +82,7 @@ const VerifyLicenseAndVehicle = () => {
 
       if (response.status === 200) {
         const fetchedUser = response.data;
-        console.log(fetchedUser);
+
         setFirstName(fetchedUser.firstName);
         setLastName(fetchedUser.lastName);
         setDateOfBirth(
@@ -138,7 +138,7 @@ const VerifyLicenseAndVehicle = () => {
 
       if (response.status === 200) {
         const fetchedVehicle = response.data;
-        console.log(fetchedVehicle);
+
         setVehicleOwnerNicNumber(fetchedVehicle.nicNumber);
         setMake(fetchedVehicle.make);
         setModel(fetchedVehicle.model);
@@ -186,7 +186,7 @@ const VerifyLicenseAndVehicle = () => {
 
       if (response.status === 200) {
         const fetchedFines = response.data;
-        console.log(fetchedFines);
+
         setFetchedFines(fetchedFines);
       } else {
         setMessage("Failed to fetch fines!");
@@ -443,7 +443,7 @@ const VerifyLicenseAndVehicle = () => {
                             </span>
                           </div>
                         )}
-                        {fetchedFines == null ? (
+                        {fetchedFines.length == 0 ? (
                           <div className="col-md-3 tax-paid-status">
                             <span
                               className="status-text"
