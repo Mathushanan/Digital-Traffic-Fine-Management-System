@@ -30,6 +30,8 @@ namespace backend.Dtos
         public string? Provision { get; set; }
         public string? StationName { get; set; }
         public string? CourtName { get; set; }
+        public decimal FineAmount { get; set; }
+
 
     }
 }

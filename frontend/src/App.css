@@ -341,8 +341,8 @@ p,
   justify-content: center; /* Center horizontally */
   height: 100%;
   border-radius: 5px;
-  background-color: #d4edda; /* You can set different background per status */
-  color: #155724;
+  background-color: #cfe2ff; /* Light blue background */
+  color: #084298; /* Dark blue text for contrast */
   font-weight: 600;
   padding: 6px 10px;
   gap: 5px;

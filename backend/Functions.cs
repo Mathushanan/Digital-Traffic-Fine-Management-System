@@ -974,7 +974,7 @@ namespace backend
                             RegisteredStationId = stationAdmin.RegisteredStation!.StationId,
                             RegisteredStationDistrict = stationAdmin.RegisteredStation!.District,
                             RegisteredStationName = stationAdmin.RegisteredStation!.StationName,
-                            UserType=stationAdmin.UserType
+                            UserType = stationAdmin.UserType
                         }).ToList();
 
                         if (stationAdminDtos != null)
@@ -2547,7 +2547,7 @@ namespace backend
                     AvailablePoints = tp.AvailablePoints!.Value
                 }).ToList();
 
-                
+
 
                 var userEmail = _jwtService.GetUserEmailFromToken(token!);
                 User? user = await _userService.GetUserByEmailAsync(userEmail!);
@@ -2944,7 +2944,7 @@ namespace backend
                 {
                     var claims = principal.Claims;
                     var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-                    if (userRole == "TrafficPolice")
+                    if (userRole == "TrafficPolice" || userRole == "PublicUser")
                     {
                         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                         var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
@@ -3429,7 +3429,7 @@ namespace backend
                 {
                     var claims = principal.Claims;
                     var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-                    if (userRole == "TrafficPolice")
+                    if (userRole == "TrafficPolice" || userRole == "PublicUser")
                     {
                         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                         var data = JsonConvert.DeserializeObject<UserRequestDto>(requestBody);
@@ -4498,7 +4498,7 @@ namespace backend
 
 
 
-                        if (statisticsResponseDto!= null)
+                        if (statisticsResponseDto != null)
                         {
                             string? userEmail = _jwtService.GetUserEmailFromToken(token!);
                             User? user = await _userService.GetUserByEmailAsync(userEmail!);
@@ -4572,8 +4572,8 @@ namespace backend
                         int stationId = (int)(data?.stationId ?? 0);
 
 
-                        int totalTrafficPolices = await _userService.GetTotalUsersByUserTypeAndStationIdAsync("TrafficPolice",stationId);
-                        int totalPublicUsers = await _userService.GetTotalUsersByUserTypeAndStationIdAsync("PublicUser",stationId);
+                        int totalTrafficPolices = await _userService.GetTotalUsersByUserTypeAndStationIdAsync("TrafficPolice", stationId);
+                        int totalPublicUsers = await _userService.GetTotalUsersByUserTypeAndStationIdAsync("PublicUser", stationId);
                         decimal totalRevenueGenarated = await _paymentService.GetTotalRevenueByStationIdAsync(stationId);
                         int totalFines = await _fineService.GetTotalFinesByStationIdAsync(stationId);
                         int pendingFines = await _fineService.GetTotalPendingFinesByStationIdAsync(stationId);
@@ -4740,6 +4740,354 @@ namespace backend
                 };
             }
 
+        }
+
+        [Function("GetPublicUserStatistics")]
+        public async Task<IActionResult> GetPublicUserStatistics([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-public-user-statistics")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "PublicUser")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        dynamic? data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                        string offenderEmail = data?.offenderEmail!;
+
+                        var offender = await _userService.GetUserByEmailAsync(offenderEmail);
+                        int offenderId = offender!.UserId;
+
+                        decimal totalRevenueGenarated = await _paymentService.GetTotalRevenueByOffenderIdAsync(offenderId);
+                        int totalFines = await _fineService.GetTotalFinesByOffenderIdAsync(offenderId);
+                        int pendingFines = await _fineService.GetTotalPendingFinesByOffenderIdAsync(offenderId);
+                        int paidFines = await _fineService.GetTotalPaidFinesByOffenderIdAsync(offenderId);
+                        int disputedFines = await _fineService.GetTotalDisputedFinesByOffenderIdAsync(offenderId);
+
+
+                        StatisticsResponseDto statisticsResponseDto = new StatisticsResponseDto
+                        {
+
+                            TotalRevenueGenarated = totalRevenueGenarated,
+                            TotalFinesIssued = totalFines,
+                            PendingFines = pendingFines,
+                            PaidFines = paidFines,
+                            DisputedFines = disputedFines
+                        };
+
+
+
+
+                        if (statisticsResponseDto != null)
+                        {
+                            string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                            User? user = await _userService.GetUserByEmailAsync(userEmail!);
+                            // Capture additional audit details
+                            var auditEntry = new Audit
+                            {
+                                UserId = user!.UserId,
+                                ApiEndPoint = "get-traffic-police-statistics",
+                                RequestType = "POST",
+                                TimeStamp = DateTime.UtcNow,
+                                IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                                RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                                RequestBody = null,
+                                QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                                UserAgent = req.Headers["User-Agent"].ToString()
+                            };
+                            await _auditService.LogAuditAsync(auditEntry);
+                            return new OkObjectResult(statisticsResponseDto);
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("No statistics found!");
+                        }
+
+
+                    }
+                    else
+                    {
+
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+
+                    }
+
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+        [Function("GetAllFines")]
+        public async Task<IActionResult> GetAllFines([HttpTrigger(AuthorizationLevel.Function, "get", Route = "get-all-fines")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+
+                        var fines = await _fineService.GetAllFinesAsync();
+
+                        var fineDtos = fines.Select(f => new FineResponseDto
+                        {
+                            FineId = f.FineId,
+                            OffenderId = f.OffenderId,
+                            IssuerId = f.IssuerId,
+                            VehicleId = f.VehicleId,
+                            ViolationId = f.ViolationId,
+                            StationId = f.StationId,
+                            CourtId = f.CourtId,
+                            ViolationDate = f.ViolationDate,
+                            DueDate = f.DueDate,
+                            District = f.District,
+                            Longitude = f.Longitude,
+                            Latitude = f.Latitude,
+                            Status = f.Status,
+                            SectionOfAct = f.Violation?.SectionOfAct,
+                            Provision = f.Violation?.Provision,
+                            StationName = f.Station?.StationName,
+                            FineAmount = f.Violation!.FineAmount
+                        }).ToList();
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-all-fines",
+                            RequestType = "GET",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(fineDtos);
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+        [Function("GetAllFinesToStationAdmin")]
+        public async Task<IActionResult> GetAllFinesToStationAdmin([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-all-fines-to-station-admin")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "StationAdmin")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        dynamic? data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                        int stationId = (int)(data?.stationId ?? 0);
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+
+                        var fines = await _fineService.GetAllFinesByStationIdAsync(stationId);
+
+                        var fineDtos = fines.Select(f => new FineResponseDto
+                        {
+                            FineId = f.FineId,
+                            OffenderId = f.OffenderId,
+                            IssuerId = f.IssuerId,
+                            VehicleId = f.VehicleId,
+                            ViolationId = f.ViolationId,
+                            StationId = f.StationId,
+                            CourtId = f.CourtId,
+                            ViolationDate = f.ViolationDate,
+                            DueDate = f.DueDate,
+                            District = f.District,
+                            Longitude = f.Longitude,
+                            Latitude = f.Latitude,
+                            Status = f.Status,
+                            SectionOfAct = f.Violation?.SectionOfAct,
+                            Provision = f.Violation?.Provision,
+                            StationName = f.Station?.StationName,
+                            FineAmount = f.Violation!.FineAmount
+                        }).ToList();
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-all-fines-to-station-admin",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(fineDtos);
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+        [Function("GetAllFinesToTrafficPolice")]
+        public async Task<IActionResult> GetAllFinesToTrafficPolice([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-all-fines-to-traffic-police")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "TrafficPolice")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        dynamic? data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        var fines = await _fineService.GetFinesByTrafficPoliceUserIdAsync(user!.UserId);
+
+                        var fineDtos = fines.Select(f => new FineResponseDto
+                        {
+                            FineId = f.FineId,
+                            OffenderId = f.OffenderId,
+                            IssuerId = f.IssuerId,
+                            VehicleId = f.VehicleId,
+                            ViolationId = f.ViolationId,
+                            StationId = f.StationId,
+                            CourtId = f.CourtId,
+                            ViolationDate = f.ViolationDate,
+                            DueDate = f.DueDate,
+                            District = f.District,
+                            Longitude = f.Longitude,
+                            Latitude = f.Latitude,
+                            Status = f.Status,
+                            SectionOfAct = f.Violation?.SectionOfAct,
+                            Provision = f.Violation?.Provision,
+                            StationName = f.Station?.StationName,
+                            FineAmount = f.Violation!.FineAmount
+                        }).ToList();
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-all-fines-to-station-admin",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(fineDtos);
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
         }
 
 

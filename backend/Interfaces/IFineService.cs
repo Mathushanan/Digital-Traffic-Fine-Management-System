@@ -32,5 +32,11 @@ namespace backend.Interfaces
         Task<int> GetTotalPendingFinesByIssuerIdAsync(int issuerId);
         Task<int> GetTotalDisputedFinesByIssuerIdAsync(int issuerId);
 
+        Task<int> GetTotalFinesByOffenderIdAsync(int offenderId);
+        Task<int> GetTotalPaidFinesByOffenderIdAsync(int offenderId);
+        Task<int> GetTotalPendingFinesByOffenderIdAsync(int offenderId);
+        Task<int> GetTotalDisputedFinesByOffenderIdAsync(int offenderId);
+
+        Task<List<Fine>> GetAllFinesAsync();
     }
 }

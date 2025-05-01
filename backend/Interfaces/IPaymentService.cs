@@ -15,5 +15,6 @@ namespace backend.Interfaces
         Task<decimal> GetTotalRevenueAsync();
         Task<decimal> GetTotalRevenueByStationIdAsync(int stationId);
         Task<decimal> GetTotalRevenueByIssuerIdAsync(int issuerId);
+        Task<decimal> GetTotalRevenueByOffenderIdAsync(int offenderId);
     }
 }

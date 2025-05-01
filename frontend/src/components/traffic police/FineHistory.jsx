@@ -38,6 +38,7 @@ const FineHistory = () => {
 
       if (response.status === 200) {
         const fetchedFines = response.data;
+        console.log(fetchedFines);
         setFines(fetchedFines);
       } else {
         setMessage("Failed to fetch fines!");
@@ -231,8 +232,8 @@ const FineHistory = () => {
 
                       {/* Button Section */}
                       <div className="col-3 d-flex gap-2 ">
-                        {fine.status === "Paid" ? (
-                          <div className=" paid-fine-details-btn px-3 border border-success">
+                        {fine.status === "paid" ? (
+                          <div className="paid-fine-details-btn px-3 border border-success">
                             <span
                               className="status-text paid-fine-details-btn-span text-success"
                               style={{
@@ -243,12 +244,25 @@ const FineHistory = () => {
                               Paid
                             </span>
                           </div>
-                        ) : (
-                          <div className=" pending-fine-details-btn px-2 border border-warning">
+                        ) : fine.status === "disputed" ? (
+                          <div className="disputed-fine-details-btn px-2 border border-danger">
                             <span
-                              className="status-text "
+                              className="status-text"
                               style={{
-                                color: " #b8860b",
+                                color: "#dc3545", // Blue color for disputed
+                                alignItems: "center",
+                                fontSize: "14px",
+                              }}
+                            >
+                              Disputed
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="pending-fine-details-btn px-2 border border-warning">
+                            <span
+                              className="status-text"
+                              style={{
+                                color: "#b8860b", // Gold color for pending
                                 alignItems: "center",
                                 fontSize: "14px",
                               }}
@@ -258,11 +272,11 @@ const FineHistory = () => {
                           </div>
                         )}
 
-                        <div className=" points-btn  px-2 border border-success">
+                        <div className=" points-btn  px-2 border border-primary">
                           <span
                             className="status-text "
                             style={{
-                              color: " #155724",
+                              color: " #0d6efd",
                               alignItems: "center",
                               fontSize: "14px",
                             }}

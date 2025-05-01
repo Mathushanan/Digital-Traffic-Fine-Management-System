@@ -165,5 +165,41 @@ namespace backend.Services
 
 
 
+        public async Task<int> GetTotalFinesByOffenderIdAsync(int offenderId)
+        {
+            return await _systemDbContext.Fines.Where(u => u.OffenderId == offenderId).CountAsync();
+        }
+        public async Task<int> GetTotalPendingFinesByOffenderIdAsync(int offenderId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "pending" && u.OffenderId == offenderId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalPaidFinesByOffenderIdAsync(int offenderId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "paid" && u.OffenderId == offenderId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalDisputedFinesByOffenderIdAsync(int offenderId)
+        {
+            return await _systemDbContext.Fines
+                .Where(u => u.Status == "disputed" && u.OffenderId == offenderId)
+                .CountAsync();
+        }
+
+
+        public async Task<List<Fine>> GetAllFinesAsync()
+        {
+            return await _systemDbContext.Fines
+                .ToListAsync();
+
+        }
+
+
+
+
+
+
     }
 }

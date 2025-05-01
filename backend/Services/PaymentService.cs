@@ -103,6 +103,13 @@ namespace backend.Services
                 .SumAsync(p => p.Amount);
         }
 
+        public async Task<decimal> GetTotalRevenueByOffenderIdAsync(int offenderId)
+        {
+            return await _systemDbContext.Payments
+                .Where(p => p.Fine != null && p.Fine.OffenderId == offenderId)
+                .SumAsync(p => p.Amount);
+        }
+
 
 
     }
