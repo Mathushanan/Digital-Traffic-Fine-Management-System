@@ -25,6 +25,7 @@ import verifyJwtToken from "./utils/verifyJwtToken";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import PageNotFound from "./components/common/PageNotFound";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // Import React Icons
+import TrafficViolations from "./components/common/TrafficViolations";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("authToken"));
@@ -99,6 +100,10 @@ function App() {
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/faq" element={<FaqPage />} />
                   <Route path="/legal" element={<LegalPage />} />
+                  <Route
+                    path="/traffic-violations"
+                    element={<TrafficViolations />}
+                  />
                   <Route
                     path="/login"
                     element={

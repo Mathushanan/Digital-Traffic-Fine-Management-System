@@ -8,6 +8,36 @@ const MapView = () => {
   const [fines, setFines] = useState([]);
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
+  const [blink, setBlink] = useState(true);
+  const [opacity, setOpacity] = useState(0.6);
+
+  useEffect(() => {
+    let animationFrameId;
+    let start;
+
+    const animate = (timestamp) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+
+      // Create a sine wave between 0.1 and 0.6 for smooth blinking
+      const newOpacity = 0.35 + 0.25 * Math.sin(elapsed / 400); // 400ms cycle
+      setOpacity(newOpacity);
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBlink((prev) => !prev);
+    }, 1000); // blink every 500ms
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Fix marker icon issue
   delete L.Icon.Default.prototype._getIconUrl;
@@ -131,7 +161,7 @@ const MapView = () => {
             pathOptions={{
               color: getDistrictColor(index),
               fillColor: getDistrictColor(index),
-              fillOpacity: 0.4,
+              fillOpacity: opacity,
             }}
           >
             <Popup>

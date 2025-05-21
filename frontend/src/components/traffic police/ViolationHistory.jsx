@@ -11,7 +11,7 @@ const ViolationHistory = () => {
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
 
-  const [licenseNumber, setLicenseNumber] = useState("L001234579");
+  const [licenseNumber, setLicenseNumber] = useState("");
 
   const fetchFinesByLicenseNumber = async (e) => {
     e.preventDefault();

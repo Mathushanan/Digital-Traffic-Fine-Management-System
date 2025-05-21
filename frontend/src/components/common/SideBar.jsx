@@ -92,7 +92,7 @@ const SideBar = ({ user, role }) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/aboutjj"
+                  to="/traffic-violations"
                   onClick={() => setIsOpen(false)}
                 >
                   <FaCarCrash className="me-2" /> TRAFFIC VIOLATIONS

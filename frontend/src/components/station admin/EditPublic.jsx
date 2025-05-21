@@ -409,7 +409,7 @@ const EditPublic = () => {
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleConfirmDelete}
-        message={`Are you sure you want to delete ${currentPublicUser?.FirstName} ${currentPublicUser?.LastName}?`}
+        message={`Are you sure you want to delete ${currentPublicUser?.firstName} ${currentPublicUser?.lastName}?`}
       />
     </>
   );

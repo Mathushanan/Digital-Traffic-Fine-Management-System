@@ -36,8 +36,8 @@ const AddFine = () => {
     useState(false);
 
   // Define state variables for latitude and longitude
-  const [latitude, setLatitude] = useState("78.444");
-  const [longitude, setLongitude] = useState("7.444");
+  const [latitude, setLatitude] = useState("0.0");
+  const [longitude, setLongitude] = useState("0.0");
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -98,21 +98,21 @@ const AddFine = () => {
 
     if (new Date(fetchedUser.licenseExpiryDate) < now) {
       const fine = fetchedTrafficViolations.find(
-        (violation) => violation.sectionOfAct === "21"
+        (violation) => violation.sectionOfAct === "130B"
       );
       if (fine) applicableFines.push(fine);
     }
 
     if (!fetchedVehicle.isInsuranced == true) {
       const fine = fetchedTrafficViolations.find(
-        (violation) => violation.sectionOfAct === "22"
+        (violation) => violation.sectionOfAct === "199B"
       );
       if (fine) applicableFines.push(fine);
     }
 
     if (!fetchedVehicle.isRoadTaxPaid == true) {
       const fine = fetchedTrafficViolations.find(
-        (violation) => violation.sectionOfAct === "23"
+        (violation) => violation.sectionOfAct === "198A"
       );
       if (fine) applicableFines.push(fine);
     }
@@ -383,7 +383,7 @@ const AddFine = () => {
         </div>
       )}
 
-      <div className="container d-flex justify-content-center align-items-center mt-2 border">
+      <div className="container d-flex justify-content-center align-items-center mt-2">
         <div className="p-4" style={{ maxWidth: "600px", width: "100%" }}>
           <h3 className="text-start mb-4">Add New Fine</h3>
           <form>

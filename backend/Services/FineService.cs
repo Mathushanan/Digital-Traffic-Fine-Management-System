@@ -196,6 +196,20 @@ namespace backend.Services
 
         }
 
+        public async Task<List<Fine>> GetAllFinesWithAllRelatedDataAsync()
+        {
+            return await _systemDbContext.Fines
+                .Include(f => f.Offender)
+                .Include(f => f.Issuer)
+                .Include(f => f.Vehicle)
+                .Include(f => f.Violation)
+                .Include(f => f.Court)
+                .Include(f => f.Payment)
+                .Include(f => f.Dispute)
+                .Include(f => f.Station)
+                .ToListAsync();
+        }
+
 
 
 

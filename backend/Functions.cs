@@ -2957,12 +2957,13 @@ namespace backend
                         }
 
                         var existingPublicUser = await _userService.GetPublicUserByLicenseNumberAsync(licenseNumber);
-                        string permittedVehicles = await _userService.GetEligibleVehicleCategories(existingPublicUser!.UserId);
-
                         if (existingPublicUser == null)
                         {
                             return new NotFoundObjectResult("Public user not found!");
                         }
+                        string? permittedVehicles = await _userService.GetEligibleVehicleCategories(existingPublicUser!.UserId);
+
+
 
                         var publicUserDto = new PublicUserResponseDto
                         {
@@ -5090,8 +5091,307 @@ namespace backend
             }
         }
 
+        [Function("GetAllFinesToPublicUser")]
+        public async Task<IActionResult> GetAllFinesToPublicUser([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-all-fines-to-public-user")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "PublicUser")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        dynamic? data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        var fines = await _fineService.GetFinesByPublicUserIdAsync(user!.UserId);
+
+                        var fineDtos = fines.Select(f => new FineResponseDto
+                        {
+                            FineId = f.FineId,
+                            OffenderId = f.OffenderId,
+                            IssuerId = f.IssuerId,
+                            VehicleId = f.VehicleId,
+                            ViolationId = f.ViolationId,
+                            StationId = f.StationId,
+                            CourtId = f.CourtId,
+                            ViolationDate = f.ViolationDate,
+                            DueDate = f.DueDate,
+                            District = f.District,
+                            Longitude = f.Longitude,
+                            Latitude = f.Latitude,
+                            Status = f.Status,
+                            SectionOfAct = f.Violation?.SectionOfAct,
+                            Provision = f.Violation?.Provision,
+                            StationName = f.Station?.StationName,
+                            FineAmount = f.Violation!.FineAmount
+                        }).ToList();
+
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-all-fines-to-public-user",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(fineDtos);
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+        [Function("GetTrafficViolationsToHomePage")]
+        public async Task<IActionResult> GetTrafficViolationsToHomePage([HttpTrigger(AuthorizationLevel.Function, "get", Route = "get-traffic-violations-to-homepage")] HttpRequest req)
+        {
+            try
+            {
+
+
+
+                var trafficViolations = await _trafficViolationService.GetAllTrafficViolationsAsync();
+
+
+                if (trafficViolations != null)
+                {
+                    var trafficViolationsDto = trafficViolations.Select(tv => new TrafficViolationResponseDto
+                    {
+                        ViolationId = tv.ViolationId,
+                        SectionOfAct = tv.SectionOfAct,
+                        ViolationType = tv.ViolationType,
+                        Provision = tv.Provision,
+                        FineAmount = tv.FineAmount,
+                        DueDays = tv.DueDays,
+                        Points = tv.Points
+                    }).ToList();
+
+                    return new OkObjectResult(trafficViolationsDto);
+                }
+                else
+                {
+                    return new BadRequestObjectResult("No traffic violations found!");
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+
+        }
+        [Function("GetMachineLearningDataset")]
+        public async Task<IActionResult> GetMachineLearningDataset([HttpTrigger(AuthorizationLevel.Function, "post", Route = "get-machine-learning-dataset")] HttpRequest req)
+        {
+            try
+            {
+                if (!req.Headers.TryGetValue("Authorization", out var token))
+                {
+                    return new BadRequestObjectResult("Missing Authorization token!");
+                }
+                token = token.ToString().Replace("Bearer ", "");
+
+                var principal = _jwtService.ValidateJwtToken(token!);
+
+                if (principal != null)
+                {
+                    var claims = principal.Claims;
+                    var userRole = claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+                    if (userRole == "SystemAdmin")
+                    {
+                        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        dynamic? data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+
+                        string? userEmail = _jwtService.GetUserEmailFromToken(token!);
+                        User? user = await _userService.GetUserByEmailAsync(userEmail!);
+
+                        // Fetch all fines with related data
+                        var fines = await _fineService.GetAllFinesWithAllRelatedDataAsync(); // You must implement this
+
+                        var dataset = fines.Select(f => new MachineLearningDatasetDto
+                        {
+                            FineId = f.FineId,
+                            ViolationDate = f.ViolationDate,
+                            DueDate = f.DueDate,
+                            FineStatus = f.Status,
+                            District = f.District,
+                            Longitude = f.Longitude,
+                            Latitude = f.Latitude,
+
+                            // Offender Info
+                            OffenderId = f.Offender?.UserId,
+                            OffenderFirstName = f.Offender?.FirstName,
+                            OffenderLastName = f.Offender?.LastName,
+                            OffenderGender = f.Offender?.Gender,
+                            OffenderDOB = f.Offender?.DateOfBirth,
+                            OffenderAddress = f.Offender?.Address,
+                            OffenderEmail = f.Offender?.Email,
+                            OffenderContactNumber = f.Offender?.ContactNumber,
+                            OffenderNicNumber = f.Offender?.NicNumber,
+                            OffenderLicenseNumber = f.Offender?.LicenseNumber,
+                            OffenderLicenseIssueDate = f.Offender?.LicenseIssueDate,
+                            OffenderLicenseExpiryDate = f.Offender?.LicenseExpiryDate,
+                            OffenderAvailablePoints = f.Offender?.AvailablePoints,
+                            OffenderEligibleVehicleCategories = f.Offender?.User_EligibleVehicleCategories != null
+                                                                ? string.Join(", ", f.Offender.User_EligibleVehicleCategories
+                                                                    .Select(c => c.EligibleVehicleCategory?.CategoryName)
+                                                                    .Where(name => !string.IsNullOrEmpty(name)))
+                                                                : string.Empty,
+
+
+                            // Issuer Info
+                            IssuerId = f.Issuer?.UserId,
+                            IssuerFirstName = f.Issuer?.FirstName,
+                            IssuerLastName = f.Issuer?.LastName,
+                            IssuerGender = f.Issuer?.Gender,
+                            IssuerNicNumber = f.Issuer?.NicNumber,
+                            IssuerLicenseNumber = f.Issuer?.LicenseNumber,
+                            IssuerBadgeNumber = f.Issuer?.BadgeNumber,
+
+                            // Violation Info
+                            ViolationId = f.Violation?.ViolationId ?? 0,
+                            SectionOfAct = f.Violation?.SectionOfAct,
+                            ViolationType = f.Violation?.ViolationType,
+                            ViolationProvision = f.Violation?.Provision,
+                            ViolationFineAmount = f.Violation?.FineAmount ?? 0,
+                            ViolationPoints = f.Violation?.Points ?? 0,
+                            ViolationDueDays = f.Violation?.DueDays ?? 0,
+
+                            // Vehicle Info
+                            VehicleId = f.Vehicle?.VehicleId ?? 0,
+                            VehicleNumber = f.Vehicle?.VehicleNumber,
+                            VehicleCategory = f.Vehicle?.VehicleCategory,
+                            VehicleMake = f.Vehicle?.Make,
+                            VehicleModel = f.Vehicle?.Model,
+                            VehicleYear = f.Vehicle?.Year.Year ?? 0,
+                            VehicleColor = f.Vehicle?.Color,
+                            VehicleRegistrationNo = f.Vehicle?.RegistrationNo,
+                            VehicleRegistrationDate = f.Vehicle?.RegistrationDate,
+                            IsRoadTaxPaid = f.Vehicle?.IsRoadTaxPaid ?? false,
+                            IsInsuranced = f.Vehicle?.IsInsuranced ?? false,
+
+                            // Court Info
+                            CourtId = f.Court?.CourtId ?? 0,
+                            CourtName = f.Court?.CourtName,
+                            CourtType = f.Court?.CourtType,
+                            CourtLocation = f.Court?.Location,
+                            CourtJurisdiction = f.Court?.Jurisdiction,
+                            CourtContactNumber = f.Court?.ContactNumber,
+                            CourtEstablishedDate = f.Court?.EstablishedDate,
+
+                            // Station Info
+                            StationId = f.Station?.StationId ?? 0,
+                            StationCode = f.Station?.StationCode,
+                            StationName = f.Station?.StationName,
+                            StationAddress = f.Station?.Address,
+                            StationDistrict = f.Station?.District,
+                            StationContactNumber = f.Station?.ContactNumber,
+                            StationEmail = f.Station?.Email,
+
+                            // Payment Info
+                            PaymentId = f.Payment?.PaymentId,
+                            PaymentAmount = f.Payment?.Amount,
+                            PaymentDate = f.Payment?.PaymentDate,
+                            PaymentMethod = f.Payment?.PaymentMethod,
+                            TransactionId = f.Payment?.TransactionId,
+
+                            // Dispute Info
+                            DisputeId = f.Dispute?.DisputeId,
+                            DisputeReason = f.Dispute?.DisputeReason,
+                            DisputeStatus = f.Dispute?.Status,
+                            DisputeSubmissionDate = f.Dispute?.SubmissionDate,
+
+                            // Audit Info
+                            ApiEndPoint = "get-machine-learning-dataset",
+                            AuditId = null,
+                            RequestType = "POST",
+                            AuditTimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        }).ToList();
+
+                        // Audit log
+                        var auditEntry = new Audit
+                        {
+                            UserId = user!.UserId,
+                            ApiEndPoint = "get-machine-learning-dataset",
+                            RequestType = "POST",
+                            TimeStamp = DateTime.UtcNow,
+                            IpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                            RequestHeader = JsonConvert.SerializeObject(req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())),
+                            RequestBody = requestBody,
+                            QueryParams = JsonConvert.SerializeObject(req.Query.ToDictionary(q => q.Key, q => q.Value.ToString())),
+                            UserAgent = req.Headers["User-Agent"].ToString()
+                        };
+                        await _auditService.LogAuditAsync(auditEntry);
+
+                        return new OkObjectResult(dataset);
+
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("User is not authorized for this action!");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Token is invalid or expired!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
 
     }
+
+
 
 
 

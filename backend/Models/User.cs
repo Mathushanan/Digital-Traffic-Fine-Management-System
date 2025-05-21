@@ -28,10 +28,8 @@ namespace backend.Models
         public DateTime? LicenseExpiryDate { get; set; }
         public int? AvailablePoints { get; set; }
         public int? BadgeNumber { get; set; }
-
         public int? RegisteredStationId { get; set; }
         public virtual Station? RegisteredStation { get; set; }
-
         public virtual ICollection<User_EligibleVehicleCategory>? User_EligibleVehicleCategories { get; set; }
         public virtual ICollection<Fine>? OffenderFines { get; set; }
         public virtual ICollection<Fine>? IssuerFines { get; set; }

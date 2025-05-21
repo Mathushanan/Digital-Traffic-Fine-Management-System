@@ -183,7 +183,7 @@ const Analysis = () => {
               <h5 className="text-center text-muted my-3">
                 Total Fine Count by District
               </h5>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={chartData} margin={{ bottom: 40 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
@@ -224,7 +224,7 @@ const Analysis = () => {
               <h5 className="text-center text-muted my-3">
                 Top 5 Violation-Prone Districts
               </h5>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie
                     data={fineCountData}
@@ -258,7 +258,7 @@ const Analysis = () => {
               <h5 className="text-center text-muted my-3">
                 Top 5 Revenue-Generating Districts
               </h5>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie
                     data={revenueData}
@@ -293,7 +293,7 @@ const Analysis = () => {
               <h5 className="text-center text-muted my-3">
                 Total Violations by Station
               </h5>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={stationData} margin={{ bottom: 40 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis

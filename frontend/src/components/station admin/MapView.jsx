@@ -95,7 +95,11 @@ const MapView = () => {
               parseFloat(fines[0].longitude),
             ]}
             radius={30000}
-            pathOptions={{ color: "red", fillColor: "red", fillOpacity: 0.3 }}
+            pathOptions={{
+              color: "orange",
+              fillColor: "orange",
+              fillOpacity: 0.3,
+            }}
           />
         )}
 

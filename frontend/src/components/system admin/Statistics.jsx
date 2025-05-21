@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { IoMdPrint } from "react-icons/io";
 
 import axios from "axios";
 
 const Statistics = () => {
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
+  const [dataset, setDataset] = useState(null);
 
   const messageClass =
     messageType === "error" ? "alert-danger" : "alert-success";
@@ -47,9 +49,90 @@ const Statistics = () => {
     }
   };
 
+  const fetchDataset = async () => {
+    try {
+      const fetchDatasetUrl = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/get-machine-learning-dataset`;
+      const token = localStorage.getItem("authToken");
+      console.log(token);
+
+      const response = await axios.post(
+        fetchDatasetUrl,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const fetchedDataset = response.data;
+        console.log(fetchedDataset);
+        setDataset(fetchedDataset);
+      } else {
+        setMessage("Failed to fetch dataset!");
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to fetch dataset: " +
+          (error.response ? error.response.data : error.message)
+      );
+      setMessageType("error");
+      console.error(
+        "Failed to fetch dataset:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   useEffect(() => {
     fetchStatistics();
+    fetchDataset();
   }, []);
+
+  function generateCSV(dataset) {
+    if (!dataset || !dataset.length) {
+      alert("No data available to export");
+      return;
+    }
+
+    // Get CSV headers from keys of the first object
+    const headers = Object.keys(dataset[0]);
+
+    // Create CSV rows: headers + each row of data
+    const csvRows = [
+      headers.join(","), // header row
+      ...dataset.map((row) =>
+        headers
+          .map((fieldName) => {
+            let value = row[fieldName];
+            if (value === null || value === undefined) value = "";
+            else value = value.toString().replace(/"/g, '""'); // Escape quotes
+            // Wrap in quotes if contains commas or quotes
+            return `"${value}"`;
+          })
+          .join(",")
+      ),
+    ];
+
+    const csvString = csvRows.join("\n");
+
+    // Create a blob and trigger download
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "export.csv"); // You can customize filename here
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <>
@@ -83,6 +166,15 @@ const Statistics = () => {
       )}
 
       <div className="container py-4">
+        <div className="mb-3 d-flex align-items-center justify-content-end">
+          <button
+            className="btn custom-print-button d-flex align-items-center"
+            onClick={() => generateCSV(dataset)}
+          >
+            <IoMdPrint className="me-2" style={{ fontSize: "20px" }} />
+            <span className="print-text">Genarate Dataset</span>
+          </button>
+        </div>
         <div className="row g-4">
           {/* Row 1 */}
           <div className="col-md-6">

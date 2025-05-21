@@ -1,8 +1,8 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "../../../components/common/ProtectedRoute";
-import verifyJwtToken from "../../../utils/verifyJwtToken";
+import ProtectedRoute from "../common/ProtectedRoute";
+import verifyJwtToken from "../../utils/verifyJwtToken";
 
 // Mock verifyJwtToken function
 jest.mock("../../../utils/verifyJwtToken");
